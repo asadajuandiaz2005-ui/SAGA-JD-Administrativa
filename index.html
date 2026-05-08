@@ -5,10 +5,25 @@
     <link rel="icon" type="image/png" href="/Logo_ASADA_Juan_Díaz.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Portal Administrativo de la ASADA Juan Díaz. Gestión de afiliados, lecturas, acueducto e inventario." />
-    <!-- SEO & Performance: Preconnect para Google Fonts -->
+    <!-- Preconnect: Google Fonts + API -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+    <link rel="preconnect" href="https://api.asadajuandiaz.com" crossorigin>
+
+    <!-- Google Fonts cargado async (no render-blocking) -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap"
+      />
+    </noscript>
+
     <link rel="stylesheet" href="/src/index.css" />
     <title>Portal Administrativo - ASADA Juan Díaz</title>
   </head>
