@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useUploadCalidadAgua } from "../Hook/HookCalidadAgua";
 import { useAlerts } from "@/Modules/Global/context/AlertContext"; // ✅ Importamos el hook de alertas
 import { FaFilePdf, FaTimes } from "react-icons/fa";
-import { CalidadAguaSchema } from "../schemas/CalidadDeAgua";
-import { z } from "zod";
+
 
 interface FormularioCalidadAguaProps {
     tituloInicial: string;
@@ -21,57 +20,66 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
     const [file, setFile] = useState<File | null>(null);
     const [tituloError, setTituloError] = useState("");
     const [descripcionError, setDescripcionError] = useState("");
+    const [fileError, setFileError] = useState("");
 
     const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setTitulo(value);
 
-        const result = CalidadAguaSchema.shape.Titulo.safeParse(value);
-        setTituloError(result.success ? "" : result.error.issues[0]?.message ?? "Título inválido.");
+        if (value.trim().length < 5) {
+            setTituloError("El título debe tener al menos 5 caracteres.");
+        } else if (value.length > 100) {
+            setTituloError("El título no puede exceder los 100 caracteres.");
+        } else {
+            setTituloError("");
+        }
     };
 
     const handleDescripcionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
         setDescripcion(value);
 
-        const result = CalidadAguaSchema.shape.Descripcion.safeParse(value);
-        setDescripcionError(result.success ? "" : result.error.issues[0]?.message ?? "Descripción inválida.");
+        if (value.trim().length < 10) {
+            setDescripcionError("La descripción debe tener al menos 10 caracteres.");
+        } else if (value.length > 200) {
+            setDescripcionError("La descripción no puede exceder los 200 caracteres.");
+        } else {
+            setDescripcionError("");
+        }
+    };
+
+    const validateFields = () => {
+        const tituloLength = titulo.trim().length;
+        const descripcionLength = descripcion.trim().length;
+
+        let hasErrors = false;
+
+        if (tituloLength < 5) {
+            setTituloError("El título debe tener al menos 5 caracteres.");
+            hasErrors = true;
+        } else {
+            setTituloError("");
+        }
+
+        if (descripcionLength < 10) {
+            setDescripcionError("La descripción debe tener al menos 10 caracteres.");
+            hasErrors = true;
+        } else {
+            setDescripcionError("");
+        }
+
+        return !hasErrors;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        setTituloError("");
-        setDescripcionError("");
-
-        try {
-            CalidadAguaSchema.parse({
-                Titulo: titulo,
-                Descripcion: descripcion,
-                archivo: file ?? undefined,
-            });
-        } catch (error) {
-            if (error instanceof z.ZodError) {
-                const tituloIssue = error.errors.find((issue) => issue.path[0] === "Titulo");
-                const descripcionIssue = error.errors.find((issue) => issue.path[0] === "Descripcion");
-                const archivoIssue = error.errors.find((issue) => issue.path[0] === "archivo");
-
-                if (tituloIssue) {
-                    setTituloError(tituloIssue.message);
-                }
-
-                if (descripcionIssue) {
-                    setDescripcionError(descripcionIssue.message);
-                }
-
-                if (archivoIssue) {
-                    showError(archivoIssue.message);
-                }
-
-                return;
-            }
-
-            showError("No se pudo validar el formulario.");
+        if (!validateFields()) {
+            showError(
+                descripcion.trim().length < 10
+                    ? 'La descripción debe tener al menos 10 caracteres.'
+                    : 'El título debe tener al menos 5 caracteres.'
+            );
             return;
         }
 
@@ -129,6 +137,9 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                         {titulo.length}/100
                     </div>
                     {tituloError && <p className="text-xs text-red-500 mt-1">{tituloError}</p>}
+                    {!tituloError && titulo.length === 100 && (
+                        <p className="text-xs text-red-500 mt-1">El título puede tener máximo 100 caracteres.</p>
+                    )}
                 </div>
 
                 {/* Campo de Descripción */}
@@ -150,6 +161,9 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                     {descripcionError && (
                         <p className="text-xs text-red-500 mt-1">{descripcionError}</p>
                     )}
+                    {!descripcionError && descripcion.length === 200 && (
+                        <p className="text-xs text-red-500 mt-1">La descripción puede tener máximo 200 caracteres.</p>
+                    )}
                 </div>
 
                 {/* Campo de Archivo */}
@@ -164,7 +178,19 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                             accept="application/pdf"
                             onChange={(e) => {
                                 const selectedFile = e.target.files?.[0];
-                                setFile(selectedFile || null);
+                                if (selectedFile) {
+                                    const MAX_SIZE_MB = 20;
+                                    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+                                    if (selectedFile.size > MAX_SIZE_BYTES) {
+                                        setFileError(`El archivo no debe superar los ${MAX_SIZE_MB} MB.`);
+                                        setFile(null);
+                                    } else {
+                                        setFileError("");
+                                        setFile(selectedFile);
+                                    }
+                                } else {
+                                    setFile(null);
+                                }
                                 e.target.value = '';
                             }}
                             className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
@@ -205,6 +231,7 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setFile(null);
+                                            setFileError("");
                                         }}
                                         className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded"
                                     >
@@ -213,6 +240,9 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                                 </div>
                             </div>
                         </div>
+                    )}
+                    {fileError && (
+                        <p className="text-xs text-red-500 mt-2">{fileError}</p>
                     )}
                 </div>
 

@@ -150,6 +150,9 @@ export default function ImagenFormEdit({ onClose, refetch, imagen }: ImagenFormE
               {nombreError && (
                 <p className="text-xs text-red-500 mt-1">{nombreError}</p>
               )}
+              {!nombreError && nombre.length === 50 && (
+                <p className="text-xs text-red-500 mt-1">El título puede tener máximo 50 caracteres.</p>
+              )}
             </div>
 
             {/* Campo imagen */}

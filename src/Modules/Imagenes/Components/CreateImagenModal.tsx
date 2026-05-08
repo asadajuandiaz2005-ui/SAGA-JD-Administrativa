@@ -123,7 +123,14 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
           {nombreError ? (
             <p className="text-xs text-red-500 mt-1">{nombreError}</p>
           ) : (
-            <p className="text-xs text-gray-400 mt-1">&nbsp;</p>
+            <>
+              {nombre.length === 50 && (
+                <p className="text-xs text-red-500 mt-1">El título puede tener máximo 50 caracteres.</p>
+              )}
+              {nombre.length < 50 && (
+                <p className="text-xs text-gray-400 mt-1">&nbsp;</p>
+              )}
+            </>
           )}
         </div>
 

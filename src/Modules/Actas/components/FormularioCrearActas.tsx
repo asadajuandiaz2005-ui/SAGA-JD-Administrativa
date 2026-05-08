@@ -31,7 +31,7 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
     const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setTitulo(value);
-        if (value.length < 5) {
+        if (value.trim().length < 5) {
             setTituloError("El título debe tener al menos 5 caracteres.");
         } else if (value.length > 100) {
             setTituloError("El título no puede exceder los 100 caracteres.");
@@ -43,7 +43,7 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
     const handleDescripcionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
         setDescripcion(value);
-        if (value.length < 10) {
+        if (value.trim().length < 10) {
             setDescripcionError("La descripción debe tener al menos 10 caracteres.");
         } else if (value.length > 200) {
             setDescripcionError("La descripción no puede exceder los 200 caracteres.");
@@ -52,8 +52,42 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
         }
     };
 
+    const validateFields = () => {
+        const tituloLength = titulo.trim().length;
+        const descripcionLength = descripcion.trim().length;
+
+        let hasErrors = false;
+
+        if (tituloLength < 5) {
+            setTituloError("El título debe tener al menos 5 caracteres.");
+            hasErrors = true;
+        } else {
+            setTituloError("");
+        }
+
+        if (descripcionLength < 10) {
+            setDescripcionError("La descripción debe tener al menos 10 caracteres.");
+            hasErrors = true;
+        } else {
+            setDescripcionError("");
+        }
+
+        return !hasErrors;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateFields()) {
+            setNotification({
+                type: 'error',
+                title: 'Corrige los campos del formulario.',
+                description: descripcion.trim().length < 10
+                    ? 'La descripción debe tener al menos 10 caracteres.'
+                    : 'El título debe tener al menos 5 caracteres.',
+            });
+            return;
+        }
 
         if (files.length === 0) {
             setNotification({ type: 'error', title: 'Debe seleccionar al menos un archivo válido.' });
@@ -127,6 +161,9 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
                             {tituloError && (
                                 <p className="text-xs text-red-500 mt-1">{tituloError}</p>
                             )}
+                            {!tituloError && titulo.length === 100 && (
+                                <p className="text-xs text-red-500 mt-1">El título puede tener máximo 100 caracteres.</p>
+                            )}
                         </div>
 
                         {/* Campo de Descripción */}
@@ -147,6 +184,9 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
                             </div>
                             {descripcionError && (
                                 <p className="text-xs text-red-500 mt-1">{descripcionError}</p>
+                            )}
+                            {!descripcionError && descripcion.length === 200 && (
+                                <p className="text-xs text-red-500 mt-1">La descripción puede tener máximo 200 caracteres.</p>
                             )}
                         </div>
 
