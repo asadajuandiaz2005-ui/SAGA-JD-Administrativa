@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useUploadCalidadAgua } from "../Hook/HookCalidadAgua";
 import { useAlerts } from "@/Modules/Global/context/AlertContext"; // ✅ Importamos el hook de alertas
 import { FaFilePdf, FaTimes } from "react-icons/fa";
-import { CalidadAguaSchema } from "../schemas/CalidadDeAgua";
-import { z } from "zod";
+
 
 interface FormularioCalidadAguaProps {
     tituloInicial: string;
