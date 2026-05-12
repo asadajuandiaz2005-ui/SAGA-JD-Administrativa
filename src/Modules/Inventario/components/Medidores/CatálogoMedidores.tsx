@@ -241,6 +241,9 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           } else if (estado === 'Averiado') {
             colorClass = 'bg-red-100 text-red-700 border border-red-300';
           }
+          else if (estado === 'Desconectado') {
+            colorClass = 'bg-red-100 text-red-700 border border-red-300';  //se sigue viendo gris xddd
+          }
 
           return (
             <div className="flex justify-start">

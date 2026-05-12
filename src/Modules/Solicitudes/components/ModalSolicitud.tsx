@@ -20,6 +20,8 @@ import { useAlerts } from '@/Modules/Global/context/AlertContext';
 import { updateEstadoMedidor } from '@/Modules/Inventario/service/MedidorServices';
 import { getAfiliadoFisicoByIdentificacion } from '@/Modules/Afiliados/Service/ServiceAfiliadoFisico';
 import { getAfiliadoJuridicoByIdentificacion } from '@/Modules/Afiliados/Service/ServiceAfiliadoJuridico';
+import { getMedidoresDesconexionFisicas } from '../Service/SolicitudesFisicas';
+import { getMedidoresDesconexionJuridicas } from '../Service/SolicitudesJuridicas';
 /*import { getSolicitudFisicaById } from '../Service/SolicitudesFisicas';
 import { getSolicitudJuridicaById } from '../Service/SolicitudesJuridicas';
 */
@@ -100,6 +102,51 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
     const [afiliadoInfo, setAfiliadoInfo] = useState<AfiliadoInfoCargado | null>(null);
     const [loadingAfiliadoInfo, setLoadingAfiliadoInfo] = useState(false);
     const [errorAfiliadoInfo, setErrorAfiliadoInfo] = useState<string | null>(null);
+
+    const [medidorDesconexion, setMedidorDesconexion] = useState<{ Id_Medidor: number; Numero_Medidor: number | string } | null>(null);
+
+    useEffect(() => {
+        if (!isOpen || !tipoSolicitudNormalizado.includes('desconexion')) {
+            setMedidorDesconexion(null);
+            return;
+        }
+
+        const solicitudId = datosSolicitudRaw?.Id_Solicitud || datosSolicitudRaw?.id || datosSolicitudRaw?.Id || datosSolicitudRaw?.ID || datosSolicitudRaw?.solicitudId;
+        console.log('[Desconexion] datosSolicitudRaw:', datosSolicitudRaw);
+        if (!solicitudId) { console.warn('[Desconexion] No se encontró solicitudId'); return; }
+
+        let cancelled = false;
+        (async () => {
+            try {
+                const lista = esEntidadJuridica
+                    ? await getMedidoresDesconexionJuridicas()
+                    : await getMedidoresDesconexionFisicas();
+                if (cancelled) return;
+
+                console.log('[Desconexion] solicitudId:', solicitudId, '| lista:', lista);
+
+                const encontrado = lista.find((m) => {
+                    const idEnLista = m.Id_Solicitud ?? m.id_solicitud ?? m.idSolicitud ?? m.solicitudId ?? m.id ?? m.Id;
+                    return String(idEnLista) === String(solicitudId);
+                });
+
+                console.log('[Desconexion] encontrado:', encontrado);
+
+                if (encontrado) {
+                    const numMedidor = encontrado.Numero_Medidor ?? encontrado.numero_medidor ?? encontrado.NumeroMedidor ?? encontrado.Medidor?.Numero_Medidor ?? encontrado.medidor?.Numero_Medidor;
+                    const idMedidor = encontrado.Id_Medidor ?? encontrado.id_medidor ?? encontrado.Medidor?.Id_Medidor;
+                    setMedidorDesconexion(numMedidor != null ? { Id_Medidor: idMedidor, Numero_Medidor: numMedidor } : null);
+                } else {
+                    setMedidorDesconexion(null);
+                }
+            } catch (err) {
+                console.error('[Desconexion] Error al obtener medidor:', err);
+                if (!cancelled) setMedidorDesconexion(null);
+            }
+        })();
+
+        return () => { cancelled = true; };
+    }, [isOpen, tipoSolicitudNormalizado, esEntidadJuridica, datosSolicitudRaw?.Id_Solicitud]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -696,6 +743,16 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                                             </div>
                                         )}
 
+                                        {/* Número de medidor a desconectar */}
+                                        {info.tipoSolicitud === 'Desconexion' && medidorDesconexion && (
+                                            <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                                <label className="block text-xs font-medium text-blue-700 uppercase tracking-wide mb-1">
+                                                    Medidor a Desconectar
+                                                </label>
+                                                <p className="text-base font-bold text-blue-900">{medidorDesconexion.Numero_Medidor}</p>
+                                            </div>
+                                        )}
+
 
 
                                         {!esAgregarMedidor && info.Motivo_Solicitud && info.Motivo_Solicitud !== 'No especificado' && (
@@ -901,10 +958,19 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>¿Completar solicitud?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            ¿Desea completar la solicitud de <strong>{info.nombre}</strong>?
-                            <br /><br />
-                            Esta solicitud no requiere asignación de medidor y será marcada como completada directamente.
+                        <AlertDialogDescription asChild>
+                            <div>
+                                <span>¿Desea completar la solicitud de <strong>{info.nombre}</strong>?</span>
+                                {info.tipoSolicitud === 'Desconexion' && medidorDesconexion && (
+                                    <div className="mt-3 bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                        <p className="text-xs font-medium text-orange-700 uppercase tracking-wide mb-1">Medidor a Desconectar</p>
+                                        <p className="text-base font-bold text-orange-900">{medidorDesconexion.Numero_Medidor}</p>
+                                    </div>
+                                )}
+                                <p className="mt-3 text-sm">
+                                    Esta solicitud no requiere asignación de medidor y será marcada como completada directamente.
+                                </p>
+                            </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="flex justify-between">
