@@ -84,6 +84,18 @@ export async function getSolicitudesFisicas(): Promise<SolicitudFisica[]> {
     }
 }
 
+export interface MedidorDesconexion {
+    Id_Solicitud: number;
+    Id_Medidor: number;
+    Numero_Medidor: number | string;
+    [key: string]: any;
+}
+
+export async function getMedidoresDesconexionFisicas(): Promise<MedidorDesconexion[]> {
+    const response = await apiAuth.get('/solicitudes-fisicas/desconexion/medidores');
+    return Array.isArray(response.data) ? response.data : [];
+}
+
 export async function getSolicitudesPorEstado(estado: string): Promise<SolicitudFisica[]> {
     try {
         const todasLasSolicitudes = await getSolicitudesFisicas();

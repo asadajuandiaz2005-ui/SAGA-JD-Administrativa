@@ -50,8 +50,9 @@ export default function ActasEdit({ acta, onClose, refetch }: ActasEditProps) {
                 showSuccess('Archivo eliminado correctamente.');
                 setDeletingId(null);
             },
-            onError: () => {
-                showError('No se pudo eliminar el archivo.');
+            onError: (error: any) => {
+                const errorMessage = error.response?.data?.message || 'No se pudo eliminar el archivo.';
+                showError(errorMessage);
                 setDeletingId(null);
             },
         });
@@ -137,9 +138,10 @@ export default function ActasEdit({ acta, onClose, refetch }: ActasEditProps) {
                     showSuccess('¡Acta actualizada con éxito!');
                     setTimeout(() => onClose(), 500); // Oculta el modal después de actualizar el acta
                 },
-                onError: (error) => {
+                onError: (error: any) => {
                     console.error("Error al actualizar el acta:", error);
-                    showError('Hubo un problema al actualizar el acta.');
+                    const errorMessage = error.response?.data?.message || 'Hubo un problema al actualizar el acta.';
+                    showError(errorMessage);
                 },
             }
         );

@@ -130,7 +130,7 @@ const PhoneInputComponent = ({
     };
 
     return (
-        <div className={`flex flex-col sm:flex-row rounded-lg overflow-hidden ${getBorderClasses()} ${className}`}>
+        <div className={`flex  sm:flex-row rounded-lg overflow-hidden ${getBorderClasses()} ${className}`}>
             {/* Selector de país con bandera y código */}
             <div className="relative flex-shrink-0 border-r border-gray-200" style={{ minWidth: '110px', width: '110px' }}>
                 <select

@@ -1,14 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { responderQueja, responderSugerencia, responderReporte, obtenerQuejas, obtenerQuejasArchivadas, obtenerSugerencias, obtenerSugerenciasArchivadas, obtenerReportes, obtenerReportesArchivados, actualizarEstadoReporte, actualizarEstadoSugerencia, actualizarEstadoQueja } from '../service/ContactoService';
+import { responderQueja, responderSugerencia, responderReporte, obtenerQuejas, obtenerQuejasPendientes, obtenerQuejasContestadas, obtenerQuejasArchivadas, obtenerSugerencias, obtenerSugerenciasPendientes, obtenerSugerenciasContestadas, obtenerSugerenciasArchivadas, obtenerReportes, obtenerReportesPendientes, obtenerReportesContestadas, obtenerReportesArchivados, actualizarEstadoReporte, actualizarEstadoSugerencia, actualizarEstadoQueja } from '../service/ContactoService';
 import { useAlerts } from '@/Modules/Global/context/AlertContext';
 import type { ContactoItem } from '../types/ContactoTypes';
 
 
-export const useQuejas = () => {
+export const useQuejas = (estado?: string) => {
   return useQuery({
-    queryKey: ['quejas'],
-    queryFn: () => obtenerQuejas(),
+    queryKey: ['quejas', estado],
+    queryFn: () => {
+      if (estado === 'Pendiente') return obtenerQuejasPendientes();
+      if (estado === 'Contestado') return obtenerQuejasContestadas();
+      return obtenerQuejas();
+    },
     staleTime: 5 * 60 * 1000, // 5 minutos
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
   });
 };
 
@@ -17,15 +23,23 @@ export const useQuejasArchivadas = (enabled = false) => {
     queryKey: ['quejas-archivadas'],
     queryFn: () => obtenerQuejasArchivadas(),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
     enabled,
   });
 };
 
-export const useSugerencias = () => {
+export const useSugerencias = (estado?: string) => {
   return useQuery({
-    queryKey: ['sugerencias'],
-    queryFn: () => obtenerSugerencias(),
+    queryKey: ['sugerencias', estado],
+    queryFn: () => {
+      if (estado === 'Pendiente') return obtenerSugerenciasPendientes();
+      if (estado === 'Contestado') return obtenerSugerenciasContestadas();
+      return obtenerSugerencias();
+    },
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
   });
 };
 
@@ -34,15 +48,23 @@ export const useSugerenciasArchivadas = (enabled = false) => {
     queryKey: ['sugerencias-archivadas'],
     queryFn: () => obtenerSugerenciasArchivadas(),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
     enabled,
   });
 };
 
-export const useReportes = () => {
+export const useReportes = (estado?: string) => {
   return useQuery({
-    queryKey: ['reportes'],
-    queryFn: () => obtenerReportes(),
+    queryKey: ['reportes', estado],
+    queryFn: () => {
+      if (estado === 'Pendiente') return obtenerReportesPendientes();
+      if (estado === 'Contestado') return obtenerReportesContestadas();
+      return obtenerReportes();
+    },
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
   });
 };
 
@@ -51,6 +73,8 @@ export const useReportesArchivados = (enabled = false) => {
     queryKey: ['reportes-archivados'],
     queryFn: () => obtenerReportesArchivados(),
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false, // <-- EVITAR REFRESHS AUTOMATICOS
+    retry: 2,
     enabled,
   });
 };
@@ -64,7 +88,6 @@ export const useUpdateReporteEstado = () => {
       actualizarEstadoReporte(id, idEstado),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reportes'] });
-      queryClient.invalidateQueries({ queryKey: ['reportes-archivados'] });
     },
   });
 };
@@ -76,7 +99,6 @@ export const useUpdateSugerenciaEstado = () => {
       actualizarEstadoSugerencia(id, idEstado),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sugerencias'] });
-      queryClient.invalidateQueries({ queryKey: ['sugerencias-archivadas'] });
     },
   });
 };
@@ -89,7 +111,6 @@ export const useUpdateQuejaEstado = () => {
       actualizarEstadoQueja(id, idEstado),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['quejas'] });
-      queryClient.invalidateQueries({ queryKey: ['quejas-archivadas'] });
     },
   });
 };

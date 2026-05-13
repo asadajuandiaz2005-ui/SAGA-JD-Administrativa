@@ -7,6 +7,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
+  flexRender
 } from '@tanstack/react-table';
 import {
   MdKeyboardArrowLeft,
@@ -179,10 +180,11 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const columns = useMemo(
     () => [
       columnHelper.accessor('Numero_Medidor', {
-        header: 'Número del Medidor',
+        id: 'numero',
+        header: () => <><span className="hidden sm:inline">Número del Medidor</span><span className="sm:hidden text-[9px]"># Medidor</span></>,
         cell: info => (
           <button
-            className="font-medium transition-colors text-left w-full"
+            className="font-medium transition-colors text-left w-full text-[10px] sm:text-[13px]"
             onClick={() => handleViewDetail(info.row.original)}
           >
             {info.getValue()}
@@ -190,16 +192,14 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
         ),
       }),
       columnHelper.accessor('Afiliado', {
+        id: 'afiliado',
         header: 'Afiliado',
         cell: info => {
           const afiliado = info.row.original.Afiliado;
 
-          // Log de debugging para verificar qué recibimos del backend
-          console.log('Medidor:', info.row.original.Numero_Medidor, 'Afiliado:', afiliado);
-
           if (!afiliado) {
             return (
-              <div className="text-gray-600 text-left">
+              <div className="text-gray-600 text-left text-[10px] sm:text-[13px] truncate max-w-[80px] sm:max-w-xs">
                 Sin asignar
               </div>
             );
@@ -222,12 +222,13 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
 
           return (
             <div className="flex justify-start">
-              <span className='text-gray-600 text-left max-w-xs truncate'>{nombre}</span>
+              <span className='text-gray-600 text-left max-w-[80px] sm:max-w-xs truncate text-[10px] sm:text-[13px]' title={nombre}>{nombre}</span>
             </div>
           );
         },
       }),
       columnHelper.accessor('Estado_Medidor.Nombre_Estado_Medidor', {
+        id: 'estado_medidor',
         header: 'Estado',
         cell: info => {
           const estado = info.getValue();
@@ -240,10 +241,13 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           } else if (estado === 'Averiado') {
             colorClass = 'bg-red-100 text-red-700 border border-red-300';
           }
+          else if (estado === 'Desconectado') {
+            colorClass = 'bg-red-100 text-red-700 border border-red-300';  //se sigue viendo gris xddd
+          }
 
           return (
             <div className="flex justify-start">
-              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${colorClass}`}>
+              <span className={`px-1.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-xs font-semibold rounded-full whitespace-nowrap ${colorClass}`}>
                 {estado}
               </span>
             </div>
@@ -252,7 +256,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
       }),
       columnHelper.display({
         id: 'estado_pago',
-        header: 'Estado Pago',
+        header: () => <><span className="hidden sm:inline">Estado Pago</span><span className="sm:hidden text-[9px]">Pago</span></>,
         cell: info => {
           const estadoPago = getEstadoPagoNombre(info.row.original);
           
@@ -267,7 +271,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
 
           return (
             <div className="flex justify-center">
-              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${colorClass}`}>
+              <span className={`px-1.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-xs font-semibold rounded-full whitespace-nowrap ${colorClass}`}>
                 {estadoPago}
               </span>
             </div>
@@ -276,11 +280,11 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
       }),
       columnHelper.display({
         id: 'acciones',
-        header: 'Acciones',
+        header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[9px]">Acciones</span></>,
         cell: info => (
-          <div className="flex justify-center gap-1">
+          <div className="flex flex-row justify-center flex-nowrap gap-1 min-w-[50px] sm:min-w-[140px] overflow-visible">
             <button
-              className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+              className="px-1.5 py-1 sm:px-2 sm:py-1 bg-gray-600 text-white text-[9px] sm:text-xs rounded hover:bg-gray-700 transition-colors w-auto whitespace-nowrap"
               onClick={() => handleViewDetail(info.row.original)}
               title="Ver detalles"
             >
@@ -296,14 +300,15 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                 return (
                   <>
                     <button
-                      className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                      className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
                       onClick={() => handleCambiarEstado(info.row.original)}
                       title="Cambiar estado"
                     >
-                      Cambiar Estado
+                      <span className="hidden sm:inline">Cambiar Estado</span>
+                      <span className="sm:hidden">Estado</span>
                     </button>
                     <button
-                      className="px-2 py-1 bg-green-600  text-white text-xs rounded hover:bg-green-700 transition-colors"
+                      className="px-1.5 py-1 sm:px-2 sm:py-1 bg-green-600 text-white text-[9px] sm:text-xs rounded hover:bg-green-700 transition-colors w-auto whitespace-nowrap"
                       onClick={() => {
                         setSelectedMedidor(info.row.original);
                         setIsAsignarModalOpen(true);
@@ -314,11 +319,12 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                     </button>
                     {puedeMarcarPagado && (
                       <button
-                        className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
                         onClick={() => openEstadoPagoDialog(info.row.original)}
                         title="Marcar como pagado"
                       >
-                        Marcar Pagado
+                        <span className="hidden sm:inline">Marcar Pagado</span>
+                        <span className="sm:hidden">Pagar</span>
                       </button>
                     )}
                   </>
@@ -331,14 +337,15 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button
-                          className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                          className="px-1.5 py-1 sm:px-2 sm:py-1 bg-red-600 text-white text-[9px] sm:text-xs rounded hover:bg-red-700 transition-colors w-auto whitespace-nowrap"
                           disabled={updateEstadoMutation.isPending}
                           title="Marcar como averiado"
                         >
-                          Averiado
+                          <span className="hidden sm:inline">Averiado</span>
+                          <span className="sm:hidden">Averiado</span>
                         </button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="w-[90vw] max-w-lg mx-auto p-4 sm:p-6 rounded-xl">
                         <AlertDialogHeader>
                           <AlertDialogTitle>
                             <span>¿Marcar medidor como averiado?</span>
@@ -362,11 +369,12 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                     </AlertDialog>
                     {puedeMarcarPagado && (
                       <button
-                        className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
                         onClick={() => openEstadoPagoDialog(info.row.original)}
                         title="Marcar como pagado"
                       >
-                        Marcar Pagado
+                        <span className="hidden sm:inline">Marcar Pagado</span>
+                        <span className="sm:hidden">Pagar</span>
                       </button>
                     )}
                   </>
@@ -379,14 +387,15 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button
-                          className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
+                          className="px-1.5 py-1 sm:px-2 sm:py-1 bg-green-600 text-white text-[9px] sm:text-xs rounded hover:bg-green-700 transition-colors w-auto whitespace-nowrap"
                           disabled={updateEstadoMutation.isPending}
                           title="Marcar como reparado"
                         >
-                          Reparar
+                          <span className="hidden sm:inline">Reparar</span>
+                          <span className="sm:hidden">Reparar</span>
                         </button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="w-[90vw] max-w-lg mx-auto p-4 sm:p-6 rounded-xl">
                         <AlertDialogHeader>
                           <AlertDialogTitle>
                             <span>¿Marcar medidor como reparado?</span>
@@ -410,11 +419,12 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                     </AlertDialog>
                     {puedeMarcarPagado && (
                       <button
-                        className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
                         onClick={() => openEstadoPagoDialog(info.row.original)}
                         title="Marcar como pagado"
                       >
-                        Marcar Pagado
+                        <span className="hidden sm:inline">Marcar Pagado</span>
+                        <span className="sm:hidden">Pagar</span>
                       </button>
                     )}
                   </>
@@ -475,35 +485,40 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           <h2 className="text-2xl font-bold text-gray-900">Catálogo de Medidores</h2>
           <p className="text-sm text-gray-600 pb-4">Gestiona los medidores del inventario</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <label htmlFor='estado' className="text-sm font-medium text-gray-700">Estado:</label>
-            <select
-              id='estado'
-              value={estadoFilter}
-              onChange={(e) => setEstadoFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              <option value="Todos">Todos los medidores</option>
-              <option value="No instalado">No instalado</option>
-              <option value="Instalado">Instalado</option>
-              <option value="Averiado">Averiado</option>
-            </select>
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 items-stretch sm:items-center justify-between pb-2">
+          {/* Fila 1 en móvil: Filtros de Estado */}
+          <div className="flex flex-row items-center justify-between gap-2 w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <label htmlFor='estado' className="text-xs sm:text-sm font-medium text-gray-700">Estado:</label>
+              <select
+                id='estado'
+                value={estadoFilter}
+                onChange={(e) => setEstadoFilter(e.target.value)}
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+              >
+                <option value="Todos">Todos los medidores</option>
+                <option value="No instalado">No instalado</option>
+                <option value="Instalado">Instalado</option>
+                <option value="Averiado">Averiado</option>
+              </select>
+            </div>
           </div>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          
+          {/* Fila 2 en móvil: Búsqueda */}
+          <div className="w-full flex gap-2 sm:flex-1 sm:max-w-md ">
+            <div className="relative w-full">
+              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="text"
                 placeholder="Buscar medidores..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg flex items-center gap-2 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               <LuPlus className="w-4 h-4" />
               Nuevo Medidor
@@ -539,10 +554,10 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                                 }
                               }}
                               tabIndex={0}
-                              aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
+                              aria-label={`Ordenar por ${typeof header.column.columnDef.header === 'string' ? header.column.columnDef.header : header.id}`}
                             >
                               <span className="flex items-center gap-1">
-                                {header.column.columnDef.header as string}
+                                {flexRender(header.column.columnDef.header, header.getContext())}
                                 {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                 {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
                               </span>
@@ -550,8 +565,8 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                           );
                         }
                         return (
-                          <span className={index === 0 ? 'text-left' : 'text-center'}>
-                            {header.column.columnDef.header as string}
+                          <span className={index === 0 ? 'text-left flex items-center' : 'text-center flex justify-center items-center'}>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
                         );
                       })()}
@@ -570,26 +585,12 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
               ) : (
                 table.getRowModel().rows.map(row => (
                   <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors">
-                    {row.getVisibleCells().map((cell, index) => {
-                      let cellContent: React.ReactNode;
-
-                      if (cell.column.columnDef.cell) {
-                        if (typeof cell.column.columnDef.cell === 'function') {
-                          cellContent = cell.column.columnDef.cell(cell.getContext());
-                        } else {
-                          cellContent = cell.column.columnDef.cell;
-                        }
-                      } else {
-                        cellContent = cell.getValue() as React.ReactNode;
-                      }
-
-                      return (
-                        <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${index === 0 ? 'text-left' : 'text-center'
-                          }`}>
-                          {cellContent}
-                        </td>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell, index) => (
+                      <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-middle ${index === 0 ? 'text-left' : 'text-center'
+                        }`}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
                   </tr>
                 ))
               )}
@@ -597,63 +598,61 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           </table>
         </div>
 
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700">Filas por página:</span>
-                <select
-                  value={table.getState().pagination.pageSize}
-                  onChange={(e) => {
-                    table.setPageSize(Number(e.target.value));
-                  }}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {pageSizeOptions.map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      {pageSize}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Primera página"
-              >
-                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Página anterior"
-              >
-                <MdKeyboardArrowLeft className="w-4 h-4" />
-              </button>
-              <span className="text-sm text-gray-700">
-                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-              </span>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Página siguiente"
-              >
-                <MdKeyboardArrowRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Última página"
-              >
-                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+        <div className="bg-gray-50 px-3 sm:px-6 py-2 sm:py-3 border-t border-gray-200 flex flex-row items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+            <span className='text-[10px] sm:text-sm text-gray-700'>Filas por página:</span>
+            <select
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value));
+              }}
+              className="border border-gray-300 rounded-md px-1 sm:px-2 py-0.5 sm:py-1 text-[8px] sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+              {pageSizeOptions.map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-1 whitespace-nowrap">
+            <button
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Primera página"
+            >
+              <MdKeyboardDoubleArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            </button>
+            <button
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Página anterior"
+            >
+              <MdKeyboardArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            </button>
+            <span className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm whitespace-nowrap">
+              Pág. {table.getState().pagination.pageIndex + 1} de{' '}
+              {table.getPageCount()}
+            </span>
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Página siguiente"
+            >
+              <MdKeyboardArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            </button>
+            <button
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Última página"
+            >
+              <MdKeyboardDoubleArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            </button>
           </div>
         </div>
       </div>
@@ -694,7 +693,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
       )}
 
       <AlertDialog open={showEstadoPagoDialog} onOpenChange={setShowEstadoPagoDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[90vw] max-w-lg mx-auto p-4 sm:p-6 rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar cambio de estado de pago</AlertDialogTitle>
             <AlertDialogDescription>

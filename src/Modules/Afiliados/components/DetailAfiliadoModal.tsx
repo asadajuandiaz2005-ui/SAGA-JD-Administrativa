@@ -501,7 +501,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                     </h4>
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="flex items-start gap-3 p-4 bg-white rounded-lg border border-gray-100">
                                                     <div className="p-2 rounded-lg">
                                                         <LuInfo className="w-5 h-5 text-blue-600" />
@@ -525,11 +525,11 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 : medidor.Estado_Pago?.Nombre_Estado_Pago ?? 'Libre';
 
                                                             return (
-                                                                <div className="flex flex-wrap items-center gap-2 mt-1">
-                                                                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getEstadoTecnicoMedidorColor(estadoTecnico)}`}>
+                                                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                                    <span className={`inline-block px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium border ${getEstadoTecnicoMedidorColor(estadoTecnico)}`}>
                                                                         {estadoTecnico}
                                                                     </span>
-                                                                    <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getEstadoPagoMedidorColor(estadoPago)}`}>
+                                                                    <span className={`inline-block px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium border ${getEstadoPagoMedidorColor(estadoPago)}`}>
                                                                         {estadoPago}
                                                                     </span>
                                                                 </div>
@@ -542,13 +542,13 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                             {(medidor.Certificacion_Literal || medidor.Planos_Terreno || medidor.Escrituras_Terreno) && (
                                                 <div className="mt-3 pt-3 border-t border-gray-200">
                                                     <p className="text-xs font-medium text-gray-500 uppercase mb-2">Documentos del Terreno</p>
-                                                    <div className="flex flex-wrap gap-2">
+                                                    <div className="flex flex-col sm:flex-row flex-wrap gap-2">
                                                         {medidor.Certificacion_Literal && (
                                                             <a
                                                                 href={medidor.Certificacion_Literal}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium"
+                                                                className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
                                                                 <LuFileText className="w-4 h-4" />
                                                                 Ver Certificación
@@ -559,7 +559,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 href={medidor.Planos_Terreno}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium"
+                                                                className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
                                                                 <LuMap className="w-4 h-4" />
                                                                 Ver Planos
@@ -570,7 +570,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 href={medidor.Escrituras_Terreno}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium"
+                                                                className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
                                                                 <LuFileText className="w-4 h-4" />
                                                                 Ver Escrituras

@@ -191,60 +191,61 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
   const columns = useMemo(
     () => [
       columnHelper.accessor('Nombre_Material', {
-        header: 'Material',
+        header: () => <><span className="hidden sm:inline">Material</span><span className="sm:hidden text-[9px]">Material</span></>,
         cell: info => (
-          <div className="flex justify-center text-gray-600">
-            {info.getValue().length > 12
-              ? `${info.getValue().slice(0, 12)}...`
-              : info.getValue()}
+          <div 
+            className="flex justify-center text-[8px] sm:text-[13px] text-gray-900  truncate max-w-[70px] sm:max-w-[150px]" 
+            title={info.getValue()}
+          >
+            {info.getValue()}
           </div>
         ),
       }),
       columnHelper.accessor('Descripcion', {
-        header: 'Descripción',
+        header: () => <><span className="hidden sm:inline">Descripción</span><span className="sm:hidden text-[9px]">Desc.</span></>,
         cell: info => (
-          <div className="flex justify-center text-gray-600">
-            {info.getValue()
-              ? (info.getValue().length > 15
-                ? `${info.getValue().slice(0, 15)}...`
-                : info.getValue())
-              : 'Sin descripción'}
+          <div 
+            className="flex justify-center text-[8px] sm:text-[13px] text-gray-600 truncate max-w-[80px] sm:max-w-[200px]"
+            title={info.getValue() || 'Sin descripción'}
+          >
+            {info.getValue() || 'Sin descripción'}
           </div>
         ),
       }),
       columnHelper.accessor('Cantidad', {
-        header: 'Cantidad',
+        header: () => <><span className="hidden sm:inline">Cantidad</span><span className="sm:hidden text-[9px]">Cant.</span></>,
         cell: info => (
-          <div className={` flex justify-center ${info.getValue() <= 0 ? 'text-red-600' : 'text-green-600'}`}>
+          <div className={`flex justify-center text-[8px] sm:text-[13px] font-bold ${info.getValue() <= 0 ? 'text-red-600' : 'text-green-600'}`}>
             {info.getValue()}
           </div>
         ),
       }),
       columnHelper.accessor((row) => row.Unidad_Medicion?.Nombre_Unidad_Medicion, {
-        header: 'Unidad de medida',
+        id: 'U_Medida',
+        header: () => <><span className="hidden sm:inline">U. Medida</span><span className="sm:hidden text-[9px]">U. Med</span></>,
         cell: info => {
-          const unidad = info.getValue();
+          const unidad = info.getValue() || 'Sin unidad';
           return (
-            <div className="flex justify-center text-sm text-gray-600">
-              {unidad
-                ? (unidad.length > 8
-                  ? `${unidad.slice(0, 8)}...`
-                  : unidad)
-                : 'Sin unidad'}
+            <div 
+              className="flex justify-center text-[8px] sm:text-[13px] text-gray-600 truncate max-w-[50px] sm:max-w-[100px]"
+              title={unidad}
+            >
+              {unidad}
             </div>
           );
         },
       }),
       columnHelper.accessor('Precio_Unitario', {
-        header: 'Precio Unitario',
+        header: () => <><span className="hidden sm:inline">Precio Un.</span><span className="sm:hidden text-[9px]">Precio</span></>,
         cell: info => (
-          <div className="font-medium flex justify-center">
-            ₡{info.getValue().toLocaleString('es-CR', { minimumFractionDigits: 2 })}
+          <div className="text-[8px] sm:text-[13px] flex justify-center text-gray-900">
+            <span className="hidden sm:inline">₡{info.getValue().toLocaleString('es-CR', { minimumFractionDigits: 2 })}</span>
+            <span className="sm:hidden">₡{info.getValue().toLocaleString('es-CR', { maximumFractionDigits: 0 })}</span>
           </div>
         ),
       }),
       columnHelper.accessor('Estado_Material.Nombre_Estado_Material', {
-        header: 'Estado',
+        header: () => <><span className="hidden sm:inline">Estado</span><span className="sm:hidden text-[9px]">Estado</span></>,
         cell: info => {
           const estado = info.getValue();
           let colorClass = '';
@@ -261,29 +262,31 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
           
           return (
             <div className="flex justify-center">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>
-                {estado}
+              <span className={`px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[8px] sm:text-xs font-semibold whitespace-nowrap ${colorClass}`}>
+                {estado === 'Agotado y de baja' ? (
+                   <><span className="hidden sm:inline">Agotado y de baja</span><span className="sm:hidden">Agot. / Baja</span></>
+                ) : estado}
               </span>
             </div>
           );
         },
       }),
       columnHelper.accessor('Categorias', {
-        header: 'Categorías',
+        header: () => <><span className="hidden sm:inline">Categorías</span><span className="sm:hidden text-[9px]">Categorías</span></>,
         cell: info => {
           const categorias = info.getValue() || [];
           
           if (!categorias || categorias.length === 0) {
             return (
-              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+              <span className="px-1.5 py-0.5 sm:px-2.5 sm:py-1 bg-gray-100 text-gray-600 rounded-full text-[8px] sm:text-xs whitespace-nowrap">
                 Sin categoría
               </span>
             );
           }
           
           return (
-            <div className="flex gap-1 justify-center max-w-xs">
-              {categorias.slice(0, 2).map((cat: any, index: number) => {
+            <div className="flex gap-1 justify-center max-w-[60px] sm:max-w-xs flex-wrap">
+              {categorias.slice(0, 1).map((cat: any, index: number) => {
                 const categoria = cat.Categoria || cat;
                 const key = cat.Id_Material_Categoria || cat.Id_Categoria || index;
                 const nombreCategoria = categoria.Nombre_Categoria || 'N/A';
@@ -291,18 +294,16 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                 return (
                   <span 
                     key={key} 
-                    className="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200"
-                    title={nombreCategoria.length > 12 ? nombreCategoria : undefined}
+                    className="inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg text-[7px] sm:text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200 truncate max-w-[70px] sm:max-w-[100px]"
+                    title={nombreCategoria}
                   >
-                    {nombreCategoria.length > 12
-                      ? `${nombreCategoria.slice(0, 12)}...`
-                      : nombreCategoria}
+                    {nombreCategoria}
                   </span>
                 );
               })}
-              {categorias.length > 2 && (
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                  +{categorias.length - 2}
+              {categorias.length > 1 && (
+                <span className="px-1.5 py-0.5 sm:px-2.5 sm:py-1 bg-gray-100 text-gray-600 rounded-full text-[7px] sm:text-xs">
+                  +{categorias.length - 1}
                 </span>
               )}
             </div>
@@ -311,18 +312,18 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
       }),
       columnHelper.display({
         id: 'acciones',
-        header: 'Acciones',
+        header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[9px]">Acciones</span></>,
         cell: info => (
-          <div className="flex justify-center gap-1">
+          <div className="flex flex-row justify-center flex-nowrap gap-1 min-w-[50px] sm:min-w-[140px] overflow-visible">
             <button
-              className="px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+              className="px-1.5 py-1 sm:px-2 sm:py-1 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors w-auto whitespace-nowrap"
               onClick={() => handleViewDetail(info.row.original)}
               title="Ver detalles"
             >
               Ver
             </button>
             <button
-              className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+              className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
               onClick={() => handleEdit(info.row.original)}
               title="Editar"
             >
@@ -338,7 +339,7 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 w-auto whitespace-nowrap bg-red-600 text-white text-[7px] sm:text-xs rounded hover:bg-red-700 transition-colors"
                         disabled={updateEstadoMutation.isPending}
                         title="Dar de baja"
                       >
@@ -378,7 +379,7 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className={`px-2 py-1 text-white text-xs rounded transition-colors ${
+                        className={`px-1.5 py-1 sm:px-2 sm:py-1 text-[7px] sm:text-xs w-auto whitespace-nowrap text-white rounded transition-colors ${
                           cantidad === 0
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-green-600 hover:bg-green-700'
@@ -433,7 +434,7 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 w-auto whitespace-nowrap bg-red-600 text-white text-[7px] sm:text-xs rounded hover:bg-red-700 transition-colors"
                         disabled={updateEstadoMutation.isPending}
                         title="Dar de baja material agotado"
                       >
@@ -473,7 +474,7 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button
-                        className={`px-2 py-1 text-white text-xs rounded transition-colors ${
+                        className={`px-1.5 py-1 sm:px-2 sm:py-1 text-[7px] sm:text-xs w-auto whitespace-nowrap text-white rounded transition-colors ${
                           cantidad === 0
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-green-600 hover:bg-green-700'
@@ -597,7 +598,17 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
 
 
   const handleApplyFilters = (filters: MaterialFilterOptions) => {
-    setAppliedFilters(filters);
+    const cleanFilters = { ...filters };
+    
+    // Limpiar valores residuales de stock según el tipo seleccionado
+    if (cleanFilters.tipoFiltroStock === 'encima') cleanFilters.stockMaximo = undefined;
+    if (cleanFilters.tipoFiltroStock === 'debajo') cleanFilters.stockMinimo = undefined;
+    if (!cleanFilters.tipoFiltroStock) {
+      cleanFilters.stockMinimo = undefined;
+      cleanFilters.stockMaximo = undefined;
+    }
+
+    setAppliedFilters(cleanFilters);
     setPagination(prev => ({ ...prev, pageIndex: 0 }));
   };
 
@@ -621,64 +632,73 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
             <h2 className="text-2xl font-bold text-gray-900">Catálogo de Materiales</h2>
             <p className="text-sm text-gray-600 pb-4">Gestiona los materiales del inventario</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <label htmlFor="estado-filter-select" className="text-sm font-medium text-gray-700">Estado:</label>
-            <select
-              id="estado-filter-select"
-              value={estadoFilter}
-              onChange={(e) => setEstadoFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              <option value="Todos">Todos los estados</option>
-              <option value="Disponible">Disponible</option>
-              <option value="Agotado">Agotado</option>
-              <option value="De baja">De baja</option>
-              <option value="Agotado y de baja">Agotado y de baja</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-              <button
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between pb-2">
+          {/* Fila 1 en móvil / Izquierda en desktop */}
+          <div className="flex flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+            <div className="flex items-center gap-2 flex-1 sm:w-auto">
+              <label htmlFor="estado-filter-select" className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">Estado:</label>
+              <select
+                id="estado-filter-select"
+                value={estadoFilter}
+                onChange={(e) => setEstadoFilter(e.target.value)}
+                className="flex-1 sm:flex-none px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm w-full sm:w-auto"
+              >
+                <option value="Todos">Todos los estados</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Agotado">Agotado</option>
+                <option value="De baja">De baja</option>
+                <option value="Agotado y De baja">Agotado y de baja</option>
+              </select>
+            </div>
+            
+            <button
               onClick={() => setShowFilterModal(true)}
-              className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${
+              className={` sm:flex-none justify-center whitespace-nowrap px-2 py-1.5 sm:px-4 sm:py-2 border rounded-md flex items-center gap-1 sm:gap-2 transition-colors text-xs sm:text-sm ${
                 activeFiltersCount > 0
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
                   : 'border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <LuFilter className="w-4 h-4" />
+              <LuFilter className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               Filtros
               {activeFiltersCount > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-blue-500 text-white text-[10px] sm:text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
-            <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Buscar materiales..."
-                value={globalFilter ?? ''}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
+          </div>
+    <div className="flex w-full flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-end">
+      {/* Fila 2 en móvil / Centro en desktop */}
+          <div className="relative w-full sm:flex-1 sm:max-w-md">
+            <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <input
+              type="text"
+              placeholder="Buscar materiales..."
+              value={globalFilter ?? ''}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="w-full pl-8 pr-2 py-1.5 sm:pl-10 sm:pr-4 sm:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xs sm:text-sm"
+            />
+          </div>
 
+          {/* Fila 3 en móvil / Derecha en desktop */}
+          <div className="flex flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              className="flex-1 sm:flex-none justify-center bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap px-2 py-1.5 sm:px-4 sm:py-2 rounded-md flex items-center gap-1 sm:gap-2 transition-colors text-xs sm:text-sm"
             >
-              <LuPlus className="w-4 h-4" />
-              Nuevo Material
+              <LuPlus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              Nuevo
             </button>
             <button
               onClick={() => navigate({ to: '/Inventario/Materiales/Medidores' })}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+              className="flex-1 sm:flex-none justify-center whitespace-nowrap px-2 py-1.5 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-xs sm:text-sm"
             >
               Medidores
             </button>
           </div>
+      </div>      
+          
         </div>
       </div>
 
@@ -733,16 +753,15 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
           </table>
         </div>
 
-        <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-
-          <div className="flex items-center gap-2">
-            <span className='text-sm text-gray-700'>Filas por página</span>
+        <div className="bg-gray-50 px-3 sm:px-6 py-2 sm:py-3 border-t border-gray-200 flex flex-row items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+            <span className='text-[10px] sm:text-sm text-gray-700'>Filas por página:</span>
             <select
               value={table.getState().pagination.pageSize}
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-1 sm:px-2 py-0.5 sm:py-1 text-[8px] sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               {pageSizeOptions.map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -752,42 +771,42 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
             </select>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 whitespace-nowrap">
             <button
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Primera página"
             >
-              <MdKeyboardDoubleArrowLeft />
+              <MdKeyboardDoubleArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Página anterior"
             >
-              <MdKeyboardArrowLeft />
+              <MdKeyboardArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
-            <span className="px-2 py-1 text-sm">
-              Página {table.getState().pagination.pageIndex + 1} de{' '}
+            <span className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm whitespace-nowrap">
+              Pág. {table.getState().pagination.pageIndex + 1} de{' '}
               {table.getPageCount()}
             </span>
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Página siguiente"
             >
-              <MdKeyboardArrowRight />
+              <MdKeyboardArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Última página"
             >
-              <MdKeyboardDoubleArrowRight />
+              <MdKeyboardDoubleArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>

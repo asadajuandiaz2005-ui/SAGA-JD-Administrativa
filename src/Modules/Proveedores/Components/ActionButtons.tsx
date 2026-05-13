@@ -85,13 +85,13 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ proveedor, tipoProveedor 
     const isChangingStatus = tipoProveedor === 'Físico' ? isChangingStatusFisico : isChangingStatusJuridico;
 
     return (
-        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-center gap-1 sm:gap-2" onClick={(e) => e.stopPropagation()}>
             {/* Botón de Ver */}
             {hasViewPermission && (
                 <button
                     type="button"
                     onClick={() => setShowDetailModal(true)}
-                    className="px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                    className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors whitespace-nowrap"
                     title="Ver proveedor"
                 >
                     Ver
@@ -103,7 +103,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ proveedor, tipoProveedor 
                 <button
                     type="button"
                     onClick={handleEdit}
-                    className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                    className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
                     title="Editar proveedor"
                 >
                     Editar
@@ -117,7 +117,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({ proveedor, tipoProveedor 
                     <button
                         type="button"
                         onClick={(e) => e.stopPropagation()}
-                        className={`px-2 py-1 text-xs rounded transition-colors ${
+                        className={`px-1 sm:px-4 py-0.5 sm:py-1.5 text-[7px] sm:text-xs rounded transition-colors whitespace-nowrap ${
                             isActiveProveedor(proveedor.Estado_Proveedor)
                                 ? 'bg-red-600 hover:bg-red-700 text-white'
                                 : 'bg-green-600 hover:bg-green-700 text-white'

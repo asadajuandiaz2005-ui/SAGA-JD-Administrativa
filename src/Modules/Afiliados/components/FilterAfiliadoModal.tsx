@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LuX, LuFilter } from 'react-icons/lu';
 
 export interface FilterOptions {
-    estado: 'activo' | 'inactivo' | 'pendiente' | '';
+    estado: 'activo' | 'inactivo' | 'En Espera' | '';
     tipoPersona: 'Físico' | 'Jurídico' | '';
     tipoAfiliado: 'Abonado' | 'Asociado' | '';
     busquedaAvanzada: string;
@@ -96,13 +96,13 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApplyFilte
                         <select
                             id="estado"
                             value={filters.estado || ''}
-                            onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value as 'activo' | 'inactivo' | 'pendiente' | '' }))}
+                            onChange={(e) => setFilters(prev => ({ ...prev, estado: e.target.value as 'activo' | 'inactivo' | 'En Espera' | '' }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                             <option value="">Todos</option>
                             <option value="activo">Activo</option>
                             <option value="inactivo">Inactivo</option>
-                            <option value="pendiente">Pendiente</option>
+                            <option value="En Espera">En Espera</option>
                         </select>
                     </div>
                 </div>

@@ -153,15 +153,15 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
 
   return (
     <div className="fixed inset-0 bg-opacity-10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-lg mx-4 max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Crear Nuevo Material</h2>
+      <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-lg mx-4 max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 shrink-0">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Crear Nuevo Material</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <LuX className="w-6 h-6" />
+            <LuX className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100 max-h-[calc(90vh-140px)]">
+        <div className="p-4 sm:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100 flex-1">
           <form id="create-material-form" onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="nombre-material" className="block text-sm font-medium text-gray-700 mb-1">
@@ -369,10 +369,10 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                   Nueva
                 </button>
               </div>
-              <div className="max-h-32 overflow-y-auto border border-gray-300 rounded-lg p-2 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
+              <div className="max-h-40 sm:max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-2 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
                 {categories.length === 0 ? (
                   <div className="text-center py-4 text-gray-500 text-sm">
-                    No hay categor├¡as disponibles. Crea una nueva categor├¡a.
+                    No hay categorías disponibles. Crea una nueva categoría.
                   </div>
                 ) : (
                   categories.map((categoria: CategoriaMaterial) => (
@@ -381,9 +381,9 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                         type="checkbox"
                         checked={(formData.IDS_Categorias ?? []).includes(categoria.Id_Categoria)}
                         onChange={(e) => handleCategoryChange(categoria.Id_Categoria, e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
                       />
-                      <span className="text-sm text-gray-700">{categoria.Nombre_Categoria}</span>
+                      <span className="text-sm text-gray-700 leading-tight">{categoria.Nombre_Categoria}</span>
                     </label>
                   ))
                 )}
@@ -394,7 +394,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
             </div>
           </form>
         </div>
-        <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+        <div className="flex justify-end gap-3 p-4 sm:p-6 border-t border-gray-200 bg-gray-50 shrink-0">
           <button
             form='create-material-form'
             type="submit"

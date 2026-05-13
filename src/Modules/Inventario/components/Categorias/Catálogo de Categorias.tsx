@@ -6,6 +6,7 @@ import {
   getSortedRowModel,
   getPaginationRowModel,
   createColumnHelper,
+  flexRender,
 } from '@tanstack/react-table';
 import { LuPlus, LuSearch } from 'react-icons/lu';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowLeft,
@@ -81,10 +82,11 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
   
   const columns = useMemo(() => [
     columnHelper.accessor('Nombre_Categoria', {
-      header: 'Nombre',
+      id: 'nombre',
+      header: () => <><span className="hidden sm:inline">Nombre</span><span className="sm:hidden text-[9px]">Nombre</span></>,
       cell: info => (
         <button 
-          className="font-medium transition-colors text-left w-full"
+          className="font-medium transition-colors text-left w-full text-[10px] sm:text-[13px]"
           onClick={() => handleViewDetail(info.row.original)}
         >
           {info.getValue()}
@@ -92,15 +94,20 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
       ),
     }),
     columnHelper.accessor('Descripcion_Categoria', {
-      header: 'Descripción',
+      id: 'descripcion',
+      header: () => <><span className="hidden sm:inline">Descripción</span><span className="sm:hidden text-[9px]">Descripción</span></>,
       cell: info => (
-        <div className="text-gray-600 text-left max-w-xs truncate">
-          {info.getValue() || 'Sin descripción'}
+        <div className="flex justify-center">
+          <span className="text-gray-600 text-left max-w-[80px] sm:max-w-xs truncate text-[10px] sm:text-[13px]">
+            {info.getValue() || 'Sin descripción'}
+          </span>
         </div>
+        
       ),
     }),
     columnHelper.accessor('Estado_Categoria.Nombre_Estado_Categoria', {
-      header: 'Estado',
+      id: 'estado',
+      header: () => <><span className="hidden sm:inline">Estado</span><span className="sm:hidden text-[9px]">Estado</span></>,
       cell: info => {
         const estado = info.getValue() || 'Activa';
         const isActiva = estado === 'Activa';
@@ -109,8 +116,8 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
           : 'bg-slate-200 text-slate-700 border border-slate-400';
         
         return (
-          <div className="flex justify-start">
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full ${colorClass}`}>
+          <div className="flex justify-center">
+            <span className={`px-1.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-xs font-semibold rounded-full whitespace-nowrap ${colorClass}`}>
               {estado}
             </span>
           </div>
@@ -119,18 +126,18 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
     }),
     columnHelper.display({
       id: 'acciones',
-      header: 'Acciones',
+      header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[9px]">Acciones</span></>,
       cell: info => (
-        <div className="flex justify-center gap-1">
+        <div className="flex flex-row justify-center flex-nowrap gap-1 min-w-[50px] sm:min-w-[140px] overflow-visible">
           <button
-            className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+            className="px-1.5 py-1 sm:px-2 sm:py-1 bg-gray-600 text-white text-[9px] sm:text-xs rounded hover:bg-gray-700 transition-colors w-auto whitespace-nowrap"
             onClick={() => handleViewDetail(info.row.original)}
             title="Ver detalles"
           >
             Ver
           </button>
           <button
-            className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+            className="px-1.5 py-1 sm:px-2 sm:py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-auto whitespace-nowrap"
             onClick={() => handleEdit(info.row.original)}
             title="Editar"
           >
@@ -140,14 +147,14 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <button
-                    className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                    className="px-1.5 py-1 sm:px-2 sm:py-1 bg-red-600 text-white text-[9px] sm:text-xs rounded hover:bg-red-700 transition-colors w-auto whitespace-nowrap"
                     disabled={updateEstadoMutation.isPending}
                     title="Desactivar"
                   >
                     Desactivar
                   </button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="w-[90vw] max-w-lg mx-auto p-4 sm:p-6 rounded-xl">
                   <AlertDialogHeader>
                     <AlertDialogTitle>
                       <span>¿Desactivar categoría?</span>
@@ -175,14 +182,14 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <button
-                    className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
+                    className="px-1.5 py-1 sm:px-2 sm:py-1 bg-green-600 text-white text-[9px] sm:text-xs rounded hover:bg-green-700 transition-colors w-auto whitespace-nowrap"
                     disabled={updateEstadoMutation.isPending}
                     title="Activar"
                   >
                     Activar
                   </button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="w-[90vw] max-w-lg mx-auto p-4 sm:p-6 rounded-xl">
                   <AlertDialogHeader>
                     <AlertDialogTitle>
                       <span>¿Activar categoría?</span>
@@ -280,34 +287,39 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
             <h2 className="text-2xl font-bold text-gray-900">Catálogo de Categorías</h2>
             <p className="text-sm text-gray-600 pb-4">Gestiona las categorías de los materiales</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <label htmlFor='estado' className="text-sm font-medium text-gray-700">Estado:</label>
-            <select
-              id='estado'
-              value={estadoFilter}
-              onChange={(e) => setEstadoFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              <option value="Todas">Todas las categorías</option>
-              <option value="Activa">Activas</option>
-              <option value="Inactiva">Inactivas</option>
-            </select>
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 items-stretch sm:items-center justify-between pb-2">
+          {/* Fila 1 en móvil: Filtros de Estado */}
+          <div className="flex flex-row items-center justify-between gap-2 w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <label htmlFor='estado' className="text-xs sm:text-sm font-medium text-gray-700">Estado:</label>
+              <select
+                id='estado'
+                value={estadoFilter}
+                onChange={(e) => setEstadoFilter(e.target.value)}
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+              >
+                <option value="Todas">Todas las categorías</option>
+                <option value="Activa">Activas</option>
+                <option value="Inactiva">Inactivas</option>
+              </select>
+            </div>
           </div>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
-            <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          
+          {/* Fila 2 en móvil: Búsqueda */}
+          <div className="w-full flex gap-2 sm:flex-1 sm:max-w-md order-2 sm:order-none">
+            <div className="relative w-full">
+              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="text"
                 placeholder="Buscar categorías..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg flex items-center gap-2 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
               <LuPlus className="w-4 h-4" />
               Nueva Categoría
@@ -331,35 +343,34 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
                         if (header.isPlaceholder) {
                           return null;
                         }
-                        if (header.column.getCanSort()) {
-                          return (
-                            <button
-                              type="button"
-                              className={`cursor-pointer select-none flex items-center gap-2 bg-transparent border-none p-0 ${
-                                index === 0 ? 'justify-start' : 'justify-center'
-                              }`}
-                              onClick={header.column.getToggleSortingHandler()}
-                              onKeyDown={e => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault();
-                                  header.column.getToggleSortingHandler()?.(e);
-                                }
-                              }}
-                              tabIndex={0}
-                              aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
-                            >
-                              <span className="flex items-center gap-1">
-                                {header.column.columnDef.header as string}
+                        return (
+                          <div
+                            className={`flex items-center gap-2 ${
+                              header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+                            } ${index === 0 ? 'justify-start' : 'justify-center'}`}
+                            onClick={header.column.getToggleSortingHandler()}
+                            onKeyDown={e => {
+                              if (header.column.getCanSort() && (e.key === 'Enter' || e.key === ' ')) {
+                                e.preventDefault();
+                                header.column.getToggleSortingHandler()?.(e);
+                              }
+                            }}
+                            tabIndex={header.column.getCanSort() ? 0 : undefined}
+                            aria-label={
+                              header.column.getCanSort() && typeof header.column.columnDef.header === 'string'
+                                ? `Ordenar por ${header.column.columnDef.header}`
+                                : undefined
+                            }
+                          >
+                            <span className="flex items-center gap-1">
+                                {flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
                                 {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                 {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
-                              </span>
-                            </button>
-                          );
-                        }
-                        return (
-                          <span className={index === 0 ? 'text-left' : 'text-center'}>
-                            {header.column.columnDef.header as string}
-                          </span>
+                            </span>
+                          </div>
                         );
                       })()}
                     </th>
@@ -378,23 +389,11 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
                 table.getRowModel().rows.map(row => (
                   <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors">
                     {row.getVisibleCells().map((cell, index) => {
-                      let cellContent: React.ReactNode;
-                      
-                      if (cell.column.columnDef.cell) {
-                        if (typeof cell.column.columnDef.cell === 'function') {
-                          cellContent = cell.column.columnDef.cell(cell.getContext());
-                        } else {
-                          cellContent = cell.column.columnDef.cell;
-                        }
-                      } else {
-                        cellContent = cell.getValue() as React.ReactNode;
-                      }
-                      
                       return (
                         <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${
                           index === 0 ? 'text-left' : 'text-center'
                         }`}>
-                          {cellContent}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       );
                     })}
@@ -406,18 +405,18 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
         </div>
 
   
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <div className="flex items-center justify-between">
+         <div className="px-2 sm:px-4 md:px-6 py-2 md:py-3 bg-gray-50 border-t border-gray-200">
+          <div className="flex flex-row items-center justify-between w-full gap-2">
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700">Filas por página:</span>
+            <div className="flex items-center gap-2 sm:gap-4 w-auto justify-start">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 sm:inline">Filas por página:</span>
                 <select
                   value={table.getState().pagination.pageSize}
                   onChange={(e) => {
                     table.setPageSize(Number(e.target.value));
                   }}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs md:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {pageSizeOptions.map((pageSize) => (
                     <option key={pageSize} value={pageSize}>
@@ -427,41 +426,41 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
                 </select>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end gap-1 w-auto">
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Primera página"
               >
-                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
+                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página anterior"
               >
-                <MdKeyboardArrowLeft className="w-4 h-4" />
+                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
-              <span className="text-sm text-gray-700">
-                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+              <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
+                {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
               </span>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página siguiente"
               >
-                <MdKeyboardArrowRight className="w-4 h-4" />
+                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Última página"
               >
-                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
+                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>

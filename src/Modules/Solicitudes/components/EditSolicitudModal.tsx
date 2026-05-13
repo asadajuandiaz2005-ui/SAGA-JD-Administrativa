@@ -462,19 +462,19 @@ const EditSolicitudModal: React.FC<EditSolicitudModalProps> = ({ isOpen, onClose
                 </div>
 
                 {/* Botones de acción - Fuera del form */}
-                <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
+                <div className="flex justify-end gap-2 sm:gap-3 p-4 sm:p-6 border-t bg-gray-50">
                     <button
                         type="submit"
                         form="edit-solicitud-form"
                         disabled={isSaving}
-                        className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         {isSaving ? 'Actualizando...' : 'Actualizar Solicitud'}
                     </button>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                         Cancelar
                     </button>

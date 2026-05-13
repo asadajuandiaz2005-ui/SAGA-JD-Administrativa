@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { LuSearch, LuFilter } from 'react-icons/lu';
+import { useAuth } from '@/Modules/Auth/Context/AuthContext';
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -28,6 +29,7 @@ const pageSizeOptions = [5, 10, 15, 25, 50];
 
 const CatálogoAuditorias = () => {
   const { data: auditorias = [], isLoading } = useGetAllAuditorias();
+  const { user: currentUser } = useAuth();
 
   const [globalFilter, setGlobalFilter] = useState('');
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -73,9 +75,22 @@ const CatálogoAuditorias = () => {
       );
     }
 
+    // Filtro por usuario específico
+    if (appliedFilters.por_usuario) {
+      filtered = filtered.filter(
+        (auditoria) => auditoria.Usuario?.Id_Usuario === appliedFilters.por_usuario
+      );
+    }
+
+    // Filtro mis auditorías
+    if (appliedFilters.mis_auditorias && currentUser) {
+      filtered = filtered.filter(
+        (auditoria) => auditoria.Usuario?.Id_Usuario === currentUser.Id_Usuario
+      );
+    }
 
     return filtered;
-  }, [auditorias, appliedFilters]);
+  }, [auditorias, appliedFilters, currentUser]);
 
   // Definición de columnas (mantenido igual)
   const columns = [
@@ -102,9 +117,9 @@ const CatálogoAuditorias = () => {
           }
         };
         return (
-          <div className="flex justify-start">
+          <div className="flex justify-center sm:justify-start">
             <span
-              className={`inline-block px-2 py-1 text-xs font-semibold rounded-full border ${getAccionColor(
+              className={`inline-block px-1 py-[2px] sm:px-2 sm:py-1 text-[8px] sm:text-xs font-semibold rounded-full border whitespace-nowrap leading-none ${getAccionColor(
                 accion
               )}`}
             >
@@ -115,24 +130,31 @@ const CatálogoAuditorias = () => {
       },
     }),
     columnHelper.accessor('Registro_Afectado', {
-      header: 'Registro Afectado',
-      cell: (info) => (
-        <div className="flex justify-between">
-          <span className="font-medium text-sm ">
-            {info.getValue().length > 30
-              ? `${info.getValue().slice(0, 30)}...`
-              : info.getValue()}
-          </span>
-        </div>
-      ),
+      header: 'Registro',
+      cell: (info) => {
+        const val = info.getValue() || '';
+        const mobileText = val.length > 15 ? val.substring(0, 15) + '...' : val;
+        const desktopText = val.length > 40 ? val.substring(0, 40) + '...' : val;
+        
+        return (
+          <div className="flex justify-start w-full">
+            <span className="font-medium text-[9px] sm:text-xs md:text-sm block sm:hidden" title={val}>
+              {mobileText}
+            </span>
+            <span className="font-medium text-[9px] sm:text-xs md:text-sm hidden sm:block" title={val}>
+              {desktopText}
+            </span>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor('Usuario', {
       header: 'Usuario',
       cell: (info) => {
         const usuario = info.getValue();
         return (
-          <div className="flex justify-start">
-            <span className="font-medium text-gray-900 text-sm">
+          <div className="flex justify-center sm:justify-start truncate w-full">
+            <span className="font-medium text-gray-900 text-[9px] sm:text-xs md:text-sm truncate" title={usuario?.Nombre_Usuario || 'Desconocido'}>
               {usuario?.Nombre_Usuario || 'Desconocido'}
             </span>
           </div>
@@ -146,11 +168,11 @@ const CatálogoAuditorias = () => {
         if (!fecha) return <span className="text-gray-400">-</span>;
         const date = new Date(fecha);
         return (
-          <div className="flex items-start gap-2 justify-start text-xs">
-            <span className="text-gray-900 font-medium">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-2 justify-center sm:justify-start text-[8px] sm:text-xs text-center sm:text-left">
+            <span className="text-gray-900 font-medium whitespace-nowrap">
               {date.toLocaleDateString('es-CR')}
             </span>
-            <span className="font-medium text-gray-500">
+            <span className="font-medium text-gray-500 whitespace-nowrap">
               {date.toLocaleTimeString('es-CR', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -167,7 +189,7 @@ const CatálogoAuditorias = () => {
         <div className="flex justify-center">
         <button
           onClick={() => handleViewDetail(info.row.original)}
-          className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+          className="px-1.5 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[8px] sm:text-xs rounded hover:bg-gray-700 transition-colors whitespace-nowrap"
           title="Ver Detalle"
         >
           Ver
@@ -210,12 +232,12 @@ const CatálogoAuditorias = () => {
   const renderAuditoriasView = () => (
     <div className="flex flex-col bg-white">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-4 sm:p-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-lg sm:text-xlg md:text-2xl font-bold text-gray-900">
             Auditoría del Sistema
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-[10px] sm:text-xs md:text-sm text-gray-600 mt-1">
             Registro de todas las acciones realizadas en el sistema
           </p>
         </div>
@@ -223,34 +245,34 @@ const CatálogoAuditorias = () => {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="p-4 flex flex-col md:flex-row md:items-center md:justify-end gap-4">
+      <div className="p-2 sm:p-4 flex flex-row items-center justify-between md:justify-end gap-2 sm:gap-4">
 
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center'>
           <button
               onClick={() => setShowFilterModal(true)}
-              className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${
+              className={`px-2 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-sm border rounded-md flex items-center gap-1 sm:gap-2 transition-colors ${
                  Object.values(appliedFilters).filter(Boolean).length > 0
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
                   : 'border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <LuFilter className="w-4 h-4" />
+              <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
               Filtros
               {Object.values(appliedFilters).filter(Boolean).length > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-blue-500 text-white text-[9px] sm:text-xs rounded-full w-3.5 h-3.5 sm:w-5 sm:h-5 flex items-center justify-center">
                   {Object.values(appliedFilters).filter(Boolean).length}
                 </span>
               )}
             </button>
         </div>
-         <div className="relative flex-1 max-w-md">
-          <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+         <div className="relative flex-1 max-w-md w-full">
+          <LuSearch className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar por módulo, acción, registro o usuario..."
+            placeholder="Buscar..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
+            className="w-full pl-6 sm:pl-10 pr-2 sm:pr-4 py-1 sm:py-2 border border-gray-300 rounded-lg text-[10px] sm:text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
           />
         </div>
       </div>
@@ -260,11 +282,11 @@ const CatálogoAuditorias = () => {
           <table className="min-w-full table-auto">
             <thead className="bg-sky-50">
               {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
+                <tr key={headerGroup.id} className="text-left text-[9px] sm:text-xs md:text-sm text-sky-700">
                   {headerGroup.headers.map((header, index) => (
-                    <th key={header.id} className={`px-2 sm:px-4 py-3 font-medium border-b border-sky-100 ${
-                      index === 0 ? 'text-left' : 'text-center'
-                    }`}>
+                    <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${
+                      index === 0 ? 'text-left pl-3 sm:pl-4' : 'text-center'
+                    } ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                       {(() => {
                         if (header.isPlaceholder) {
                           return null;
@@ -329,9 +351,9 @@ const CatálogoAuditorias = () => {
                       }
                       
                       return (
-                        <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${
-                          index === 0 ? 'text-left' : 'text-center'
-                        }`}>
+                        <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[9px] sm:text-xs md:text-sm text-slate-700 align-middle ${
+                          index === 0 ? 'text-left pl-3 sm:pl-4' : 'text-center'
+                        } ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''} max-w-[60px] sm:max-w-none truncate`}>
                           {cellContent}
                         </td>
                       );
@@ -344,18 +366,18 @@ const CatálogoAuditorias = () => {
         </div>
 
   
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <div className="flex items-center justify-between">
+        <div className="px-2 sm:px-4 md:px-6 py-2 md:py-3 bg-gray-50 border-t border-gray-200">
+          <div className="flex flex-row items-center justify-between w-full gap-2">
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700">Filas por página:</span>
+            <div className="flex items-center gap-2 sm:gap-4 w-auto justify-start">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 sm:inline">Filas por página:</span>
                 <select
                   value={table.getState().pagination.pageSize}
                   onChange={(e) => {
                     table.setPageSize(Number(e.target.value));
                   }}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs md:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {pageSizeOptions.map((pageSize) => (
                     <option key={pageSize} value={pageSize}>
@@ -365,41 +387,41 @@ const CatálogoAuditorias = () => {
                 </select>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end gap-1 w-auto">
               <button
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Primera página"
               >
-                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
+                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página anterior"
               >
-                <MdKeyboardArrowLeft className="w-4 h-4" />
+                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
-              <span className="text-sm text-gray-700">
-                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+              <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
+                {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
               </span>
               <button
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página siguiente"
               >
-                <MdKeyboardArrowRight className="w-4 h-4" />
+                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Última página"
               >
-                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
+                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>

@@ -225,7 +225,7 @@ export default function ImagenFormEdit({ onClose, refetch, imagen }: ImagenFormE
                   <span>¿Guardar cambios?</span>
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  <span>¿Estás seguro de que deseas actualizar la imagen "{nombre.length > 30 ? `${nombre.slice(0, 30)}...` : nombre}"?</span>
+                  <span>¿Estás seguro de que deseas actualizar la imagen "{nombre.length > 25 ? `${nombre.slice(0, 25)}...` : nombre}"?</span>
                   <br />
                 </AlertDialogDescription>
               </AlertDialogHeader>

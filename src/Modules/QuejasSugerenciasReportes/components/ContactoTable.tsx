@@ -1,10 +1,9 @@
 import ResponderModal from './ResponderModal';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -21,7 +20,7 @@ import {
   MdKeyboardDoubleArrowRight
 } from 'react-icons/md';
 
-import { useQuejas, useQuejasArchivadas, useSugerencias, useSugerenciasArchivadas, useReportes, useReportesArchivados, useUpdateSugerenciaEstado, useUpdateQuejaEstado, useUpdateReporteEstado } from '../hook/HookContacto';
+import { useQuejas, useSugerencias, useReportes, useUpdateSugerenciaEstado, useUpdateQuejaEstado, useUpdateReporteEstado, useQuejasArchivadas, useSugerenciasArchivadas, useReportesArchivados } from '../hook/HookContacto';
 import type { Queja } from '../models/Quejas';
 import type { Sugerencia } from '../models/Sugerencias';
 import type { Reporte } from '../models/Reportes';
@@ -31,6 +30,7 @@ import ContactoDetailModal from './ContactoDetailModal';
 import { renderTipoCell, renderPersonaCell, renderMensajeCell, renderEstadoCell, renderFechaCell, renderAccionesCell } from '../helper/Render';
 import { useUserPermissions } from '@/Modules/Auth/Hooks/PermissionHook';
 import { useAlerts } from '@/Modules/Global/context/AlertContext';
+import { AlertDialog, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogAction, AlertDialogCancel } from "@/Modules/Global/components/Sidebar/ui/alert-dialog";
 
 
 
@@ -40,6 +40,8 @@ const ContactoTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [selectedItem, setSelectedItem] = useState<ContactoItem | null>(null);
+  const [itemToArchive, setItemToArchive] = useState<ContactoItem | null>(null);
+  const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isResponderModalOpen, setIsResponderModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -51,14 +53,17 @@ const ContactoTable = () => {
     pageIndex: 0,
   });
 
-  const { data: quejas = [], isLoading: loadingQuejas, refetch: refetchQuejas } = useQuejas();
-  const { data: sugerencias = [], isLoading: loadingSugerencias, refetch: refetchSugerencias } = useSugerencias();
-  const { data: reportes = [], isLoading: loadingReportes, refetch: refetchReportes } = useReportes();
+  const estadoFiltro = appliedFilters.estado === 'Archivado' ? undefined : appliedFilters.estado;
+
+  const { data: quejas = [], isLoading: loadingQuejas } = useQuejas(estadoFiltro);
+  const { data: sugerencias = [], isLoading: loadingSugerencias } = useSugerencias(estadoFiltro);
+  const { data: reportes = [], isLoading: loadingReportes } = useReportes(estadoFiltro);
   const shouldIncludeArchived = useMemo(() => {
     const estadoArchivado = appliedFilters.estado === 'Archivado';
+    const todosLosEstados = !appliedFilters.estado || (appliedFilters.estado as string) === 'Todos';
     const busquedaArchivado = globalFilter.trim().toLowerCase().includes('archiv');
 
-    return estadoArchivado || busquedaArchivado;
+    return estadoArchivado || todosLosEstados || busquedaArchivado;
   }, [appliedFilters.estado, globalFilter]);
   const { data: quejasArchivadas = [], isLoading: loadingQuejasArchivadas } = useQuejasArchivadas(shouldIncludeArchived);
   const { data: sugerenciasArchivadas = [], isLoading: loadingSugerenciasArchivadas } = useSugerenciasArchivadas(shouldIncludeArchived);
@@ -75,52 +80,74 @@ const ContactoTable = () => {
 
   const isLoading = loadingQuejas || loadingSugerencias || loadingReportes || loadingQuejasArchivadas || loadingSugerenciasArchivadas || loadingReportesArchivados;
 
-  useEffect(() => {
-    refetchQuejas();
-    refetchSugerencias();
-    refetchReportes();
-  }, [refetchQuejas, refetchSugerencias, refetchReportes]);
-
   // Unificar todos los datos en una sola estructura
   const unifiedData = useMemo((): ContactoItem[] => {
     const data: ContactoItem[] = [];
 
-    const mapQueja = (queja: Queja): ContactoItem => ({
-      id: queja.Id_Queja,
-      tipo: 'Queja',
-      nombre: queja.Nombre,
-      primerApellido: queja.Primer_Apellido,
-      segundoApellido: queja.Segundo_Apellido,
-      mensaje: queja.Descripcion,
-      fechaCreacion: queja.Fecha_Queja,
-      correo: queja.Correo,
-      estado: queja.Estado.Estado_Queja,
-      adjunto: queja.Adjunto || null,
-    });
+    const mapQueja = (queja: Queja): ContactoItem => {
+      const nombreCompleto = [queja.Nombre, queja.Primer_Apellido, queja.Segundo_Apellido].filter(Boolean).join(' ');
+      const strSearch = [
+        'Queja', nombreCompleto, queja.Descripcion, queja.Correo, queja.Estado.Estado_Queja
+      ].filter(Boolean).join(' ').toLowerCase();
 
-    const mapSugerencia = (sugerencia: Sugerencia): ContactoItem => ({
-      id: sugerencia.Id_Sugerencia,
-      tipo: 'Sugerencia',
-      mensaje: sugerencia.Mensaje,
-      fechaCreacion: sugerencia.Fecha_Sugerencia,
-      correo: sugerencia.Correo,
-      estado: sugerencia.Estado.Estado_Sugerencia,
-      adjunto: sugerencia.Adjunto || null,
-    });
+      return {
+        id: queja.Id_Queja,
+        tipo: 'Queja',
+        nombre: queja.Nombre,
+        primerApellido: queja.Primer_Apellido,
+        segundoApellido: queja.Segundo_Apellido,
+        mensaje: queja.Descripcion,
+        fechaCreacion: queja.Fecha_Queja,
+        correo: queja.Correo,
+        estado: queja.Estado.Estado_Queja,
+        adjunto: queja.Adjunto || null,
+        _timestamp: queja.Fecha_Queja ? new Date(queja.Fecha_Queja).getTime() : 0,
+        _nombreCompleto: nombreCompleto,
+        _searchString: strSearch,
+      };
+    };
 
-    const mapReporte = (reporte: Reporte): ContactoItem => ({
-      id: reporte.Id_Reporte,
-      tipo: 'Reporte',
-      nombre: reporte.Nombre,
-      primerApellido: reporte.Primer_Apellido,
-      segundoApellido: reporte.Segundo_Apellido,
-      ubicacion: reporte.Ubicacion,
-      mensaje: reporte.Descripcion || '',
-      fechaCreacion: reporte.Fecha_Reporte,
-      correo: reporte.Correo,
-      estado: reporte.Estado.Estado_Reporte,
-      adjunto: reporte.Adjunto || null,
-    });
+    const mapSugerencia = (sugerencia: Sugerencia): ContactoItem => {
+      const strSearch = [
+        'Sugerencia', sugerencia.Mensaje, sugerencia.Correo, sugerencia.Estado.Estado_Sugerencia
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      return {
+        id: sugerencia.Id_Sugerencia,
+        tipo: 'Sugerencia',
+        mensaje: sugerencia.Mensaje,
+        fechaCreacion: sugerencia.Fecha_Sugerencia,
+        correo: sugerencia.Correo,
+        estado: sugerencia.Estado.Estado_Sugerencia,
+        adjunto: sugerencia.Adjunto || null,
+        _timestamp: sugerencia.Fecha_Sugerencia ? new Date(sugerencia.Fecha_Sugerencia).getTime() : 0,
+        _searchString: strSearch,
+      };
+    };
+
+    const mapReporte = (reporte: Reporte): ContactoItem => {
+      const nombreCompleto = [reporte.Nombre, reporte.Primer_Apellido, reporte.Segundo_Apellido].filter(Boolean).join(' ');
+      const strSearch = [
+        'Reporte', nombreCompleto, reporte.Descripcion, reporte.Ubicacion, reporte.Correo, reporte.Estado.Estado_Reporte
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      return {
+        id: reporte.Id_Reporte,
+        tipo: 'Reporte',
+        nombre: reporte.Nombre,
+        primerApellido: reporte.Primer_Apellido,
+        segundoApellido: reporte.Segundo_Apellido,
+        ubicacion: reporte.Ubicacion,
+        mensaje: reporte.Descripcion || '',
+        fechaCreacion: reporte.Fecha_Reporte,
+        correo: reporte.Correo,
+        estado: reporte.Estado.Estado_Reporte,
+        adjunto: reporte.Adjunto || null,
+        _timestamp: reporte.Fecha_Reporte ? new Date(reporte.Fecha_Reporte).getTime() : 0,
+        _nombreCompleto: nombreCompleto,
+        _searchString: strSearch,
+      };
+    };
 
     quejas?.forEach((queja: Queja) => {
       if (queja.Estado.Estado_Queja !== 'Archivado') {
@@ -146,11 +173,7 @@ const ContactoTable = () => {
       reportesArchivados?.forEach((reporte: Reporte) => data.push(mapReporte(reporte)));
     }
 
-    return data.sort((a, b) => {
-      const dateA = new Date(a.fechaCreacion || 0);
-      const dateB = new Date(b.fechaCreacion || 0);
-      return dateB.getTime() - dateA.getTime();
-    });
+    return data.sort((a, b) => (b._timestamp || 0) - (a._timestamp || 0));
   }, [quejas, sugerencias, reportes, quejasArchivadas, sugerenciasArchivadas, reportesArchivados, shouldIncludeArchived]);
 
   const handleApplyFilters = (filters: ContactoFilterOptions) => {
@@ -165,28 +188,14 @@ const ContactoTable = () => {
     return value !== undefined && value !== null;
   }).length;
 
-  // Aplicar filtros avanzados
+  // Aplicar filtros avanzados y BUSCADOR GLOBAL en el frontend para evitar lag
   const filteredData = useMemo(() => {
     let filtered = [...unifiedData];
     const terminoBusqueda = globalFilter.trim().toLowerCase();
 
     if (terminoBusqueda) {
       filtered = filtered.filter((item) => {
-        const nombreCompleto = [item.nombre, item.primerApellido, item.segundoApellido]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase();
-
-        return [
-          item.tipo,
-          nombreCompleto,
-          item.mensaje,
-          item.correo,
-          item.estado,
-          item.ubicacion,
-        ]
-          .filter(Boolean)
-          .some((value) => value?.toString().toLowerCase().includes(terminoBusqueda));
+        return item._searchString?.includes(terminoBusqueda);
       });
     }
 
@@ -202,19 +211,20 @@ const ContactoTable = () => {
 
     // Filtrar por fecha inicio
     if (appliedFilters.fechaInicio) {
+      const fechaInicioTimeStamp = new Date(appliedFilters.fechaInicio).getTime();
       filtered = filtered.filter(item => {
-        const fechaItem = new Date(item.fechaCreacion || 0);
-        const fechaInicio = new Date(appliedFilters.fechaInicio!);
-        return fechaItem >= fechaInicio;
+        return (item._timestamp || 0) >= fechaInicioTimeStamp;
       });
     }
 
     // Filtrar por fecha fin
     if (appliedFilters.fechaFin) {
+      // Configuramos el final del día
+      const fechaFinDate = new Date(appliedFilters.fechaFin);
+      fechaFinDate.setHours(23, 59, 59, 999);
+      const fechaFinTimeStamp = fechaFinDate.getTime();
       filtered = filtered.filter(item => {
-        const fechaItem = new Date(item.fechaCreacion || 0);
-        const fechaFin = new Date(appliedFilters.fechaFin!);
-        return fechaItem <= fechaFin;
+        return (item._timestamp || 0) <= fechaFinTimeStamp;
       });
     }
 
@@ -225,108 +235,111 @@ const ContactoTable = () => {
 
 
     return filtered;
-  }, [unifiedData, appliedFilters, globalFilter]);
+  }, [unifiedData, appliedFilters]);
 
   const columnHelper = createColumnHelper<ContactoItem>();
 
-  const handleArchive = async (item: ContactoItem) => {
-    setSelectedItem(item);
+  const handleArchiveClick = useCallback((item: ContactoItem) => {
+    setItemToArchive(item);
+    setIsArchiveModalOpen(true);
+  }, []);
 
+  const confirmArchive = useCallback(async () => {
+    if (!itemToArchive) return;
     let nextIdEstado: number;
-
-    const isArchived = item.estado === 'Archivado';
+    const isArchived = itemToArchive.estado === 'Archivado';
 
     if (isArchived) {
-      //  Desarchivar: Volver al estado original (Contestado)
-      // Si el estado actual es 'Archivado' -> vuelve a 'Contestado' (Id 2)
       nextIdEstado = ESTADO_IDS.CONTESTADO;
     } else {
-      //  Archivar: Mover al estado de archivado correspondiente
-      // Si el estado actual es 'Contestado' -> 'Archivado' (Id 3)
       nextIdEstado = ESTADO_IDS.ARCHIVADO;
     }
 
     try {
-      if (item.tipo === 'Queja') {
-        await actualizarEstadoQuejaMutation.mutateAsync({ id: item.id, idEstado: nextIdEstado });
-      } else if (item.tipo === 'Sugerencia') {
-        await actualizarEstadoSugerenciaMutation.mutateAsync({ id: item.id, idEstado: nextIdEstado });
-      } else if (item.tipo === 'Reporte') {
-        await actualizarEstadoReporteMutation.mutateAsync({ id: item.id, idEstado: nextIdEstado });
+      if (itemToArchive.tipo === 'Queja') {
+        await actualizarEstadoQuejaMutation.mutateAsync({ id: itemToArchive.id, idEstado: nextIdEstado });
+      } else if (itemToArchive.tipo === 'Sugerencia') {
+        await actualizarEstadoSugerenciaMutation.mutateAsync({ id: itemToArchive.id, idEstado: nextIdEstado });
+      } else if (itemToArchive.tipo === 'Reporte') {
+        await actualizarEstadoReporteMutation.mutateAsync({ id: itemToArchive.id, idEstado: nextIdEstado });
       }
 
-      const isReporte = item.tipo === 'Reporte';
+      const isReporte = itemToArchive.tipo === 'Reporte';
       const articulo = isReporte ? 'El' : 'La';
       const participio = isArchived
         ? isReporte ? 'desarchivado' : 'desarchivada'
         : isReporte ? 'archivado' : 'archivada';
 
       showSuccess(
-        `${item.tipo} ${participio}`,
-        `${articulo} ${item.tipo.toLowerCase()} se ha ${participio} exitosamente`
+        `${itemToArchive.tipo} ${participio}`,
+        `${articulo} ${itemToArchive.tipo.toLowerCase()} se ha ${participio} exitosamente`
       );
     } catch (error) {
-      console.error(`Error al ${isArchived ? 'desarchivar' : 'archivar'} ${item.tipo}:`, error);
+      console.error(`Error al ${isArchived ? 'desarchivar' : 'archivar'} ${itemToArchive.tipo}:`, error);
       const accion = isArchived ? 'desarchivar' : 'archivar';
-      const articulo = item.tipo === 'Reporte' ? 'el' : 'la';
+      const articulo = itemToArchive.tipo === 'Reporte' ? 'el' : 'la';
 
       showError(
-        `Error al ${accion} ${item.tipo.toLowerCase()}`,
-        `No se pudo ${accion} ${articulo} ${item.tipo.toLowerCase()}. Intenta nuevamente.`
+        `Error al ${accion} ${itemToArchive.tipo.toLowerCase()}`,
+        `No se pudo ${accion} ${articulo} ${itemToArchive.tipo.toLowerCase()}. Intenta nuevamente.`
       );
+    } finally {
+      setIsArchiveModalOpen(false);
+      setItemToArchive(null);
     }
-  };
+  }, [itemToArchive, actualizarEstadoQuejaMutation, actualizarEstadoReporteMutation, actualizarEstadoSugerenciaMutation, showError, showSuccess]);
 
-  const columns = [
+  const columns = useMemo(() => [
     columnHelper.display({
       id: 'tipo',
-      header: 'Tipo',
-      cell: ({ row }) => renderTipoCell(row.original),
+      header: () => <><span className="hidden sm:inline">Tipo</span><span className="sm:hidden text-[8px]">Tipo</span></>,
+      cell: ({ row }) => <div className="flex items-center justify-start">{renderTipoCell(row.original)}</div>,
       size: 130,
     }),
 
     columnHelper.display({
       id: 'persona',
-      header: 'Persona',
-      cell: ({ row }) => renderPersonaCell(row.original),
+      header: () => <><span className="hidden sm:inline">Persona</span><span className="sm:hidden text-[8px]">Persona</span></>,
+      cell: ({ row }) => <div className="flex items-center justify-start">{renderPersonaCell(row.original)}</div>,
       size: 200,
     }),
 
     columnHelper.accessor('mensaje', {
       id: 'mensaje',
-      header: 'Mensaje',
-      cell: ({ getValue }) => renderMensajeCell(getValue()),
+      header: () => <><span className="hidden sm:inline">Mensaje</span><span className="sm:hidden text-[8px]">Mensaje</span></>,
+      cell: ({ getValue }) => <div className="flex items-center justify-start">{renderMensajeCell(getValue())}</div>,
       size: 250,
     }),
 
     columnHelper.display({
       id: 'estado',
-      header: 'Estado',
-      cell: ({ row }) => renderEstadoCell(row.original),
+      header: () => <><span className="hidden sm:inline">Estado</span><span className="sm:hidden text-[8px]">Estado</span></>,
+      cell: ({ row }) => <div className="flex items-center justify-start">{renderEstadoCell(row.original)}</div>,
       size: 180,
     }),
 
     columnHelper.accessor('fechaCreacion', {
       id: 'fecha',
-      header: 'Fecha',
-      cell: ({ getValue }) => renderFechaCell(getValue()),
+      header: () => <><span className="hidden sm:inline">Fecha</span><span className="sm:hidden text-[8px]">Fecha</span></>,
+      cell: ({ getValue }) => <div className="flex items-center justify-start">{renderFechaCell(getValue())}</div>,
       size: 120,
     }),
 
     columnHelper.display({
       id: 'acciones',
-      header: 'Acciones',
+      header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[8px]">Acciones</span></>,
       cell: ({ row }) => renderAccionesCell(row.original, {
-        actualizarEstadoQuejaMutation,
-        actualizarEstadoSugerenciaMutation,
-        actualizarEstadoReporteMutation,
-        handleArchive,
+        onArchiveClick: handleArchiveClick,
         hasViewPermission,
         hasEditPermission,
       }),
       enableSorting: false,
     }),
-  ];
+  ], [
+    handleArchiveClick, 
+    hasEditPermission, 
+    hasViewPermission
+  ]);
 
   const table = useReactTable({
     data: filteredData,
@@ -334,17 +347,14 @@ const ContactoTable = () => {
     state: {
       sorting,
       columnFilters,
-      globalFilter,
       pagination,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     initialState: {
       pagination: {
         pageSize: 5,
@@ -411,8 +421,8 @@ const ContactoTable = () => {
       </div>
       <div className="bg-white rounded-lg p-3">
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4">
-            <label htmlFor="estado-filter" className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="flex items-center gap-2">
+            <label htmlFor="estado-filter" className="block text-[10px] sm:text-xs font-medium text-gray-700 whitespace-nowrap">
               Estado:
             </label>
             <select
@@ -422,7 +432,7 @@ const ContactoTable = () => {
                 ...appliedFilters,
                 estado: e.target.value ? e.target.value as EstadoContacto : undefined
               })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-2 py-1 text-[10px] sm:text-xs border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Todos los estados</option>
               <option value="Pendiente">Pendiente</option>
@@ -430,30 +440,30 @@ const ContactoTable = () => {
               <option value="Archivado">Archivado</option>
             </select>
           </div>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={() => setIsFilterModalOpen(true)}
-              className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${activeFiltersCount > 0
+              className={`px-3 py-1.5 text-[10px] sm:text-xs border rounded-md flex items-center gap-2 transition-colors ${activeFiltersCount > 0
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
                   : 'border-gray-300 hover:bg-gray-50'
                 }`}
             >
-              <LuFilter className="w-4 h-4" />
+              <LuFilter className="w-3.5 h-3.5" />
               Filtros
               {activeFiltersCount > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-blue-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
             <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5" />
               <input
                 type="text"
                 placeholder="Buscar por nombre, mensaje..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-8 pr-3 py-1.5 text-[10px] sm:text-xs border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -511,15 +521,15 @@ const ContactoTable = () => {
         </div>
 
         {/* Paginación */}
-        <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className='text-sm text-gray-700'>Filas por página</span>
+        <div className="bg-gray-50 px-3 sm:px-6 py-2 sm:py-3 border-t border-gray-200 flex flex-row items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
+            <span className='text-[10px] sm:text-sm text-gray-700'>Filas por página:</span>
             <select
               value={table.getState().pagination.pageSize}
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value));
               }}
-              className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md px-1 sm:px-2 py-0.5 sm:py-1 text-[8px] sm:text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               {pageSizeOptions.map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
@@ -529,42 +539,42 @@ const ContactoTable = () => {
             </select>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 whitespace-nowrap">
             <button
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Primera página"
             >
-              <MdKeyboardDoubleArrowLeft />
+              <MdKeyboardDoubleArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Página anterior"
             >
-              <MdKeyboardArrowLeft />
+              <MdKeyboardArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
-            <span className="px-2 py-1 text-sm">
-              Página {table.getState().pagination.pageIndex + 1} de{' '}
-              {table.getPageCount()}
+            <span className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm whitespace-nowrap">
+              Pág. {table.getState().pagination.pageIndex + 1} de{' '}
+              {table.getPageCount() || 1}
             </span>
             <button
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Página siguiente"
             >
-              <MdKeyboardArrowRight />
+              <MdKeyboardArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Última página"
             >
-              <MdKeyboardDoubleArrowRight />
+              <MdKeyboardDoubleArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
@@ -592,6 +602,26 @@ const ContactoTable = () => {
           item={selectedItem}
         />
       )}
+
+      {/* Global Archive Confirmation Dialog */}
+      <AlertDialog open={isArchiveModalOpen} onOpenChange={setIsArchiveModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Confirmar {itemToArchive?.estado === 'Archivado' ? 'Desarchivar' : 'Archivar'}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que deseas {itemToArchive?.estado === 'Archivado' ? 'desarchivar' : 'archivar'} est@ {itemToArchive?.tipo.toLowerCase()}? 
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={confirmArchive}>
+              {itemToArchive?.estado === 'Archivado' ? 'Desarchivar' : 'Archivar'}
+            </AlertDialogAction>
+            <AlertDialogCancel onClick={() => { setIsArchiveModalOpen(false); setItemToArchive(null); }}>
+              Cancelar
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -1,13 +1,9 @@
-import { AlertDialog, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogAction, AlertDialogCancel } from "@/Modules/Global/components/Sidebar/ui/alert-dialog";
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import type { ContactoItem } from "../types/ContactoTypes";
 
-interface ArchiveMutations {
-  actualizarEstadoQuejaMutation: { isPending: boolean; mutateAsync: (args: any) => Promise<any> };
-  actualizarEstadoSugerenciaMutation: { isPending: boolean; mutateAsync: (args: any) => Promise<any> };
-  actualizarEstadoReporteMutation: { isPending: boolean; mutateAsync: (args: any) => Promise<any> };
-  handleArchive: (item: ContactoItem) => Promise<void>;
+interface ArchiveConfig {
+  onArchiveClick: (item: ContactoItem) => void;
   hasViewPermission: boolean;
   hasEditPermission: boolean;
 }
@@ -17,75 +13,84 @@ export const renderTipoCell = (item: ContactoItem) => {
   let colorClass = '';
   switch (item.tipo) {
     case 'Queja':
-      colorClass = 'text-red-700';
+      colorClass = 'bg-red-100 text-red-700 font-medium';
       break;
     case 'Sugerencia':
-      colorClass = 'text-yellow-700';
+      colorClass = 'bg-yellow-100 text-yellow-700 font-medium';
       break;
     case 'Reporte':
-      colorClass = 'text-blue-700';
+      colorClass = 'bg-blue-100 text-blue-700 font-medium';
       break;
   }
 
   return (
-    <span className={`text-sm font-medium ${colorClass}`}>
+    <span className={`inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-[7px] sm:text-xs whitespace-nowrap ${colorClass}`}>
       {item.tipo}
     </span>
   );
 };
 
 export const renderPersonaCell = (item: ContactoItem) => {
-  const nombreCompleto = [item.nombre, item.primerApellido, item.segundoApellido]
+  const nombreCompleto = item._nombreCompleto || [item.nombre, item.primerApellido, item.segundoApellido]
     .filter(Boolean)
     .join(' ');
 
+  if (!nombreCompleto) {
+    return <span className="text-[7px] sm:text-sm text-gray-400 italic font-medium whitespace-nowrap">Anónimo</span>;
+  }
+
+  const truncatedMobile = nombreCompleto.length > 15 ? nombreCompleto.substring(0, 15) + '...' : nombreCompleto;
+
   return (
-    <span className="text-sm">
-      {nombreCompleto || <span className="text-gray-400 italic">Anónimo</span>}
-    </span>
+    <div title={nombreCompleto} className="font-medium whitespace-nowrap text-gray-700">
+      <span className="hidden sm:inline text-sm">{nombreCompleto}</span>
+      <span className="sm:hidden text-[7px]">{truncatedMobile}</span>
+    </div>
   );
 };
 
 export const renderMensajeCell = (mensaje?: string) => {
-  if (!mensaje) return <span className="text-gray-400 text-sm">-</span>;
-  const truncated = mensaje.length > 50 ? mensaje.substring(0, 50) + '...' : mensaje;
+  if (!mensaje) return <span className="text-[7px] sm:text-sm text-gray-400">-</span>;
+  const truncatedDesktop = mensaje.length > 50 ? mensaje.substring(0, 50) + '...' : mensaje;
+  const truncatedMobile = mensaje.length > 15 ? mensaje.substring(0, 15) + '...' : mensaje;
   return (
-    <span className="text-sm text-gray-700" title={mensaje}>
-      {truncated}
-    </span>
+    <div title={mensaje}>
+      <span className="hidden sm:inline text-sm text-gray-700">{truncatedDesktop}</span>
+      <span className="sm:hidden text-[7px] text-gray-700">{truncatedMobile}</span>
+    </div>
   );
 };
 
 export const renderEstadoCell = (item: ContactoItem) => {
-  if (!item.estado) return <span className="text-gray-400 text-sm">-</span>;
+  if (!item.estado) return <span className="text-[7px] sm:text-sm text-gray-400">-</span>;
 
   let badgeClass = '';
   switch (item.estado) {
     case 'Pendiente':
-      badgeClass = 'bg-yellow-100 text-yellow-800';
+      badgeClass = 'bg-yellow-100 text-yellow-700 border border-yellow-300';
       break;
     case 'Contestado':
-      badgeClass = 'bg-green-100 text-green-800';
+      badgeClass = 'bg-green-100 text-green-700 border border-green-300';
       break;
     case 'Archivado':
-      badgeClass = 'bg-red-100 text-red-800 border border-red-300'; 
+      badgeClass = 'bg-red-100 text-red-700 border border-red-300'; 
       break;
     default:
-      badgeClass = 'bg-gray-100 text-gray-800';
+      badgeClass = 'bg-gray-100 text-gray-700 border border-gray-300';
   }
 
   return (
-    <span className={`px-2 py-1 text-xs rounded-full ${badgeClass}`}>
+    <span className={`px-2 py-0.5 sm:px-3 sm:py-1 text-[7px] sm:text-xs rounded-full font-semibold whitespace-nowrap ${badgeClass}`}>
       {item.estado}
     </span>
   );
 };
 
 export const renderFechaCell = (fecha?: Date | string | null) => {
-  if (!fecha) return 'N/A';
+  if (!fecha) return <span className="text-[7px] sm:text-sm">N/A</span>;
   const fechaObj = new Date(fecha);
   return (
-    <span className="text-sm">
+    <span className="text-[7px] sm:text-sm text-gray-700 whitespace-nowrap">
       {format(fechaObj, 'dd/MM/yyyy', { locale: es })}
     </span>
   );
@@ -93,22 +98,13 @@ export const renderFechaCell = (fecha?: Date | string | null) => {
 
 
 
-export const renderAccionesCell = (item: ContactoItem, mutations: ArchiveMutations) => {
+export const renderAccionesCell = (item: ContactoItem, config: ArchiveConfig) => {
   const { 
-    actualizarEstadoQuejaMutation, 
-    actualizarEstadoSugerenciaMutation, 
-    actualizarEstadoReporteMutation, 
-    handleArchive,
+    onArchiveClick,
     hasViewPermission,
     hasEditPermission
-  } = mutations;
+  } = config;
   
-  // Determinar si alguna mutación está pendiente
-  const isPendingMutation = 
-    (item.tipo === 'Queja' && actualizarEstadoQuejaMutation.isPending) ||
-    (item.tipo === 'Sugerencia' && actualizarEstadoSugerenciaMutation.isPending) ||
-    (item.tipo === 'Reporte' && actualizarEstadoReporteMutation.isPending);
-
   const isArchived = item.estado === 'Archivado';
   
   const actionText = isArchived ? 'Desarchivar' : 'Archivar';
@@ -116,10 +112,10 @@ export const renderAccionesCell = (item: ContactoItem, mutations: ArchiveMutatio
   const actionTitle = isArchived ? `Desarchivar ${item.tipo}` : `Archivar ${item.tipo}`;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center justify-center gap-1 sm:gap-2">
       {hasViewPermission && (
         <button
-          className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+          className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors whitespace-nowrap"
           title="Ver detalles"
           onClick={() => window.dispatchEvent(new CustomEvent('openContactoDetail', { detail: item }))}
         >
@@ -129,7 +125,7 @@ export const renderAccionesCell = (item: ContactoItem, mutations: ArchiveMutatio
       {/* El botón Responder solo se muestra si NO está archivado */}
       {hasEditPermission && !isArchived && item.estado === 'Pendiente' && ( 
         <button
-          className="px-4 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+          className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
           title="Responder"
           onClick={() => window.dispatchEvent(new CustomEvent('openContactoResponder', { detail: item }))}
         >
@@ -137,38 +133,15 @@ export const renderAccionesCell = (item: ContactoItem, mutations: ArchiveMutatio
         </button>
       )}
       {hasEditPermission && (item.estado === 'Contestado' || item.estado === 'Archivado') && (
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <button
-            type="button"
-            disabled={isPendingMutation} 
-            className={`px-4 py-1 text-white text-xs rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${actionColor}`}
-            title={actionTitle}
-          >
-            {isPendingMutation ? (isArchived ? 'Desarchivando...' : 'Archivando...') : actionText}
-          </button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Confirmar {actionText}?</AlertDialogTitle>
-            <AlertDialogDescription>
-              ¿Estás seguro de que deseas {actionText.toLowerCase()} est@ {item.tipo}? 
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              // handleArchive ahora recibe el item y determina la acción dentro de ContactoTable
-              onClick={() => handleArchive(item)} 
-              disabled={isPendingMutation}
-            >
-              {isPendingMutation ? (isArchived ? 'Desarchivando...' : 'Archivando...') : `${actionText}`}
-            </AlertDialogAction>
-            <AlertDialogCancel disabled={isPendingMutation}>Cancelar</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-        )}
+        <button
+          type="button"
+          onClick={() => onArchiveClick(item)}
+          className={`px-1 sm:px-4 py-0.5 sm:py-1.5 text-white text-[7px] sm:text-xs rounded transition-colors whitespace-nowrap ${actionColor}`}
+          title={actionTitle}
+        >
+          {actionText}
+        </button>
+      )}
     </div>
-
   );
 };

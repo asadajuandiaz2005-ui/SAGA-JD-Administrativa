@@ -205,16 +205,17 @@ const Manuales = () => {
 
 
     return (
-      <div className="flex flex-col items-center">
-    {/* 🔹 Título centrado arriba */}
-           <div className="flex items-center gap-4 flex-col justify-center">
-            <h2 className="text-2xl font-bold text-gray-900">Ocupas ayuda?</h2>
-            <p className="text-sm text-gray-600 pb-4">Aquí puedes encontrar los manuales de usuario disponibles.</p>
+      <div className="flex flex-col items-center w-full">
+        {/* 🔹 Título centrado arriba */}
+        <div className="flex items-center gap-2 sm:gap-4 flex-col justify-center text-center">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Ocupas ayuda?</h2>
+            <p className="text-xs sm:text-sm text-gray-600 pb-2 sm:pb-4">Aquí puedes encontrar los manuales de usuario disponibles.</p>
         </div>
-      <div className='grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-
         
-        {archivosFiltrados.map((archivo, idx: number) => (
+        {/* 🔹 Contenedor con scroll para las tarjetas */}
+        <div className="w-full max-h-[calc(100vh-180px)] overflow-y-auto px-2 sm:px-6 pt-2 pb-10 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
+            <div className='grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full'>
+                {archivosFiltrados.map((archivo, idx: number) => (
           <div
             key={archivo.Id_Manual ?? idx}
             className='bg-white rounded-3xl shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 p-5 flex flex-col items-center text-center'
@@ -242,13 +243,14 @@ const Manuales = () => {
             </a>
           </div>
         ))}
-      </div>
+            </div>
+        </div>
       </div>
     );
   };
 
   return (
-    <section className="container mx-auto px-4 py-8">
+    <section className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 w-full">
       {renderContent()}
     </section>
   );

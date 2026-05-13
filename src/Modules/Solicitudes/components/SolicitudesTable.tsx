@@ -144,7 +144,7 @@ export default function SolicitudesTable() {
     // Estado para la paginación
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 8,
+        pageSize: 5,
     });
     // Opciones de tamaño de página para la paginación
     const pageSizeOptions = [5, 10, 20, 50];
@@ -326,34 +326,47 @@ export default function SolicitudesTable() {
             header: 'Nombre / Razón Social',
             cell: (info) => {
                 const fila = info.row.original;
+                let nombreCompleto = '';
 
                 if (fila.Tipo_Persona === 'Físico') {
                     const datosOriginales = fila.datos_originales as SolicitudFisica;
 
                     if (!datosOriginales.Nombre && !datosOriginales.Apellido1) {
-                        return 'Datos no disponibles';
+                        nombreCompleto = 'Datos no disponibles';
+                    } else {
+                        nombreCompleto = `${datosOriginales.Nombre || ''} ${datosOriginales.Apellido1 || ''} ${datosOriginales.Apellido2 || ''}`.trim() || 'Sin nombre';
                     }
-
-                    const nombreCompleto = `${datosOriginales.Nombre || ''} ${datosOriginales.Apellido1 || ''} ${datosOriginales.Apellido2 || ''}`.trim();
-                    return nombreCompleto || 'Sin nombre';
                 } else {
                     const datosOriginales = fila.datos_originales as SolicitudJuridica;
-
-                    return datosOriginales.Razon_Social || 'Sin razón social';
+                    nombreCompleto = datosOriginales.Razon_Social || 'Sin razón social';
                 }
+                
+                return (
+                    <div className="font-medium text-left max-w-[80px] sm:max-w-[150px] md:max-w-xs truncate" title={nombreCompleto}>
+                        {nombreCompleto}
+                    </div>
+                );
             }
         }),
         columnHelper.accessor('Cedula_Documento', {
-            header: 'Número Identificación / Cédula Jurídica', // <-- CAMBIO: Nuevo encabezado
+            header: 'Número Identificación / Cédula Jurídica',
             cell: (info) => {
                 const fila = info.row.original;
+                let cDocumento = '';
+
                 if (fila.Tipo_Persona === 'Físico') {
                     const datosOriginales = fila.datos_originales as SolicitudFisica;
-                    return datosOriginales.Identificacion || 'Sin número de identificación'; // <-- CAMBIO: usa Identificacion
+                    cDocumento = datosOriginales.Identificacion || 'Sin número de identificación';
                 } else {
                     const datosOriginales = fila.datos_originales as SolicitudJuridica;
-                    return datosOriginales.Cedula_Juridica || 'Sin cédula jurídica';
+                    cDocumento = datosOriginales.Cedula_Juridica || 'Sin cédula jurídica';
                 }
+
+                return (
+                    <div className="flex flex-col items-start justify-start max-w-[70px] sm:max-w-[150px] truncate" title={cDocumento}>
+                        <span className="text-gray-600">{cDocumento}</span>
+                    </div>
+                );
             },
             size: 160
         }),
@@ -361,19 +374,30 @@ export default function SolicitudesTable() {
             header: 'Tipo de Solicitud',
             cell: (info) => {
                 const tipo = info.getValue();
-                const base = 'inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium';
-
-                if (tipo === 'Afiliacion') {
-                    return <span className={`${base} bg-emerald-100 text-emerald-700`}> Afiliación</span>;
-                } else if (tipo === 'Desconexion') {
-                    return <span className={`${base} bg-red-100 text-red-700`}> Desconexión</span>;
-                } else if (tipo === 'Cambio de Medidor') {
-                    return <span className={`${base} bg-blue-100 text-blue-700`}> Cambio Medidor</span>;
-                } else if (tipo === 'Asociado') {
-                    return <span className={`${base} bg-orange-100 text-orange-700`}> Asociado</span>;
-                }
-
-                return <span className={`${base} bg-slate-100 text-slate-700`}>{tipo}</span>;
+                return (
+                    <div className="flex items-center justify-start">
+                        <span className={`inline-flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium whitespace-nowrap ${
+                            tipo === 'Afiliacion' ? 'bg-emerald-100 text-emerald-700' :
+                            tipo === 'Desconexion' ? 'bg-red-100 text-red-700' :
+                            tipo === 'Cambio de Medidor' ? 'bg-blue-100 text-blue-700' :
+                            tipo === 'Asociado' ? 'bg-orange-100 text-orange-700' :
+                            'bg-slate-100 text-slate-700'
+                        }`}>
+                            {tipo === 'Afiliacion' ? (
+                                <><span className="hidden sm:inline">Afiliación</span><span className="sm:hidden">Afil.</span></>
+                             ) :
+                             tipo === 'Desconexion' ? (
+                                <><span className="hidden sm:inline">Desconexión</span><span className="sm:hidden">Desc.</span></>
+                             ) :
+                             tipo === 'Cambio de Medidor' ? (
+                                <><span className="hidden sm:inline">Cambio de Medidor</span><span className="sm:hidden">C. M.</span></>
+                             ) :
+                             tipo === 'Asociado' ? (
+                                <><span className="hidden sm:inline">Asociado</span><span className="sm:hidden">Asoc.</span></>
+                             ) : <span className="truncate max-w-[50px] sm:max-w-[100px]">{tipo}</span>}
+                        </span>
+                    </div>
+                );
             },
             size: 150,
         }),
@@ -382,20 +406,23 @@ export default function SolicitudesTable() {
             cell: (info) => {
                 const estado = info.getValue();
                 const estadoNombre = estado?.Nombre_Estado || 'Sin estado';
+                const base = 'px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-semibold whitespace-nowrap';
 
-                const base = 'inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium';
-
-                if (estadoNombre === 'Pendiente') {
-                    return <span className={`${base} bg-amber-100 text-amber-700`}> Pendiente</span>;
-                } else if (estadoNombre === 'Aprobada' || estadoNombre === 'Aprobado') {
-                    return <span className={`${base} bg-green-100 text-green-700`}> Aprobada</span>;
-                } else if (estadoNombre === 'Rechazada' || estadoNombre === 'Rechazado') {
-                    return <span className={`${base} bg-red-100 text-red-700`}>Rechazada</span>;
-                } else if (estadoNombre === 'En Proceso') {
-                    return <span className={`${base} bg-blue-100 text-blue-700`}> En Proceso</span>;
-                }
-
-                return <span className={`${base} bg-slate-100 text-slate-700`}>{estadoNombre}</span>;
+                return (
+                    <div className="flex items-center justify-start">
+                        {estadoNombre === 'Pendiente' ? (
+                            <span className={`${base} bg-amber-100 text-amber-700 border border-amber-300`}>Pendiente</span>
+                        ) : estadoNombre === 'Aprobada' || estadoNombre === 'Aprobado' ? (
+                            <span className={`${base} bg-green-100 text-green-700 border border-green-300`}>Aprobado</span>
+                        ) : estadoNombre === 'Rechazada' || estadoNombre === 'Rechazado' ? (
+                            <span className={`${base} bg-red-100 text-red-700 border border-red-300`}>Rechazado</span>
+                        ) : estadoNombre === 'En Proceso' ? (
+                            <span className={`${base} bg-blue-100 text-blue-700 border border-blue-300`}>En Proc.</span>
+                        ) : (
+                            <span className={`${base} bg-slate-100 text-slate-700 border border-slate-300`}>{estadoNombre}</span>
+                        )}
+                    </div>
+                );
             },
             size: 120,
         }),
@@ -404,12 +431,14 @@ export default function SolicitudesTable() {
             cell: (info) => {
                 const tipo = info.getValue();
                 return (
-                    <span className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${tipo === 'Físico'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'bg-purple-100 text-purple-700'
-                        }`}>
-                        {tipo === 'Físico' ? <User size={14} /> : <Building size={14} />} {tipo}
-                    </span>
+                    <div className="flex items-center justify-start">
+                        <span className={`inline-flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium ${tipo === 'Físico'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-purple-100 text-purple-700'
+                            }`}>
+                            {tipo === 'Físico' ? <User className="w-2 h-2 sm:w-3.5 sm:h-3.5" /> : <Building className="w-2 h-2 sm:w-3.5 sm:h-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
+                        </span>
+                    </div>
                 );
             },
             size: 120,
@@ -418,17 +447,23 @@ export default function SolicitudesTable() {
             header: 'Fecha de Envío',
             cell: (info) => {
                 const fecha = info.getValue();
-                if (!fecha) return 'Sin fecha';
+                if (!fecha) return <div className="flex items-center justify-start"><span className="text-[7px] sm:text-xs">Sin fecha</span></div>;
 
                 try {
                     const fechaObj = new Date(fecha);
-                    return fechaObj.toLocaleDateString('es-ES', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    });
+                    return (
+                        <div className="flex items-center justify-start">
+                            <span className="whitespace-nowrap text-[7px] sm:text-xs">
+                                {fechaObj.toLocaleDateString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                })}
+                            </span>
+                        </div>
+                    );
                 } catch {
-                    return 'Fecha inválida';
+                    return <div className="flex items-center justify-start"><span className="text-[7px] sm:text-xs">Fecha inválida</span></div>;
                 }
             },
             size: 120,
@@ -440,7 +475,7 @@ export default function SolicitudesTable() {
                 const solicitud = row.original;
 
                 return (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center gap-1 sm:gap-2">
                         {/* Ver detalles */}
                         {hasViewPermission && (
                             <button
@@ -456,7 +491,7 @@ export default function SolicitudesTable() {
                                     });
                                     setShowGestionModal(true);
                                 }}
-                                className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                                className="px-1 py-1 sm:px-4 sm:py-1 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors w-full sm:w-auto"
                                 title="Ver detalles"
                             >
                                 Ver
@@ -482,7 +517,7 @@ export default function SolicitudesTable() {
                                             setShowEditModal(true);
                                         }}
                                         disabled={!puedeEditar}
-                                        className="px-4 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-1 py-1 sm:px-4 sm:py-1 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                                         title={puedeEditar ? 'Editar solicitud' : 'Esta solicitud ya fue aceptada o eliminada'}
                                     >
                                         Editar
@@ -490,8 +525,6 @@ export default function SolicitudesTable() {
                                 );
                             })()
                         )}
-
-
                     </div>
                 );
             }
@@ -550,44 +583,41 @@ export default function SolicitudesTable() {
 
     return (
         <div className="w-full">
-            <div className="flex flex-col gap-4 mb-4">
-                <div className='p-3'>
-                    <div className="flex items-start gap-4 flex-col justify-start">
-                        <h2 className="text-2xl font-bold text-gray-900">Revisión de Solicitudes</h2>
-                        <p className="text-sm text-gray-600 pb-4">Gestiona las solicitudes de los usuarios</p>
-                    </div>
-
+            <div className="flex flex-col sm:flex-row gap-4 mb-4 justify-between items-start sm:items-center p-3">
+                <div className="flex items-start gap-2 flex-col justify-start">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Revisión de Solicitudes</h2>
+                    <p className="text-xs sm:text-sm text-gray-600">Gestiona las solicitudes de los usuarios</p>
                 </div>
-                <div className='flex justify-end items-center gap-4 pb-2'>
+
+                <div className='flex flex-row flex-wrap sm:flex-nowrap justify-start sm:justify-end items-center gap-2 sm:gap-4 w-full sm:w-auto'>
                     {/* Botón de filtros */}
                     <button
                         onClick={() => setIsFilterOpen(true)}
-                        className={`px-4 py-2 border rounded-md flex items-center gap-2 ${activeFiltersCount > 0
+                        className={`px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm border rounded-md flex items-center justify-center gap-2 flex-1 sm:flex-none ${activeFiltersCount > 0
                             ? 'border-blue-500 bg-blue-50 text-blue-700'
                             : 'border-gray-300 hover:bg-gray-50'
                             }`}
                     >
-                        <LuFilter className="w-4 h-4" />
+                        <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
                         Filtros
                         {activeFiltersCount > 0 && (
-                            <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            <span className="bg-blue-500 text-white text-[10px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                                 {activeFiltersCount}
                             </span>
                         )}
                     </button>
 
                     {/* Campo de búsqueda */}
-                    <div className="relative flex-1 max-w-md">
-                        <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <div className="relative flex-1 sm:flex-none min-w-[150px] w-full sm:w-auto sm:max-w-md">
+                        <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         <input
                             value={globalFilter}
                             onChange={(e) => setGlobalFilter(e.target.value)}
-                            placeholder="Buscar por nombre, cédula, tipo, estado..."
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Buscar..."
+                            className="w-full pl-8 pr-3 py-1.5 sm:pl-10 sm:pr-4 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
                 </div>
-
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-sky-100 overflow-hidden max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
@@ -595,53 +625,66 @@ export default function SolicitudesTable() {
                     <table className="min-w-full table-auto">
                         <thead className="bg-sky-50">
                             {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
-                                    {headerGroup.headers.map((header, index) => (
-                                        <th key={header.id} className={`px-2 sm:px-4 py-3 font-medium border-b border-sky-100 ${index === 0 ? 'text-left' : 'text-center'
-                                            }`}>
-                                            {(() => {
-                                                if (header.isPlaceholder) {
-                                                    return null;
-                                                }
-                                                if (header.column.getCanSort()) {
+                                <tr key={headerGroup.id} className="text-left text-[9px] sm:text-xs md:text-sm text-sky-700">
+                                    {headerGroup.headers.map((header, index) => {
+                                        const isActionsColumn = header.column.id === 'acciones';
+                                        return (
+                                            <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${
+                                                isActionsColumn ? 'text-center' : 'text-left'
+                                            } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
+                                                {(() => {
+                                                    const headerText = header.column.columnDef.header as string;
+                                                    let mobileHeaderText = headerText;
+                                                    if (headerText === 'Nombre / Razón Social') mobileHeaderText = 'Nombre/Razón';
+                                                    if (headerText === 'Número Identificación / Cédula Jurídica') mobileHeaderText = 'Identific.';
+                                                    if (headerText === 'Tipo de Solicitud') mobileHeaderText = 'T. Sol.';
+                                                    if (headerText === 'Tipo Persona') mobileHeaderText = 'T. Persona';
+                                                    if (headerText === 'Fecha de Envío') mobileHeaderText = 'Fecha';
+
+                                                    if (header.isPlaceholder) {
+                                                        return null;
+                                                    }
+                                                    if (header.column.getCanSort()) {
+                                                        return (
+                                                            <button
+                                                                type="button"
+                                                                className={`cursor-pointer select-none flex items-center gap-2 bg-transparent border-none p-0 justify-start`}
+                                                                onClick={header.column.getToggleSortingHandler()}
+                                                                onKeyDown={e => {
+                                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                                        e.preventDefault();
+                                                                        header.column.getToggleSortingHandler()?.(e);
+                                                                    }
+                                                                }}
+                                                                tabIndex={0}
+                                                                aria-label={`Ordenar por ${headerText}`}
+                                                            >
+                                                                <span className="flex items-center justify-left gap-1 whitespace-nowrap">
+                                                                    <span className="sm:hidden">{mobileHeaderText}</span>
+                                                                    <span className="hidden sm:inline">{headerText}</span>
+                                                                    {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
+                                                                    {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
+                                                                </span>
+                                                            </button>
+                                                        );
+                                                    }
                                                     return (
-                                                        <button
-                                                            type="button"
-                                                            className={`cursor-pointer select-none flex items-center gap-2 bg-transparent border-none p-0 ${index === 0 ? 'justify-start' : 'justify-center'
-                                                                }`}
-                                                            onClick={header.column.getToggleSortingHandler()}
-                                                            onKeyDown={e => {
-                                                                if (e.key === 'Enter' || e.key === ' ') {
-                                                                    e.preventDefault();
-                                                                    header.column.getToggleSortingHandler()?.(e);
-                                                                }
-                                                            }}
-                                                            tabIndex={0}
-                                                            aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
-                                                        >
-                                                            <span className="flex items-center justify-center gap-1">
-                                                                {header.column.columnDef.header as string}
-                                                                {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
-                                                                {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
-                                                            </span>
-                                                        </button>
+                                                        <span className={`${isActionsColumn ? 'text-center' : 'text-left'} whitespace-nowrap`}>
+                                                            <span className="sm:hidden">{mobileHeaderText}</span>
+                                                            <span className="hidden sm:inline">{headerText}</span>
+                                                        </span>
                                                     );
-                                                }
-                                                return (
-                                                    <span className={index === 0 ? 'text-left' : 'text-center'}>
-                                                        {header.column.columnDef.header as string}
-                                                    </span>
-                                                );
-                                            })()}
-                                        </th>
-                                    ))}
+                                                })()}
+                                            </th>
+                                        );
+                                    })}
                                 </tr>
                             ))}
                         </thead>
                         <tbody className="bg-white divide-y divide-sky-50">
                             {table.getRowModel().rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500 text-[10px] sm:text-xs md:text-sm">
                                         {globalFilter ? 'No se encontraron solicitudes que coincidan con la búsqueda' : 'No hay solicitudes registradas'}
                                     </td>
                                 </tr>
@@ -662,8 +705,9 @@ export default function SolicitudesTable() {
                                             }
 
                                             return (
-                                                <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${index === 0 ? 'text-left' : 'text-center'
-                                                    }`}>
+                                                <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[7px] sm:text-xs md:text-sm text-slate-700 align-middle ${
+                                                    cell.column.id === 'acciones' ? 'text-center' : 'text-left'
+                                                } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                     {cellContent}
                                                 </td>
                                             );
@@ -675,17 +719,17 @@ export default function SolicitudesTable() {
                     </table>
                 </div>
 
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-700">Filas por página:</span>
+               <div className="px-2 sm:px-6 py-2 sm:py-3 bg-gray-50 border-t border-gray-200">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <div className="flex items-center gap-1 sm:gap-2">
+                                <span className="text-[10px] sm:text-sm text-gray-700">Filas por página:</span>
                                 <select
                                     value={table.getState().pagination.pageSize}
                                     onChange={(e) => {
                                         table.setPageSize(Number(e.target.value));
                                     }}
-                                    className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="px-1.5 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     {pageSizeOptions.map((pageSize) => (
                                         <option key={pageSize} value={pageSize}>
@@ -695,45 +739,46 @@ export default function SolicitudesTable() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                             <button
                                 onClick={() => table.setPageIndex(0)}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="w-4 h-4" />
+                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <span className="text-sm text-gray-700">
-                                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+                            <span className="text-[10px] sm:text-sm text-gray-700 mx-1 sm:mx-2 whitespace-nowrap">
+                                <span className="hidden sm:inline">Página </span>{table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
                             </span>
                             <button
                                 onClick={() => table.nextPage()}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="w-4 h-4" />
+                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {/* Modal de edición */}
@@ -769,6 +814,9 @@ export default function SolicitudesTable() {
 
 
         </div>
+
+
     );
+    
 }
 

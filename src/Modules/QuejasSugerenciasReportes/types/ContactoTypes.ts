@@ -30,6 +30,9 @@ export interface ContactoItem {
   fechaCreacion: Date | string | null;
   estado?: string
   adjunto?: string | null;
+  _timestamp?: number;
+  _searchString?: string;
+  _nombreCompleto?: string;
 }
 export const ESTADO_IDS = {
   PENDIENTE: 1,

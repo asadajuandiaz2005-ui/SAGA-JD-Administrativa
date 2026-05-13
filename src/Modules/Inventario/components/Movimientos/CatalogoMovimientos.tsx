@@ -196,20 +196,19 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
   const columns = [
     columnHelper.display({
       id: 'tipo',
-      header: 'Tipo',
+      header: () => <><span className="hidden sm:inline">Tipo</span><span className="sm:hidden text-[9px]">Tipo</span></>,
       cell: ({ row }) => {
         const movimiento = row.original;
         const isIngreso = movimiento.Tipo_Movimiento?.includes('Entrada');
 
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-1 sm:gap-2">
             {isIngreso ? (
-              <LuTrendingUp className="text-green-600" size={16} />
+              <LuTrendingUp className="text-green-600 sm:w-4 sm:h-4 w-3 h-3" />
             ) : (
-              <LuTrendingDown className="text-red-600" size={16} />
+              <LuTrendingDown className="text-red-600 sm:w-4 sm:h-4 w-3 h-3" />
             )}
-            <span className={`text-sm font-medium ${isIngreso ? 'text-green-700' : 'text-red-700'
-              }`}>
+            <span className={`text-[9px] sm:text-sm font-medium whitespace-nowrap ${isIngreso ? 'text-green-700' : 'text-red-700'}`}>
               {movimiento.Tipo_Movimiento || 'N/A'}
             </span>
           </div>
@@ -220,13 +219,16 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.accessor('Material.Nombre_Material', {
       id: 'material',
-      header: 'Material',
+      header: () => <><span className="hidden sm:inline">Material</span><span className="sm:hidden text-[9px]">Material</span></>,
       cell: ({ getValue }) => {
         const nombre = getValue() || 'N/A';
         return (
-          <span className="text-sm font-medium" title={nombre.length > 12 ? nombre : undefined}>
+          <div className="flex items-center justify-center">
+        <span className="text-[10px] sm:text-sm font-medium" title={nombre.length > 12 ? nombre : undefined}>
             {nombre.length > 12 ? `${nombre.slice(0, 12)}...` : nombre}
           </span>
+          </div>
+          
         );
       },
       size: 200,
@@ -234,16 +236,18 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.accessor('Cantidad', {
       id: 'cantidad',
-      header: 'Cantidad',
+      header: () => <><span className="hidden sm:inline">Cantidad</span><span className="sm:hidden text-[9px]">Cant.</span></>,
       cell: ({ getValue, row }) => {
         const cantidad = getValue();
         const unidad = row.original.Material?.Unidad_Medicion;
         const nombreUnidad = unidad?.Nombre_Unidad_Medicion || '';
 
         return (
-          <span className="text-sm">
-            {cantidad?.toLocaleString()} {nombreUnidad}
-          </span>
+          <div className="flex items-center justify-center">
+            <span className="text-[10px] sm:text-sm whitespace-nowrap">
+              {cantidad?.toLocaleString()} {nombreUnidad}
+            </span>
+          </div>
         );
       },
       size: 120,
@@ -251,11 +255,11 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.accessor('Usuario.Nombre_Usuario', {
       id: 'usuario',
-      header: 'Usuario',
+      header: () => <><span className="hidden sm:inline">Usuario</span><span className="sm:hidden text-[9px]">Usuario</span></>,
       cell: ({ getValue }) => (
-        <div className="flex items-center gap-2">
-          <LuUser className="text-gray-400" size={14} />
-          <span className="text-sm">{getValue() || 'N/A'}</span>
+        <div className="flex items-center justify-center gap-1 sm:gap-2">
+          <LuUser className="text-gray-400 sm:w-4 sm:h-4 w-3 h-3 hidden sm:inline" />
+          <span className="text-[10px] sm:text-sm whitespace-nowrap">{getValue() || 'N/A'}</span>
         </div>
       ),
       size: 150,
@@ -263,16 +267,16 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.accessor('Fecha_Movimiento', {
       id: 'fecha',
-      header: 'Fecha',
+      header: () => <><span className="hidden sm:inline">Fecha</span><span className="sm:hidden text-[9px]">Fecha</span></>,
       cell: ({ getValue }) => {
         const fecha = getValue();
         if (!fecha) return 'N/A';
 
         const fechaObj = new Date(fecha);
         return (
-          <div className="flex items-center gap-2">
-            <LuCalendar className="text-gray-400" size={14} />
-            <span className="text-sm">
+          <div className="flex items-center justify-center gap-1 sm:gap-2">
+            <LuCalendar className="text-gray-400 sm:w-4 sm:h-4 w-3 h-3 hidden sm:inline" />
+            <span className="text-[10px] sm:text-sm whitespace-nowrap">
               {fechaObj.toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: '2-digit',
@@ -287,16 +291,18 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.display({
       id: 'stock_anterior',
-      header: 'Stock Anterior',
+      header: () => <><span className="hidden sm:inline">Stock Anterior</span><span className="sm:hidden text-[9px]">Ant.</span></>,
       cell: ({ row }) => {
         const movimiento = row.original;
         const unidad = movimiento.Material?.Unidad_Medicion;
         const nombreUnidad = unidad?.Nombre_Unidad_Medicion || '';
 
         return (
-          <span className="text-sm text-gray-600">
-            {movimiento.Cantidad_Anterior?.toLocaleString() || '0'} {nombreUnidad}
-          </span>
+          <div className="flex items-center justify-center">
+            <span className="text-[10px] sm:text-sm text-gray-600 whitespace-nowrap">
+              {movimiento.Cantidad_Anterior?.toLocaleString() || '0'} {nombreUnidad}
+            </span>
+          </div>
         );
       },
       size: 120,
@@ -304,16 +310,18 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.display({
       id: 'stock_nuevo',
-      header: 'Stock Actual',
+      header: () => <><span className="hidden sm:inline">Stock Actual</span><span className="sm:hidden text-[9px]">Act.</span></>,
       cell: ({ row }) => {
         const movimiento = row.original;
         const unidad = movimiento.Material?.Unidad_Medicion;
         const nombreUnidad = unidad?.Nombre_Unidad_Medicion || '';
 
         return (
-          <span className="text-sm font-medium">
-            {movimiento.Cantidad_Nueva?.toLocaleString() || '0'} {nombreUnidad}
-          </span>
+          <div className="flex items-center justify-center">
+            <span className="text-[10px] sm:text-sm font-medium whitespace-nowrap">
+              {movimiento.Cantidad_Nueva?.toLocaleString() || '0'} {nombreUnidad}
+            </span>
+          </div>
         );
       },
       size: 120,
@@ -321,11 +329,11 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
 
     columnHelper.display({
       id: 'acciones',
-      header: 'Acciones',
+      header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[9px]">Acciones</span></>,
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
+        <div className="flex flex-row justify-center flex-nowrap gap-1 min-w-[50px] sm:min-w-[140px] overflow-visible">
           <button
-            className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+            className="px-1.5 py-1 sm:px-4 sm:py-1 bg-gray-600 text-white text-[9px] sm:text-xs rounded hover:bg-gray-700 transition-colors w-auto whitespace-nowrap"
             onClick={() => handleViewDetails(row.original)}
             title="Ver detalles"
           >
@@ -404,173 +412,175 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
           <h2 className="text-2xl font-bold text-gray-900">Historial de Movimientos</h2>
           <p className="text-sm text-gray-600 pb-4">Registra los movimientos de entrada y salida de materiales</p>
         </div>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center justify-start gap-4">
-            <label htmlFor="tipo-movimiento-filter-select" className="text-sm font-medium text-gray-700">Tipo:</label>
-            <select
-              id="tipo-movimiento-filter-select"
-              value={appliedFilters.tipoMovimiento || "todos"}
-              onChange={(e) => handleApplyFilters({ ...appliedFilters, tipoMovimiento: e.target.value === "todos" ? undefined : e.target.value as TipoMovimiento })}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-            >
-              <option value="todos">Todos los tipos</option>
-              <option value="Entrada">Entrada</option>
-              <option value="Salida">Salida</option>
-            </select>
-          </div>
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-4 w-full sm:w-auto">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 items-stretch sm:items-center justify-between pb-2">
+          {/* Fila 1 en móvil: Filtros de Estado */}
+          <div className="flex flex-row items-center justify-between gap-2 w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <label htmlFor="tipo-movimiento-filter-select" className="text-xs sm:text-sm font-medium text-gray-700">Tipo:</label>
+              <select
+                id="tipo-movimiento-filter-select"
+                value={appliedFilters.tipoMovimiento || "todos"}
+                onChange={(e) => handleApplyFilters({ ...appliedFilters, tipoMovimiento: e.target.value === "todos" ? undefined : e.target.value as TipoMovimiento })}
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+              >
+                <option value="todos">Todos los tipos</option>
+                <option value="Entrada">Entrada</option>
+                <option value="Salida">Salida</option>
+              </select>
+            </div>
              <button
               onClick={() => setIsFilterModalOpen(true)}
-              className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${
+              className={`px-3 py-1.5 sm:px-4 sm:py-2 border rounded-lg flex items-center gap-2 transition-colors text-xs sm:text-sm whitespace-nowrap ${
                 activeFiltersCount > 0
                   ? 'border-blue-500 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 hover:bg-gray-50'
+                  : 'border-gray-300 hover:bg-gray-50 text-gray-700'
               }`}
             >
               <LuFilter className="w-4 h-4" />
               Filtros
               {activeFiltersCount > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-blue-500 text-white text-[10px] sm:text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
             </button>
-            <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          </div>
+          
+          {/* Fila 2 en móvil: Búsqueda y Botón */}
+          <div className="w-full flex gap-2 sm:flex-1 sm:max-w-md order-2 sm:order-none">
+            <div className="relative w-full">
+              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="text"
                 placeholder="Buscar movimientos..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
            
             <button 
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg flex items-center gap-2 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
-              <LuPlus className="w-4 h-4" />
-              Nuevo Movimiento
+              <LuPlus className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Nuevo Movimiento</span>
+              <span className="sm:hidden">Nuevo</span>
             </button>
           </div>
         </div>
       </div>
-      </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-sky-100 overflow-hidden max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-2xl shadow-sm border border-sky-100 overflow-hidden">
+        <div className="overflow-x-auto max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
           <table className="min-w-full table-auto">
-            <thead className="bg-sky-50">
+            <thead className="bg-sky-50 sticky top-0 z-10">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       className="px-2 sm:px-4 py-3 font-medium border-b border-sky-100 cursor-pointer"
-                      style={{ width: header.getSize() }}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      <div className="flex items-center space-x-1">
-                        <span>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                        {header.column.getCanSort() && (
-                          <span>
-                            {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
-                            {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
-                          </span>
-                        )}
-                      </div>
+                      <span className="flex items-center justify-center gap-1">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                        {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
+                        {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
+                      </span>
                     </th>
                   ))}
                 </tr>
               ))}
             </thead>
             <tbody className="bg-white divide-y divide-sky-50">
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
+              {table.getRowModel().rows.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                    {globalFilter ? 'No se encontraron movimientos que coincidan con la búsqueda' : 'No hay movimientos registrados'}
+                  </td>
                 </tr>
-              ))}
+              ) : (
+                table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="hover:bg-sky-50 cursor-pointer transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top">
+                        {typeof cell.column.columnDef.cell === 'function'
+                          ? cell.column.columnDef.cell(cell.getContext())
+                          : cell.getValue() as React.ReactNode}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {movimientos.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-500 ">No hay movimientos registrados</div>
-          </div>
-        )}
 
+         <div className="px-2 sm:px-4 md:px-6 py-2 md:py-3 bg-gray-50 border-t border-gray-200">
+          <div className="flex flex-row items-center justify-between w-full gap-2">
 
-        <div className="bg-gray-50 px-4 py-3 flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 sm:px-6 gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">Filas por página</span>
-              <select
-                value={table.getState().pagination.pageSize}
-                onChange={(e) => {
-                  table.setPageSize(Number(e.target.value));
-                }}
-                className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                {pageSizeOptions.map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                ))}
-              </select>
+            <div className="flex items-center gap-2 sm:gap-4 w-auto justify-start">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 sm:inline">Filas por página:</span>
+                <select
+                  value={table.getState().pagination.pageSize}
+                  onChange={(e) => {
+                    table.setPageSize(Number(e.target.value));
+                  }}
+                  className="px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs md:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {pageSizeOptions.map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Primera página"
-            >
-              <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Página anterior"
-            >
-              <MdKeyboardArrowLeft className="w-4 h-4" />
-            </button>
-
-            <span className="text-sm text-gray-700">
-              Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-            </span>
-
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Página siguiente"
-            >
-              <MdKeyboardArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-              className="p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              title="Última página"
-            >
-              <MdKeyboardDoubleArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex items-center justify-end gap-1 w-auto">
+              <button
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Primera página"
+              >
+                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Página anterior"
+              >
+                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
+                {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
+              </span>
+              <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Página siguiente"
+              >
+                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <button
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Última página"
+              >
+                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

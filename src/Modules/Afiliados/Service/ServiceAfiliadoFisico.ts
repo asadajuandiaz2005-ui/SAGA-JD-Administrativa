@@ -3,7 +3,6 @@ import type { AfiliadoFisico, Medidor } from "../Models/TablaAfiliados/ModeloAfi
 
 export async function getAfiliadosFisicos(): Promise<AfiliadoFisico[]> {
     const response = await apiAuth.get<AfiliadoFisico[]>("/afiliados/fisico/all");
-    console.log('Response del API:', response.data); // 🔍 Debug
     return response.data;
 }
 
@@ -150,6 +149,21 @@ export const crearYAsignarMedidorAfiliado = async (
         headers: { 'Content-Type': 'multipart/form-data' },
     });
 };
+
+export async function getAfiliadoFisicoByIdentificacion(identificacion: string | number): Promise<{
+    Id_Afiliado: number;
+    Tipo_Identificacion: string;
+    Identificacion: string;
+    Nombre: string;
+    Apellido1: string;
+    Apellido2: string;
+    Correo: string;
+    Numero_Telefono: string;
+    Direccion_Exacta: string;
+}> {
+    const response = await apiAuth.get(`/afiliados/fisico/info/${identificacion}`);
+    return response.data;
+}
 
 export const updateTipoAfiliadoFisico = async (
     id: number,

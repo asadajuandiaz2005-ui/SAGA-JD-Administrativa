@@ -48,9 +48,7 @@ export const updateProveedorFisico = async (id: number, proveedor: UpdateProveed
 // Función para eliminar un proveedor físico
 export const deleteProveedorFisico = async (id: number): Promise<void> => {
   try {
-    console.log(`🗑️ Eliminando proveedor físico ID: ${id}`);
     await apiAuth.delete(`/Proveedores/fisico/${id}`);
-    console.log(`✅ Proveedor físico ID: ${id} eliminado correctamente`);
   } catch (error) {
     console.error(`❌ Error al eliminar proveedor físico ID: ${id}`, error);
     throw error;
@@ -60,11 +58,9 @@ export const deleteProveedorFisico = async (id: number): Promise<void> => {
 // Función para cambiar el estado de un proveedor físico
 export const changeProveedorFisicoStatus = async (id: number, nuevoEstado: number): Promise<ProveedorFisico> => {
   try {
-    console.log(`🔄 Cambiando estado del proveedor físico ID: ${id} al estado: ${nuevoEstado}`);
     const response = await apiAuth.patch(`/Proveedores/Fisico/${id}/estado`, { 
       Id_Estado_Proveedor: nuevoEstado 
     });
-    console.log(`✅ Estado del proveedor físico ID: ${id} cambiado correctamente`);
     return response.data;
   } catch (error) {
     console.error(`❌ Error al cambiar estado del proveedor físico ID: ${id}`, error);

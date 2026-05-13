@@ -1,4 +1,4 @@
-import { LuX, LuUser, LuCalendar, LuFileText, LuMap } from 'react-icons/lu';
+import { LuX, LuUser, LuFileText, LuMap } from 'react-icons/lu';
 import type { DetailMedidorModalProps } from '../../types/MedidorTypes';
 import { FaTachometerAlt, FaUsers } from 'react-icons/fa';
 import { formatCedulaJuridica } from '@/Modules/Afiliados/Helper/formatUtils';
@@ -289,18 +289,17 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
             </div>
           </div>
 
-          {/* Fechas */}
+          {/* Usuario Creador */}
           <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
             <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
               <div className="flex items-center gap-3">
-                {/* Ícono estandarizado con fondo azul claro */}
                 <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <LuCalendar className="w-4 h-4 text-blue-600" />
+                  <LuUser className="w-4 h-4 text-blue-600" />
                 </div>
-                <h3 className="text-base font-bold text-gray-900">Fechas</h3>
+                <h3 className="text-base font-bold text-gray-900">Información de Registro</h3>
               </div>
             </div>
-            <div className="p-5">
+             <div className="p-5">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
@@ -321,37 +320,18 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Usuario Creador */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
-            <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <LuUser className="w-4 h-4 text-blue-600" />
-                </div>
-                <h3 className="text-base font-bold text-gray-900">Usuario Creador</h3>
-              </div>
-            </div>
             <div className="p-5">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                    Nombre de Usuario
+                    Usuario Creador
                   </label>
                   <p className="text-sm text-gray-900 font-medium">
                     {medidor.Usuario.Nombre_Usuario}
                   </p>
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
-                    Rol
-                  </label>
-                  <span className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200">
-                    {medidor.Usuario.Nombre_Rol}
-                  </span>
-                </div>
+               
               </div>
             </div>
           </div>

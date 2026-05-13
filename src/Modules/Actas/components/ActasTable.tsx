@@ -71,29 +71,23 @@ export default function ActasTable() {
         columnHelper.accessor('Titulo', {
             header: 'Título',
             cell: info => (
-                <div className="font-medium text-left flex items-center gap-2">
-                    <span className="truncate">
-                        {info.getValue().length > 30
-                            ? `${info.getValue().slice(0, 30)}...`
-                            : info.getValue()}
-                    </span>
+                <div className="font-medium text-left text-[9px] sm:text-xs md:text-sm max-w-[100px] sm:max-w-[150px] md:max-w-xs truncate" title={info.getValue()}>
+                    {info.getValue().substring(0, 10)}{info.getValue().length > 10 ? '...' : ''}
                 </div>
             ),
         }),
         columnHelper.accessor('Descripcion', {
             header: 'Descripción',
             cell: info => (
-                <div className="text-gray-600 text-left">
-                    {info.getValue().length > 30
-                        ? `${info.getValue().slice(0, 30)}...`
-                        : info.getValue()}
+                <div className="text-gray-600 text-left text-[9px] sm:text-xs md:text-sm max-w-[120px] sm:max-w-[200px] md:max-w-md truncate" title={info.getValue()}>
+                    {info.getValue().substring(0, 10)}{info.getValue().length > 10 ? '...' : ''}
                 </div>
             ),
         }),
         columnHelper.accessor('Fecha_Creacion', {
             header: 'Fecha de Creación',
             cell: info => (
-                <div className="text-gray-600 text-left">
+                <div className="text-gray-600 text-left text-[9px] sm:text-xs md:text-sm whitespace-nowrap">
                     {new Date(info.getValue()).toLocaleDateString("es-ES")}
                 </div>
             ),
@@ -101,7 +95,7 @@ export default function ActasTable() {
         columnHelper.accessor('Fecha_Actualizacion', {
             header: 'Última Actualización',
             cell: info => (
-                <div className="text-gray-600 text-left">
+                <div className="text-gray-600 text-left text-[9px] sm:text-xs md:text-sm whitespace-nowrap">
                     {info.getValue()
                         ? new Date(info.getValue()).toLocaleDateString("es-ES")
                         : "Sin actualizar"}
@@ -112,10 +106,10 @@ export default function ActasTable() {
             id: 'acciones',
             header: 'Acciones',
             cell: info => (
-                <div className="flex justify-center gap-1">
+                <div className="flex justify-center items-end gap-0.5 sm:gap-2">
                     {hasViewPermission && (
                         <button
-                            className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                            className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[6px] sm:text-xs rounded hover:bg-gray-700 transition-colors whitespace-nowrap"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleViewDetail(info.row.original);
@@ -127,7 +121,7 @@ export default function ActasTable() {
                     )}
                     {hasEditPermission && (
                         <button
-                            className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                            className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-blue-600 text-white text-[6px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleEdit(info.row.original);
@@ -141,7 +135,7 @@ export default function ActasTable() {
                         <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <button
-                                className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                                className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-red-600 text-white text-[6px] sm:text-xs rounded hover:bg-red-700 transition-colors whitespace-nowrap"
                                 disabled={deleteActaMutation.isPending}
                                 onClick={(e) => e.stopPropagation()}
                                 title="Eliminar acta"
@@ -194,9 +188,10 @@ export default function ActasTable() {
                 refetch();
                 setNotification({ type: 'success', title: 'Acta eliminada con éxito.' });
             },
-            onError: (error) => {
+            onError: (error: any) => {
                 console.error("Error al eliminar el acta:", error);
-                setNotification({ type: 'error', title: 'Hubo un problema al eliminar el acta.' });
+                const errorMessage = error.response?.data?.message || 'Hubo un problema al eliminar el acta.';
+                setNotification({ type: 'error', title: errorMessage });
             },
         });
     };
@@ -247,27 +242,27 @@ export default function ActasTable() {
             {/* Encabezado con búsqueda y botón */}
             <div className="bg-white rounded-lg p-3">
                 <div className="flex items-start gap-4 flex-col justify-start">
-                    <h2 className="text-2xl font-bold text-gray-900">Gestión de Actas</h2>
-                    <p className="text-sm text-gray-600 pb-4">Lleva un control de las actas de reuniones</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de Actas</h2>
+                    <p className="text-[10px] sm:text-sm text-gray-600 pb-2 sm:pb-4">Lleva un control de las actas de reuniones</p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
-                    <div className="flex items-center gap-4 w-full sm:w-auto">
-                        <div className="relative flex-1 max-w-md">
-                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-end mt-2 sm:mt-0">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                        <div className="relative flex-1 max-w-md w-full">
+                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
                             <input
                                 type="text"
                                 placeholder="Buscar actas..."
                                 value={globalFilter ?? ''}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full pl-6 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
                         {hasCreatePermission && (
                             <button
                                 onClick={() => setFormVisible(true)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center gap-1 sm:gap-2 transition-colors whitespace-nowrap"
                             >
-                                <LuPlus className="w-4 h-4" />
+                                <LuPlus className="w-3 h-3 sm:w-4 sm:h-4" />
                                 Nueva Acta
                             </button>
                         )}
@@ -280,12 +275,15 @@ export default function ActasTable() {
                     <table className="min-w-full table-auto">
                         <thead className="bg-sky-50">
                             {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
+                                <tr key={headerGroup.id} className="text-left text-[9px] sm:text-xs md:text-sm text-sky-700">
                                     {headerGroup.headers.map((header, index) => (
-                                        <th key={header.id} className={`px-2 sm:px-4 py-3 font-medium border-b border-sky-100 ${
-                                            index === 0 ? 'text-left' : 'text-center'
-                                        }`}>
+                                        <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${
+                                            index === 0 ? 'text-left pl-3 sm:pl-4' : 'text-center'
+                                        } ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                             {(() => {
+                                                const headerText = header.column.columnDef.header as string;
+                                                const mobileHeaderText = headerText === 'Fecha de Creación' ? 'F.Creación' : headerText === 'Última Actualización' ? 'F.Actualización' : headerText;
+
                                                 if (header.isPlaceholder) {
                                                     return null;
                                                 }
@@ -293,7 +291,7 @@ export default function ActasTable() {
                                                     return (
                                                         <button
                                                             type="button"
-                                                            className={`cursor-pointer select-none flex items-center gap-2 bg-transparent border-none p-0 ${
+                                                            className={`cursor-pointer select-none flex items-center gap-1 bg-transparent border-none p-0 ${
                                                                 index === 0 ? 'justify-start' : 'justify-center'
                                                             }`}
                                                             onClick={header.column.getToggleSortingHandler()}
@@ -304,10 +302,11 @@ export default function ActasTable() {
                                                                 }
                                                             }}
                                                             tabIndex={0}
-                                                            aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
+                                                            aria-label={`Ordenar por ${headerText}`}
                                                         >
-                                                            <span className="flex items-center justify-left gap-1">
-                                                                {header.column.columnDef.header as string}
+                                                            <span className="flex items-center justify-left gap-1 whitespace-nowrap">
+                                                                <span className="sm:hidden">{mobileHeaderText}</span>
+                                                                <span className="hidden sm:inline">{headerText}</span>
                                                                 {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                                                 {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
                                                             </span>
@@ -315,8 +314,9 @@ export default function ActasTable() {
                                                     );
                                                 }
                                                 return (
-                                                    <span className={index === 0 ? 'text-left' : 'text-center'}>
-                                                        {header.column.columnDef.header as string}
+                                                    <span className={`${index === 0 ? 'text-left' : 'text-center'} whitespace-nowrap`}>
+                                                        <span className="sm:hidden">{mobileHeaderText}</span>
+                                                        <span className="hidden sm:inline">{headerText}</span>
                                                     </span>
                                                 );
                                             })()}
@@ -328,7 +328,7 @@ export default function ActasTable() {
                         <tbody className="bg-white divide-y divide-sky-50">
                             {table.getRowModel().rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500 text-[10px] sm:text-xs md:text-sm">
                                         {globalFilter ? 'No se encontraron actas que coincidan con la búsqueda' : 'No hay actas registradas'}
                                     </td>
                                 </tr>
@@ -349,9 +349,9 @@ export default function ActasTable() {
                                             }
 
                                             return (
-                                                <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${
-                                                    index === 0 ? 'text-left' : 'text-center'
-                                                }`}>
+                                                <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[7px] sm:text-xs md:text-sm text-slate-700 align-middle ${
+                                                    index === 0 ? 'text-left pl-3 sm:pl-4' : 'text-center'
+                                                } ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                     {cellContent}
                                                 </td>
                                             );
@@ -363,65 +363,66 @@ export default function ActasTable() {
                     </table>
                 </div>
 
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-700">Filas por página:</span>
-                                <select
-                                    value={table.getState().pagination.pageSize}
-                                    onChange={(e) => {
-                                        table.setPageSize(Number(e.target.value));
-                                    }}
-                                    className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    {pageSizeOptions.map((pageSize) => (
-                                        <option key={pageSize} value={pageSize}>
-                                            {pageSize}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => table.setPageIndex(0)}
-                                disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Primera página"
-                            >
-                                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => table.previousPage()}
-                                disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Página anterior"
-                            >
-                                <MdKeyboardArrowLeft className="w-4 h-4" />
-                            </button>
-                             <span className="text-sm text-gray-700">
-                                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-                            </span>
-                            <button
-                                onClick={() => table.nextPage()}
-                                disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Página siguiente"
-                            >
-                                <MdKeyboardArrowRight className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                                disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                title="Última página"
-                            >
-                                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                 <div className="px-2 sm:px-4 md:px-6 py-2 md:py-3 bg-gray-50 border-t border-gray-200">
+          <div className="flex flex-row items-center justify-between w-full gap-2">
+
+            <div className="flex items-center gap-2 sm:gap-4 w-auto justify-start">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-[10px] sm:text-xs md:text-sm text-gray-700 sm:inline">Filas por página:</span>
+                <select
+                  value={table.getState().pagination.pageSize}
+                  onChange={(e) => {
+                    table.setPageSize(Number(e.target.value));
+                  }}
+                  className="px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs md:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {pageSizeOptions.map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-1 w-auto">
+              <button
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Primera página"
+              >
+                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Página anterior"
+              >
+                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
+                {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
+              </span>
+              <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Página siguiente"
+              >
+                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+              <button
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+                className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Última página"
+              >
+                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
             </div>
 
             {/* Modal para crear actas */}

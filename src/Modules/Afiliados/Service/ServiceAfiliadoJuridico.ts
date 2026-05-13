@@ -3,7 +3,6 @@ import type { AfiliadoJuridico } from "../Models/TablaAfiliados/ModeloAfiliadoJu
 
 export async function getAfiliadosJuridicos(): Promise<AfiliadoJuridico[]> {
     const response = await apiAuth.get<AfiliadoJuridico[]>("/afiliados/juridico/all");
-    console.log('Response del API:', response.data); 
     return response.data;
 }
 
@@ -18,7 +17,6 @@ export async function getAfiliadoJuridicoDetail(id: number): Promise<AfiliadoJur
 }
 
 export const createAfiliadoJuridico = async (formData: FormData) => {
-    console.log(" Hook - Enviando FormData:", formData);
 
     const response = await apiAuth.post("/afiliados/juridico/create", formData, {
         headers: {
@@ -30,7 +28,6 @@ export const createAfiliadoJuridico = async (formData: FormData) => {
 };
 
 export const updateAfiliadoJuridico = async (cedulaJuridica: string, formData: FormData) => {
-    console.log("🔄 Hook - Actualizando FormData:", formData);
 
     const response = await apiAuth.put(`/afiliados/update/juridico/${cedulaJuridica}`, formData, {
         headers: {
@@ -76,6 +73,18 @@ export const updateTipoAfiliadoJuridico = async (
 
     return response.data;
 };
+
+export async function getAfiliadoJuridicoByIdentificacion(cedulaJuridica: string): Promise<{
+    Id_Afiliado: number;
+    Cedula_Juridica: string;
+    Razon_Social: string;
+    Correo: string;
+    Numero_Telefono: string;
+    Direccion_Exacta: string;
+}> {
+    const response = await apiAuth.get(`/afiliados/juridico/info/${cedulaJuridica}`);
+    return response.data;
+}
 
 export const asignarMedidorExistenteAfiliadoJuridico = async (
     idAfiliado: number,

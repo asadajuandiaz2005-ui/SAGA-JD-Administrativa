@@ -111,9 +111,10 @@ export default function FormularioCrearActas({ onClose, refetch }: FormularioCre
                
                 setTimeout(() => onClose(), 500);
             },
-            onError: (error) => {
+            onError: (error: any) => {
                 console.error("Error al crear el acta:", error);
-                setNotification({ type: 'error', title: 'Hubo un problema al crear el acta.' });
+                const errorMessage = error.response?.data?.message || 'Hubo un problema al crear el acta.';
+                setNotification({ type: 'error', title: errorMessage });
             },
         });
     };

@@ -9,7 +9,9 @@ import {
     getLecturasEntreFechas,
     importarCSVLecturas,
     createLectura, 
-    updateLectura 
+    updateLectura, 
+    changeEstadoSello,
+    getSelloCalidad
 } from "../service/LecturaService";
 import type { Lectura, CreateLecturaDTO, UpdateLecturaDTO, TipoTarifaLectura } from "../model/Lectura";
 
@@ -65,6 +67,13 @@ export const useGetLecturasEntreFechas = (fechaInicio: string, fechaFin: string,
         enabled: enabled && !!fechaInicio && !!fechaFin,
     });
 };
+
+export const useGetSelloCalidad = () => {
+    return useQuery<boolean>({
+        queryKey: ["selloCalidad"],
+        queryFn: getSelloCalidad,
+    });
+}
 
 // Importar CSV de lecturas
 export const useImportarCSVLecturas = () => {
@@ -163,6 +172,30 @@ export const useUpdateLectura = () => {
                 "error",
                 "Error al actualizar lectura",
                 error.response?.data?.message || "No se pudo actualizar la lectura"
+            );
+        },
+    });
+};
+
+export const useChangeEstadoSello = () => {
+    const queryClient = useQueryClient();
+    const { showAlert } = useAlerts();
+
+    return useMutation({
+        mutationFn: () => changeEstadoSello(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["lecturas"] });
+            showAlert(
+                "success",
+                "Estado del sello actualizado exitosamente",
+                "El estado del sello se actualizó correctamente"
+            );
+        },
+        onError: (error: any) => {
+            showAlert(
+                "error",
+                "Error al actualizar estado del sello",
+                error.response?.data?.message || "No se pudo actualizar el estado del sello"
             );
         },
     });

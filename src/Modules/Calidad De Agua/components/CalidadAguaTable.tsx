@@ -19,6 +19,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   createColumnHelper,
+  flexRender,
 } from "@tanstack/react-table";
 
 import { useAlerts } from "@/Modules/Global/context/AlertContext";
@@ -95,8 +96,9 @@ export default function CalidadAguaTable() {
       onSuccess: () => {
         showSuccess("Visibilidad actualizada correctamente");
       },
-      onError: () => {
-        showError("Error al cambiar la visibilidad");
+      onError: (error: any) => {
+        const errorMessage = error.response?.data?.message || "Error al cambiar la visibilidad";
+        showError(errorMessage);
       },
       onSettled: () => {
         setConfirmVisibilidadOpen(false);
@@ -113,40 +115,42 @@ export default function CalidadAguaTable() {
   // Definir las columnas
   const columns = [
     columnHelper.accessor('Titulo', {
-      header: 'Título',
-      cell: info => (
-        <div className="font-medium text-left flex items-center gap-2">
-          <span className="truncate">
-            {info.getValue().length > 30
-              ? `${info.getValue().slice(0, 30)}...`
-              : info.getValue()}
-          </span>
-        </div>
-      ),
+      header: () => <><span className="hidden sm:inline">Título</span><span className="sm:hidden text-[8px]">Título</span></>,
+      cell: info => {
+        const titulo = info.getValue() || '';
+        const truncatedDesktop = titulo.length > 30 ? titulo.substring(0, 30) + '...' : titulo;
+        const truncatedMobile = titulo.length > 15 ? titulo.substring(0, 15) + '...' : titulo;
+        return (
+          <div className="font-medium text-left flex items-center gap-2 text-gray-700" title={titulo}>
+            <span className="hidden sm:inline text-xs">{truncatedDesktop}</span>
+            <span className="sm:hidden text-[7px] whitespace-nowrap">{truncatedMobile}</span>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor('Fecha_Creacion', {
-      header: 'Fecha de Creación',
+      header: () => <><span className="hidden sm:inline">Fecha de Creación</span><span className="sm:hidden text-[8px]">Fecha Creación</span></>,
       cell: info => (
-        <div className="text-gray-600 text-left">
+        <div className="text-gray-600 text-left text-[7px] sm:text-xs whitespace-nowrap">
           {new Date(info.getValue()).toLocaleDateString("es-ES")}
         </div>
       ),
     }),
     columnHelper.accessor('Fecha_Actualizacion', {
-      header: 'Última Actualización',
+      header: () => <><span className="hidden sm:inline">Última Actualización</span><span className="sm:hidden text-[8px]">Últ. Actualiz.</span></>,
       cell: info => (
-        <div className="text-gray-600 text-left">
+        <div className="text-gray-600 text-left text-[7px] sm:text-xs whitespace-nowrap">
           {info.getValue() ? new Date(info.getValue()).toLocaleDateString("es-ES") : "Sin actualizar"}
         </div>
       ),
     }),
     columnHelper.accessor('Visible', {
-      header: 'Estado',
+      header: () => <><span className="hidden sm:inline">Estado</span><span className="sm:hidden text-[8px]">Estado</span></>,
       cell: info => (
         <div className="flex items-center justify-start">
           <button
             onClick={(e) => handleRequestToggleVisible(e, info.row.original)}
-            className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${info.getValue()
+            className={`flex items-center gap-1 px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium transition-colors ${info.getValue()
               ? 'bg-green-100 text-green-700 hover:bg-green-200'
               : 'bg-red-100 text-red-700 hover:bg-red-200'
               }`}
@@ -154,13 +158,15 @@ export default function CalidadAguaTable() {
           >
             {info.getValue() ? (
               <>
-                <Eye size={12} className="sm:w-3 sm:h-3" />
-                <span className="hidden sm:inline">Visible</span>
+                <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <span className=" sm:inline">Visible</span>
+
               </>
             ) : (
               <>
-                <EyeOff size={12} className="sm:w-3 sm:h-3" />
-                <span className="hidden sm:inline">Oculto</span>
+                <EyeOff className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <span className=" sm:inline">Oculto</span>
+
               </>
             )}
           </button>
@@ -169,12 +175,12 @@ export default function CalidadAguaTable() {
     }),
     columnHelper.display({
       id: 'acciones',
-      header: 'Acciones',
+      header: () => <><span className="hidden sm:inline">Acciones</span><span className="sm:hidden text-[8px]">Acciones</span></>,
       cell: info => (
         <div className="flex justify-center gap-1">
           {hasViewPermission && (
             <button
-              className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+              className="px-1.5 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors"
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenModal(info.row.original);
@@ -186,7 +192,7 @@ export default function CalidadAguaTable() {
           )}
           {hasEditPermission && (
             <button
-              className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+              className="px-1.5 sm:px-4 py-0.5 sm:py-1.5 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
               onClick={(e) => {
                 e.stopPropagation();
                 handleOpenEditModal(info.row.original);
@@ -236,24 +242,25 @@ export default function CalidadAguaTable() {
           <p className="text-sm text-gray-600 pb-4">Gestiona los documentos de los resultados de la calidad de agua</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
-          <div className="flex items-center gap-4 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5" />
               <input
                 type="text"
                 placeholder="Buscar archivos..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-8 pr-3 py-1.5 text-[10px] sm:text-xs border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             {hasCreatePermission && (
               <button
                 onClick={() => setFormVisible(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-[10px] sm:text-xs rounded-md flex items-center gap-2 transition-colors whitespace-nowrap"
               >
-                <Plus className="w-4 h-4" />
-                Nuevo Archivo
+                <Plus className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Nuevo Archivo</span>
+                <span className="sm:hidden">Nuevo</span>
               </button>
             )}
           </div>
@@ -290,10 +297,10 @@ export default function CalidadAguaTable() {
                                 }
                               }}
                               tabIndex={0}
-                              aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
+                              aria-label="Ordenar columna"
                             >
                               <span className="flex items-center justify-left gap-1">
-                                {header.column.columnDef.header as string}
+                                {flexRender(header.column.columnDef.header, header.getContext())}
                                 {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                 {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
                               </span>
@@ -302,7 +309,7 @@ export default function CalidadAguaTable() {
                         }
                         return (
                           <span className={index === 0 ? 'text-left' : 'text-center'}>
-                            {header.column.columnDef.header as string}
+                            {flexRender(header.column.columnDef.header, header.getContext())}
                           </span>
                         );
                       })()}
@@ -314,39 +321,25 @@ export default function CalidadAguaTable() {
             <tbody className="bg-white divide-y divide-sky-50">
               {isLoading ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                  <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-xs sm:text-sm text-slate-500">
                     Cargando...
                   </td>
                 </tr>
               ) : table.getRowModel().rows.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                  <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-xs sm:text-sm text-slate-500">
                     {globalFilter ? 'No se encontraron archivos que coincidan con la búsqueda' : 'No hay archivos registrados'}
                   </td>
                 </tr>
               ) : (
                 table.getRowModel().rows.map(row => (
                   <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors" onClick={() => handleOpenModal(row.original)}>
-                    {row.getVisibleCells().map((cell, index) => {
-                      let cellContent: React.ReactNode;
-
-                      if (cell.column.columnDef.cell) {
-                        if (typeof cell.column.columnDef.cell === 'function') {
-                          cellContent = cell.column.columnDef.cell(cell.getContext());
-                        } else {
-                          cellContent = cell.column.columnDef.cell;
-                        }
-                      } else {
-                        cellContent = cell.getValue() as React.ReactNode;
-                      }
-
-                      return (
-                        <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${index === 0 ? 'text-left' : 'text-center'
-                          }`}>
-                          {cellContent}
-                        </td>
-                      );
-                    })}
+                    {row.getVisibleCells().map((cell, index) => (
+                      <td key={cell.id} className={`px-2 sm:px-4 py-2 sm:py-3 text-[10px] sm:text-sm text-slate-700 align-top ${index === 0 ? 'text-left' : 'text-center'
+                        }`}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
                   </tr>
                 ))
               )}
@@ -354,62 +347,64 @@ export default function CalidadAguaTable() {
           </table>
         </div>
 
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-700">Filas por página:</span>
-                <select
-                  value={table.getState().pagination.pageSize}
-                  onChange={(e) => {
-                    table.setPageSize(Number(e.target.value));
-                  }}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {pageSizeOptions.map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      {pageSize}
-                    </option>
-                  ))}
-                </select>
+        <div className="overflow-x-auto bg-gray-50 border-t border-gray-200">
+          <div className="min-w-max px-2 sm:px-4 py-1.5 sm:py-2 cursor-default">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <span className="text-[10px] sm:text-xs text-gray-700 whitespace-nowrap">Filas por página:</span>
+                  <select
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => {
+                      table.setPageSize(Number(e.target.value));
+                    }}
+                    className="px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  >
+                    {pageSizeOptions.map((pageSize) => (
+                      <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Primera página"
-              >
-                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Página anterior"
-              >
-                <MdKeyboardArrowLeft className="w-4 h-4" />
-              </button>
-              <span className="text-sm text-gray-700">
-                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-              </span>
-              <button
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Página siguiente"
-              >
-                <MdKeyboardArrowRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Última página"
-              >
-                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <button
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                  className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Primera página"
+                >
+                  <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+                <button
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                  className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Página anterior"
+                >
+                  <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+                <span className="text-[10px] sm:text-xs text-gray-700 whitespace-nowrap mx-1">
+                  Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+                </span>
+                <button
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                  className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Página siguiente"
+                >
+                  <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+                <button
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                  className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Última página"
+                >
+                  <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -431,7 +426,7 @@ export default function CalidadAguaTable() {
             </AlertDialogTitle>
             <AlertDialogDescription>
                 <span>
-                ¿Estás seguro de que deseas {accionVisibilidad} el archivo "{(archivoPendienteVisibilidad?.Titulo ?? '').length > 35 ? `${(archivoPendienteVisibilidad?.Titulo ?? '').slice(0, 35)}...` : archivoPendienteVisibilidad?.Titulo}"?
+                ¿Estás seguro de que deseas {accionVisibilidad} el archivo "{(archivoPendienteVisibilidad?.Titulo ?? '').length > 15 ? `${(archivoPendienteVisibilidad?.Titulo ?? '').slice(0, 15)}...` : archivoPendienteVisibilidad?.Titulo}"?
                 </span>
               <br />
               <span>Esta acción puede revertirse posteriormente.</span>

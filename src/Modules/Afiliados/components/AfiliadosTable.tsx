@@ -212,17 +212,25 @@ export default function AbonadosTable() {
             header: 'Nombre / Razón Social',
             cell: (info) => {
                 const fila = info.row.original;
+                let nombreFinal = '';
                 if (fila.Tipo_Persona === 'Físico') {
                     const datosOriginales = fila.datos_originales as AfiliadoFisico;
                     if (!datosOriginales.Nombre && !datosOriginales.Apellido1) {
-                        return 'Datos no disponibles';
+                        nombreFinal = 'Datos no disponibles';
+                    } else {
+                        nombreFinal = `${datosOriginales.Nombre || ''} ${datosOriginales.Apellido1 || ''} ${datosOriginales.Apellido2?.includes('No Proporcionado') ? '' : datosOriginales.Apellido2 || ''}`.trim();
+                        nombreFinal = nombreFinal || 'Sin nombre';
                     }
-                    const nombreCompleto = `${datosOriginales.Nombre || ''} ${datosOriginales.Apellido1 || ''} ${datosOriginales.Apellido2?.includes('No Proporcionado') ? '' : datosOriginales.Apellido2 || ''}`.trim();
-                    return nombreCompleto || 'Sin nombre';
                 } else {
                     const datosOriginales = fila.datos_originales as AfiliadoJuridico;
-                    return datosOriginales.Razon_Social || 'Sin razón social';
+                    nombreFinal = datosOriginales.Razon_Social || 'Sin razón social';
                 }
+
+                return (
+                    <div className="font-medium text-left max-w-[80px] sm:max-w-[150px] md:max-w-xs truncate" title={nombreFinal}>
+                        {nombreFinal}
+                    </div>
+                );
             },
             size: 200,
         }),
@@ -234,9 +242,9 @@ export default function AbonadosTable() {
                 const identificacion = info.getValue() || 'Sin dato';
 
                 return (
-                    <div className='flex flex-col items-start justify-start'>
-                        <div className="font-medium text-gray-900">{identificacion}</div>
-                        <div className="text-xs text-gray-500 mt-1">{tipoIdentificacion}</div>
+                    <div className='flex flex-col items-start justify-start max-w-[70px] sm:max-w-[150px] truncate' title={`${identificacion} - ${tipoIdentificacion}`}>
+                        <div className="font-medium text-gray-900 truncate w-full">{identificacion}</div>
+                        <div className="text-[7px] sm:text-xs text-gray-500 mt-1 truncate w-full">{tipoIdentificacion}</div>
                     </div>
                 );
             },
@@ -255,7 +263,7 @@ export default function AbonadosTable() {
                        ? 'En espera'
                         : estadoNombre;
 
-                const base = 'px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap';
+                const base = 'px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-semibold whitespace-nowrap';
 
                 if (estadoNormalizado === 'activo') {
                     return <span className={`${base} bg-emerald-100 text-emerald-700 border border-emerald-300`}>Activo</span>;
@@ -276,11 +284,11 @@ export default function AbonadosTable() {
                 const tipo = info.getValue();
                 return (
                     <div className='flex items-center justify-start'>
-                        <span className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${tipo === 'Físico'
+                        <span className={`inline-flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium ${tipo === 'Físico'
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-blue-100 text-blue-700'
                             }`}>
-                            {tipo === 'Físico' ? <User size={14} /> : <Building size={14} />} {tipo}
+                            {tipo === 'Físico' ? <User className="w-2 h-2 sm:w-3.5 sm:h-3.5" /> : <Building className="w-2 h-2 sm:w-3.5 sm:h-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
                         </span>
                     </div>
                 );
@@ -293,11 +301,11 @@ export default function AbonadosTable() {
                 const tipo = info.getValue();
                 return (
                     <div className='flex items-center justify-start'>
-                        <span className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${tipo === 'Abonado'
+                        <span className={`inline-flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium ${tipo === 'Abonado'
                             ? 'bg-emerald-100 text-emerald-700'
                             : 'bg-orange-100 text-orange-700'
                             }`}>
-                            {tipo}
+                            <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
                         </span>
                     </div>
                 );
@@ -317,13 +325,13 @@ export default function AbonadosTable() {
                     estadoNormalizado.includes('espera');
 
                 return (
-                    <div className="flex justify-center gap-1">
+                    <div className="flex justify-center gap-1 sm:gap-2">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 handleViewDetail(persona);
                             }}
-                            className="px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                            className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-gray-600 text-white text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors whitespace-nowrap"
                             title="Ver detalles"
                         >
                             Ver
@@ -332,9 +340,9 @@ export default function AbonadosTable() {
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEdit(persona); // ✅ Cambiar para abrir EditModal
+                                    handleEdit(persona); //  Cambiar para abrir EditModal
                                 }}
-                                className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                                className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-blue-600 text-white text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
                                 title="Editar"
                             >
                                 Editar
@@ -346,20 +354,20 @@ export default function AbonadosTable() {
                                     e.stopPropagation();
                                     handleOpenAsignarMedidor(persona);
                                 }}
-                                className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
+                                className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-green-600 text-white text-[7px] sm:text-xs rounded hover:bg-green-700 transition-colors whitespace-nowrap"
                                 title="Asignar medidor"
                             >
-                                Asignar
+                                Asig.
                             </button>
                         ) : hasEditPermission && esActivo ? (
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <button
-                                        className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                                        className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-red-600 text-white text-[7px] sm:text-xs rounded hover:bg-red-700 transition-colors whitespace-nowrap"
                                         disabled={updateEstadoMutationFisico.isPending || updateEstadoMutationJuridico.isPending}
                                         title="Desactivar"
                                     >
-                                        Desactivar
+                                        Desact.
                                     </button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
@@ -390,7 +398,7 @@ export default function AbonadosTable() {
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <button
-                                        className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors"
+                                        className="px-1 sm:px-4 py-0.5 sm:py-1.5 bg-green-600 text-white text-[7px] sm:text-xs rounded hover:bg-green-700 transition-colors whitespace-nowrap"
                                         disabled={updateEstadoMutationFisico.isPending || updateEstadoMutationJuridico.isPending}
                                         title="Activar"
                                     >
@@ -470,51 +478,51 @@ export default function AbonadosTable() {
             {/* Encabezado con filtro de estado, búsqueda y botón */}
             <div className="bg-white rounded-lg p-3">
                 <div className="flex items-start gap-4 flex-col justify-start">
-                    <h2 className="text-2xl font-bold text-gray-900">Gestión de afiliados</h2>
-                    <p className="text-sm text-gray-600 pb-4">Gestiona los afiliados de la ASADA</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de afiliados</h2>
+                    <p className="text-[10px] sm:text-sm text-gray-600 pb-2 sm:pb-4">Gestiona los afiliados de la ASADA</p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
-                    <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-end mt-2 sm:mt-0">
+                    <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-4 w-full sm:w-auto">
                         <button
                             onClick={() => setIsFilterOpen(true)}
-                            className={`px-4 py-2 border rounded-md flex items-center gap-2 transition-colors ${
+                            className={`px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors ${
                                 activeFiltersCount > 0
                                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                                     : 'border-gray-300 hover:bg-gray-50'
                             }`}
                         >
-                            <LuFilter className="w-4 h-4" />
-                            Filtros
+                            <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">Filtros</span>
                             {activeFiltersCount > 0 && (
-                                <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                <span className="bg-blue-500 text-white text-[9px] sm:text-xs rounded-full w-4 sm:w-5 h-4 sm:h-5 flex items-center justify-center">
                                     {activeFiltersCount}
                                 </span>
                             )}
                         </button>
-                        <div className="relative flex-1 max-w-md">
-                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <div className="relative flex-1 max-w-md w-full min-w-[120px]">
+                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
                             <input
                                 type="text"
                                 placeholder="Buscar afiliados..."
                                 value={globalFilter ?? ''}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full pl-6 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md sm:rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
                         {hasCreatePermission && (
                             <button
                                 onClick={() => setShowCreateModal(true)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors whitespace-nowrap"
                             >
-                                <Plus className="w-4 h-4" />
-                                Nuevo Afiliado
+                                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <span className="hidden sm:inline">Nuevo Afiliado</span>
+                                <span className="sm:hidden">Nuevo</span>
                             </button>
                         )}
                         <button
                             onClick={() => navigate({ to: '/Afiliados/Lecturas' })}
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors"
                         >
-
                             Lecturas
                         </button>
                     </div>
@@ -535,12 +543,17 @@ export default function AbonadosTable() {
                     <table className="min-w-full table-auto">
                         <thead className="bg-sky-50">
                             {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
-                                    {headerGroup.headers.map((header) => {
+                                <tr key={headerGroup.id} className="text-left text-[9px] sm:text-xs md:text-sm text-sky-700">
+                                    {headerGroup.headers.map((header, index) => {
                                         const isActionsColumn = header.column.id === 'acciones';
                                         return (
-                                            <th key={header.id} className={`px-2 sm:px-4 py-3 font-medium border-b border-sky-100 ${isActionsColumn ? 'text-center' : 'text-left'}`}>
+                                            <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${
+                                                isActionsColumn ? 'text-center' : 'text-left'
+                                            } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                 {(() => {
+                                                    const headerText = header.column.columnDef.header as string;
+                                                    const mobileHeaderText = headerText === 'Nombre / Razón Social' ? 'Nombre/Razón' : headerText === 'Cédula / Documento' ? 'Cédula' : headerText === 'Tipo Persona' ? 'T. Pesona' : headerText === 'Tipo Afiliado' ? 'T. Afiliado' : headerText;
+
                                                     if (header.isPlaceholder) {
                                                         return null;
                                                     }
@@ -557,10 +570,11 @@ export default function AbonadosTable() {
                                                                     }
                                                                 }}
                                                                 tabIndex={0}
-                                                                aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
+                                                                aria-label={`Ordenar por ${headerText}`}
                                                             >
-                                                                <span className="flex items-center gap-1">
-                                                                    {header.column.columnDef.header as string}
+                                                                <span className="flex items-center justify-left gap-1 whitespace-nowrap">
+                                                                    <span className="sm:hidden">{mobileHeaderText}</span>
+                                                                    <span className="hidden sm:inline">{headerText}</span>
                                                                     {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                                                     {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
                                                                 </span>
@@ -568,8 +582,9 @@ export default function AbonadosTable() {
                                                         );
                                                     }
                                                     return (
-                                                        <span className={isActionsColumn ? 'text-center' : 'text-left'}>
-                                                            {header.column.columnDef.header as string}
+                                                        <span className={`${isActionsColumn ? 'text-center' : 'text-left'} whitespace-nowrap`}>
+                                                            <span className="sm:hidden">{mobileHeaderText}</span>
+                                                            <span className="hidden sm:inline">{headerText}</span>
                                                         </span>
                                                     );
                                                 })()}
@@ -582,14 +597,14 @@ export default function AbonadosTable() {
                         <tbody className="bg-white divide-y divide-sky-50">
                             {table.getRowModel().rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                                    <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-slate-500 text-[10px] sm:text-xs md:text-sm">
                                         {globalFilter ? 'No se encontraron afiliados que coincidan con la búsqueda' : 'No hay afiliados registrados'}
                                     </td>
                                 </tr>
                             ) : (
                                 table.getRowModel().rows.map(row => (
                                     <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors">
-                                        {row.getVisibleCells().map((cell) => {
+                                        {row.getVisibleCells().map((cell, index) => {
                                             let cellContent: React.ReactNode;
 
                                             if (cell.column.columnDef.cell) {
@@ -603,7 +618,9 @@ export default function AbonadosTable() {
                                             }
 
                                             return (
-                                                <td key={cell.id} className="px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top text-left">
+                                                <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[7px] sm:text-xs md:text-sm text-slate-700 align-middle ${
+                                                    cell.column.id === 'acciones' ? 'text-center' : 'text-left'
+                                                } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                     {cellContent}
                                                 </td>
                                             );
@@ -616,17 +633,17 @@ export default function AbonadosTable() {
                 </div>
 
                 {/* Paginación completa */}
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-700">Filas por página:</span>
+                <div className="px-2 sm:px-6 py-2 sm:py-3 bg-gray-50 border-t border-gray-200">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <div className="flex items-center gap-1 sm:gap-2">
+                                <span className="text-[10px] sm:text-sm text-gray-700">Filas por página:</span>
                                 <select
                                     value={table.getState().pagination.pageSize}
                                     onChange={(e) => {
                                         table.setPageSize(Number(e.target.value));
                                     }}
-                                    className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="px-1.5 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     {pageSizeOptions.map((pageSize) => (
                                         <option key={pageSize} value={pageSize}>
@@ -636,41 +653,41 @@ export default function AbonadosTable() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                             <button
                                 onClick={() => table.setPageIndex(0)}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="w-4 h-4" />
+                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <span className="text-sm text-gray-700">
-                                Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+                            <span className="text-[10px] sm:text-sm text-gray-700 mx-1 sm:mx-2 whitespace-nowrap">
+                                <span className="hidden sm:inline">Página </span>{table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
                             </span>
                             <button
                                 onClick={() => table.nextPage()}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="w-4 h-4" />
+                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                         </div>
                     </div>

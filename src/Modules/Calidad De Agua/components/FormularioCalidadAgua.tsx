@@ -105,13 +105,10 @@ export default function FormularioCalidadAgua({ onClose, refetch }: FormularioCa
                     refetch();
                     showSuccess("¡Archivo de Calidad de Agua creado exitosamente!"); // ✅
                 },
-                onError: (error) => {
+                onError: (error: any) => {
                     console.error("Error al crear el archivo:", error);
-                    const message =
-                        error instanceof Error
-                            ? error.message
-                            : "Hubo un problema al crear el archivo.";
-                    showError(`Error al crear el archivo de Calidad de Agua: ${message}`); // ✅
+                    const errorMessage = error.response?.data?.message || error.message || "Hubo un problema al crear el archivo.";
+                    showError(errorMessage); // ✅
                 },
             }
         );

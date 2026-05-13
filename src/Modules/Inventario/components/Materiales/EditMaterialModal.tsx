@@ -17,7 +17,6 @@ import CreateModalProveedor from '@/Modules/Proveedores/Components/CreateModalPr
 import { LuPlus } from 'react-icons/lu';
 import {
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogTitle,
   AlertDialogDescription,
@@ -43,6 +42,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
   const [isCreateCategoriaModalOpen, setIsCreateCategoriaModalOpen] = useState(false);
   const [isCreateUnidadMedicionModalOpen, setIsCreateUnidadMedicionModalOpen] = useState(false);
   const [isCreateProveedorModalOpen, setIsCreateProveedorModalOpen] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const { proveedoresFisicos = [] } = useProveedoresFisicos();
   const { proveedoresJuridicos = [] } = useProveedoresJuridicos();
 
@@ -125,9 +125,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
     </span>
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const validateMaterial = () => {
     const validationResult = UpdateMaterialSchema.safeParse({
       ...formData,
       IDS_Categorias: selectedCategorias,
@@ -143,12 +141,26 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
       setFormErrors(errors);
 
       showError('Por favor, corrige los errores en el formulario');
-      return;
+      return false;
     }
 
     if (formData.Id_Tipo_Proveedor && !formData.Id_Proveedor) {
       setFormErrors(prev => ({ ...prev, Id_Proveedor: 'Debe seleccionar un proveedor' }));
       showError('Por favor, selecciona un proveedor');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleOpenConfirm = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsConfirmDialogOpen(true);
+  };
+
+  const handleConfirmUpdate = async () => {
+    if (!validateMaterial()) {
+      setIsConfirmDialogOpen(false);
       return;
     }
 
@@ -171,6 +183,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
         data: updateData,
       });
 
+      setIsConfirmDialogOpen(false);
       onClose();
       window.dispatchEvent(new Event('refreshInventario'));
     } catch (error: any) {
@@ -198,7 +211,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
-          <form id="edit-material-form" onSubmit={handleSubmit} className="p-6 space-y-4">
+          <form id="edit-material-form" onSubmit={handleOpenConfirm} className="p-6 space-y-4">
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between items-center mb-1">
@@ -217,7 +230,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                       ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
                       : 'border-gray-300'
                     }`}
-                  required
+    
                 />
                 {formErrors.Nombre_Material && (
                   <p className="mt-1 text-sm text-red-600">{formErrors.Nombre_Material}</p>
@@ -461,16 +474,14 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                form="edit-material-form"
-                disabled={isSubmitting}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Actualizando...' : 'Actualizar Material'}
-              </Button>
-            </AlertDialogTrigger>
+          <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+            <Button
+              form="edit-material-form"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Actualizando...' : 'Actualizar Material'}
+            </Button>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>¿Confirmar actualización?</AlertDialogTitle>
@@ -480,7 +491,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogAction
-                  onClick={(e) => handleSubmit(e as any)}
+                  onClick={handleConfirmUpdate}
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Actualizando...' : 'Confirmar'}

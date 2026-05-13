@@ -6,6 +6,7 @@ import {
     getSortedRowModel,
     getPaginationRowModel,
     createColumnHelper,
+    flexRender,
 } from '@tanstack/react-table';
 import { LuPlus, LuSearch } from 'react-icons/lu';
 import {
@@ -63,29 +64,42 @@ export default function ImagenesTable() {
     // Definir las columnas
     const columns = useMemo(() => [
         columnHelper.accessor('Nombre_Imagen', {
-            header: 'Nombre',
-            cell: info => (
-                <div
-                    className="font-medium transition-colors text-left w-full flex items-center gap-2"
-
-                >
-                    <span className="truncate">
-                        {info.getValue().length > 25
-                            ? `${info.getValue().slice(0, 25)}...`
-                            : info.getValue()}
-                    </span>
-                </div>
+            header: () => (
+                <>
+                    <span className="hidden sm:inline">Nombre</span>
+                    <span className="sm:hidden">Nombre</span>
+                </>
             ),
+            cell: info => {
+                const texto = info.getValue() || '';
+                const truncatedDesktop = texto.length > 25 ? texto.substring(0, 25) + '...' : texto;
+                const truncatedMobile = texto.length > 10 ? texto.substring(0, 10) + '...' : texto;
+                return (
+                    <div className="font-medium transition-colors text-left w-full flex items-center gap-2">
+                        <span className="truncate hidden sm:inline" title={texto}>{truncatedDesktop}</span>
+                        <span className="truncate sm:hidden" title={texto}>{truncatedMobile}</span>
+                    </div>
+                );
+            },
         }),
         columnHelper.accessor('Fecha_Creacion', {
-            header: 'Fecha de Creación',
-            cell: info =>
-                <div className="flex items-center justify-start">{new Date(info.getValue()).toLocaleDateString("es-ES")}</div>,
+            header: () => (
+                <>
+                    <span className="hidden sm:inline">Fecha de Creación</span>
+                    <span className="sm:hidden">F. Creación</span>
+                </>
+            ),
+            cell: info => <div className="flex items-center justify-start whitespace-nowrap">{new Date(info.getValue()).toLocaleDateString("es-ES")}</div>,
         }),
         columnHelper.accessor('Fecha_Actualizacion', {
-            header: 'Última Actualización',
+            header: () => (
+                <>
+                    <span className="hidden sm:inline">Última Actualización</span>
+                    <span className="sm:hidden">F. Actualización</span>
+                </>
+            ),
             cell: info => (
-                <div className="flex items-center justify-start">
+                <div className="flex items-center justify-start whitespace-nowrap">
                     {info.getValue()
                         ? new Date(info.getValue()).toLocaleDateString("es-ES")
                         : "Sin cambios"}
@@ -96,10 +110,10 @@ export default function ImagenesTable() {
             id: 'acciones',
             header: 'Acciones',
             cell: info => (
-                <div className="flex justify-center gap-1">
+                <div className="flex justify-center gap-0.5 sm:gap-1">
                     {hasViewPermission && (
                         <button
-                            className="px-4 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors"
+                            className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-gray-600 text-white flex-1 text-[7px] sm:text-xs rounded hover:bg-gray-700 transition-colors"
                             onClick={() => handleViewDetail(info.row.original)}
                             title="Ver detalles"
                         >
@@ -108,7 +122,7 @@ export default function ImagenesTable() {
                     )}
                     {hasEditPermission && (
                         <button
-                            className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors"
+                            className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-blue-600 text-white flex-1 text-[7px] sm:text-xs rounded hover:bg-blue-700 transition-colors"
                             onClick={() => handleEdit(info.row.original)}
                             title="Editar"
                         >
@@ -119,7 +133,7 @@ export default function ImagenesTable() {
                         <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <button
-                                className="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors"
+                                className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-red-600 text-white flex-1 text-[7px] sm:text-xs rounded hover:bg-red-700 transition-colors"
                                 disabled={deleteImagenMutation.isPending}
                                 title="Eliminar imagen"
                             >
@@ -207,24 +221,24 @@ export default function ImagenesTable() {
                     <p className="text-sm text-gray-600 pb-4">Gestión de imágenes para el apartado de la historia</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
-                    <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
                         <div className="relative flex-1 max-w-md">
-                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
                             <input
                                 type="text"
                                 placeholder="Buscar imágenes..."
                                 value={globalFilter ?? ''}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                className="w-full pl-7 sm:pl-10 pr-2 sm:pr-4 py-1 sm:py-2 text-[10px] sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
                         {hasCreatePermission && (
                             <button
                                 onClick={() => setFormVisible(true)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-1 sm:py-2 text-[10px] sm:text-base rounded-md flex items-center gap-1 sm:gap-2 transition-colors"
                             >
-                                <LuPlus className="w-4 h-4" />
-                                Subir Imagen
+                                <LuPlus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                Subir
                             </button>
                         )}
                     </div>
@@ -241,10 +255,9 @@ export default function ImagenesTable() {
                     <table className="min-w-full table-auto">
                         <thead className="bg-sky-50">
                             {table.getHeaderGroups().map(headerGroup => (
-                                <tr key={headerGroup.id} className="text-left text-xs sm:text-sm text-sky-700">
+                                <tr key={headerGroup.id} className="text-left text-[8px] sm:text-sm text-sky-700">
                                     {headerGroup.headers.map((header, index) => (
-                                        <th key={header.id} className={`px-2 sm:px-4 py-3 font-medium border-b border-sky-100 ${index === 0 ? 'text-left' : 'text-center'
-                                            }`}>
+                                        <th key={header.id} className={`px-1 sm:px-4 py-1 sm:py-3 font-medium border-b border-sky-100 ${index === 0 ? 'text-left' : 'text-center'}`}>
                                             {(() => {
                                                 if (header.isPlaceholder) {
                                                     return null;
@@ -253,8 +266,7 @@ export default function ImagenesTable() {
                                                     return (
                                                         <button
                                                             type="button"
-                                                            className={`cursor-pointer select-none flex items-center gap-2 bg-transparent border-none p-0 ${index === 0 ? 'justify-start' : 'justify-center'
-                                                                }`}
+                                                            className={`cursor-pointer select-none flex items-center gap-1 sm:gap-2 bg-transparent border-none p-0 ${index === 0 ? 'justify-start' : 'justify-center'}`}
                                                             onClick={header.column.getToggleSortingHandler()}
                                                             onKeyDown={e => {
                                                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -263,10 +275,10 @@ export default function ImagenesTable() {
                                                                 }
                                                             }}
                                                             tabIndex={0}
-                                                            aria-label={`Ordenar por ${header.column.columnDef.header as string}`}
+                                                            aria-label="Ordenar"
                                                         >
                                                             <span className="flex items-center gap-1">
-                                                                {header.column.columnDef.header as string}
+                                                                {flexRender(header.column.columnDef.header, header.getContext())}
                                                                 {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline" />}
                                                                 {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline" />}
                                                             </span>
@@ -275,7 +287,7 @@ export default function ImagenesTable() {
                                                 }
                                                 return (
                                                     <span className={index === 0 ? 'text-left' : 'text-center'}>
-                                                        {header.column.columnDef.header as string}
+                                                        {flexRender(header.column.columnDef.header, header.getContext())}
                                                     </span>
                                                 );
                                             })()}
@@ -293,27 +305,12 @@ export default function ImagenesTable() {
                                 </tr>
                             ) : (
                                 table.getRowModel().rows.map(row => (
-                                    <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors">
-                                        {row.getVisibleCells().map((cell, index) => {
-                                            let cellContent: React.ReactNode;
-
-                                            if (cell.column.columnDef.cell) {
-                                                if (typeof cell.column.columnDef.cell === 'function') {
-                                                    cellContent = cell.column.columnDef.cell(cell.getContext());
-                                                } else {
-                                                    cellContent = cell.column.columnDef.cell;
-                                                }
-                                            } else {
-                                                cellContent = cell.getValue() as React.ReactNode;
-                                            }
-
-                                            return (
-                                                <td key={cell.id} className={`px-2 sm:px-4 py-3 text-xs sm:text-sm text-slate-700 align-top ${index === 0 ? 'text-left' : 'text-center'
-                                                    }`}>
-                                                    {cellContent}
-                                                </td>
-                                            );
-                                        })}
+                                    <tr key={row.id} className="hover:bg-sky-50 cursor-pointer transition-colors border-b border-sky-50 last:border-0">
+                                        {row.getVisibleCells().map((cell, index) => (
+                                            <td key={cell.id} className={`px-1 sm:px-4 py-1 sm:py-3 text-[10px] sm:text-sm text-slate-700 align-middle ${index === 0 ? 'text-left' : 'text-center'}`}>
+                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                            </td>
+                                        ))}
                                     </tr>
                                 ))
                             )}
@@ -321,17 +318,17 @@ export default function ImagenesTable() {
                     </table>
                 </div>
 
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                <div className="px-2 sm:px-6 py-2 sm:py-3 bg-gray-50 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-700">Filas por página:</span>
+                            <div className="flex items-center gap-1 sm:gap-2">
+                                <span className="text-[10px] sm:text-sm text-gray-700">Filas por página:</span>
                                 <select
                                     value={table.getState().pagination.pageSize}
                                     onChange={(e) => {
                                         table.setPageSize(Number(e.target.value));
                                     }}
-                                    className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="px-1 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 >
                                     {pageSizeOptions.map((pageSize) => (
                                         <option key={pageSize} value={pageSize}>
@@ -341,41 +338,41 @@ export default function ImagenesTable() {
                                 </select>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                             <button
                                 onClick={() => table.setPageIndex(0)}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-0.5 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
                                 disabled={!table.getCanPreviousPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-0.5 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="w-4 h-4" />
+                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
-                            <span className="text-sm text-gray-700">
+                            <span className="text-[10px] sm:text-sm text-gray-700">
                                 Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
                             </span>
                             <button
                                 onClick={() => table.nextPage()}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-0.5 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="w-4 h-4" />
+                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                                 disabled={!table.getCanNextPage()}
-                                className="p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="p-0.5 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="w-4 h-4" />
+                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                         </div>
                     </div>
