@@ -84,6 +84,18 @@ export async function getSolicitudesJuridicas(): Promise<SolicitudJuridica[]> {
     }
 }
 
+export interface MedidorDesconexion {
+    Id_Solicitud: number;
+    Id_Medidor: number;
+    Numero_Medidor: number | string;
+    [key: string]: any;
+}
+
+export async function getMedidoresDesconexionJuridicas(): Promise<MedidorDesconexion[]> {
+    const response = await apiAuth.get('/solicitudes-juridicas/desconexion/medidores');
+    return Array.isArray(response.data) ? response.data : [];
+}
+
 export async function getSolicitudesPorEstado(estado: string): Promise<SolicitudJuridica[]> {
     try {
         const todasLasSolicitudes = await getSolicitudesJuridicas();

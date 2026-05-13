@@ -150,6 +150,21 @@ export const crearYAsignarMedidorAfiliado = async (
     });
 };
 
+export async function getAfiliadoFisicoByIdentificacion(identificacion: string | number): Promise<{
+    Id_Afiliado: number;
+    Tipo_Identificacion: string;
+    Identificacion: string;
+    Nombre: string;
+    Apellido1: string;
+    Apellido2: string;
+    Correo: string;
+    Numero_Telefono: string;
+    Direccion_Exacta: string;
+}> {
+    const response = await apiAuth.get(`/afiliados/fisico/info/${identificacion}`);
+    return response.data;
+}
+
 export const updateTipoAfiliadoFisico = async (
     id: number,
     nuevoTipoId: number,

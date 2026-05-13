@@ -74,6 +74,18 @@ export const updateTipoAfiliadoJuridico = async (
     return response.data;
 };
 
+export async function getAfiliadoJuridicoByIdentificacion(cedulaJuridica: string): Promise<{
+    Id_Afiliado: number;
+    Cedula_Juridica: string;
+    Razon_Social: string;
+    Correo: string;
+    Numero_Telefono: string;
+    Direccion_Exacta: string;
+}> {
+    const response = await apiAuth.get(`/afiliados/juridico/info/${cedulaJuridica}`);
+    return response.data;
+}
+
 export const asignarMedidorExistenteAfiliadoJuridico = async (
     idAfiliado: number,
     idMedidor: number,
