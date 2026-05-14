@@ -33,6 +33,7 @@ import { Route as appGestionInventarioUnidadesMedicionRouteImport } from './rout
 import { Route as appGestionInventarioMovimientosRouteImport } from './routes/(app)/(Gestion)/Inventario/Movimientos'
 import { Route as appGestionInventarioCategoriasRouteImport } from './routes/(app)/(Gestion)/Inventario/Categorias'
 import { Route as appGestionAfiliadosLecturasRouteImport } from './routes/(app)/(Gestion)/Afiliados/Lecturas'
+import { Route as appGestionAfiliadosFacturasRouteImport } from './routes/(app)/(Gestion)/Afiliados/Facturas'
 import { Route as appGestionInventarioMaterialesIndexRouteImport } from './routes/(app)/(Gestion)/Inventario/Materiales/index'
 import { Route as appGestionInventarioMaterialesMedidoresRouteImport } from './routes/(app)/(Gestion)/Inventario/Materiales/Medidores'
 
@@ -255,6 +256,17 @@ const appGestionAfiliadosLecturasRoute = appGestionAfiliadosLecturasRouteImport
       (d) => d.Route,
     ),
   )
+const appGestionAfiliadosFacturasRoute = appGestionAfiliadosFacturasRouteImport
+  .update({
+    id: '/(app)/(Gestion)/Afiliados/Facturas',
+    path: '/Afiliados/Facturas',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(app)/(Gestion)/Afiliados/Facturas.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const appGestionInventarioMaterialesIndexRoute =
   appGestionInventarioMaterialesIndexRouteImport
     .update({
@@ -275,9 +287,9 @@ const appGestionInventarioMaterialesMedidoresRoute =
       getParentRoute: () => rootRouteImport,
     } as any)
     .lazy(() =>
-      import(
-        './routes/(app)/(Gestion)/Inventario/Materiales/Medidores.lazy'
-      ).then((d) => d.Route),
+      import('./routes/(app)/(Gestion)/Inventario/Materiales/Medidores.lazy').then(
+        (d) => d.Route,
+      ),
     )
 
 export interface FileRoutesByFullPath {
@@ -297,16 +309,17 @@ export interface FileRoutesByFullPath {
   '/Proveedores': typeof appGestionProveedoresRoute
   '/Solicitudes': typeof appGestionSolicitudesRoute
   '/Auditoria': typeof appSeguridadAuditoriaRoute
+  '/Afiliados/Facturas': typeof appGestionAfiliadosFacturasRoute
   '/Afiliados/Lecturas': typeof appGestionAfiliadosLecturasRoute
   '/Inventario/Categorias': typeof appGestionInventarioCategoriasRoute
   '/Inventario/Movimientos': typeof appGestionInventarioMovimientosRoute
   '/Inventario/UnidadesMedicion': typeof appGestionInventarioUnidadesMedicionRoute
   '/Usuarios/Roles': typeof appGestionUsuariosRolesRoute
-  '/Afiliados': typeof appGestionAfiliadosIndexRoute
-  '/Inventario': typeof appGestionInventarioIndexRoute
-  '/Usuarios': typeof appGestionUsuariosIndexRoute
+  '/Afiliados/': typeof appGestionAfiliadosIndexRoute
+  '/Inventario/': typeof appGestionInventarioIndexRoute
+  '/Usuarios/': typeof appGestionUsuariosIndexRoute
   '/Inventario/Materiales/Medidores': typeof appGestionInventarioMaterialesMedidoresRoute
-  '/Inventario/Materiales': typeof appGestionInventarioMaterialesIndexRoute
+  '/Inventario/Materiales/': typeof appGestionInventarioMaterialesIndexRoute
 }
 export interface FileRoutesByTo {
   '/Home': typeof HomeRoute
@@ -325,6 +338,7 @@ export interface FileRoutesByTo {
   '/Proveedores': typeof appGestionProveedoresRoute
   '/Solicitudes': typeof appGestionSolicitudesRoute
   '/Auditoria': typeof appSeguridadAuditoriaRoute
+  '/Afiliados/Facturas': typeof appGestionAfiliadosFacturasRoute
   '/Afiliados/Lecturas': typeof appGestionAfiliadosLecturasRoute
   '/Inventario/Categorias': typeof appGestionInventarioCategoriasRoute
   '/Inventario/Movimientos': typeof appGestionInventarioMovimientosRoute
@@ -354,6 +368,7 @@ export interface FileRoutesById {
   '/(app)/(Gestion)/Proveedores': typeof appGestionProveedoresRoute
   '/(app)/(Gestion)/Solicitudes': typeof appGestionSolicitudesRoute
   '/(app)/(Seguridad)/Auditoria': typeof appSeguridadAuditoriaRoute
+  '/(app)/(Gestion)/Afiliados/Facturas': typeof appGestionAfiliadosFacturasRoute
   '/(app)/(Gestion)/Afiliados/Lecturas': typeof appGestionAfiliadosLecturasRoute
   '/(app)/(Gestion)/Inventario/Categorias': typeof appGestionInventarioCategoriasRoute
   '/(app)/(Gestion)/Inventario/Movimientos': typeof appGestionInventarioMovimientosRoute
@@ -384,16 +399,17 @@ export interface FileRouteTypes {
     | '/Proveedores'
     | '/Solicitudes'
     | '/Auditoria'
+    | '/Afiliados/Facturas'
     | '/Afiliados/Lecturas'
     | '/Inventario/Categorias'
     | '/Inventario/Movimientos'
     | '/Inventario/UnidadesMedicion'
     | '/Usuarios/Roles'
-    | '/Afiliados'
-    | '/Inventario'
-    | '/Usuarios'
+    | '/Afiliados/'
+    | '/Inventario/'
+    | '/Usuarios/'
     | '/Inventario/Materiales/Medidores'
-    | '/Inventario/Materiales'
+    | '/Inventario/Materiales/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/Home'
@@ -412,6 +428,7 @@ export interface FileRouteTypes {
     | '/Proveedores'
     | '/Solicitudes'
     | '/Auditoria'
+    | '/Afiliados/Facturas'
     | '/Afiliados/Lecturas'
     | '/Inventario/Categorias'
     | '/Inventario/Movimientos'
@@ -440,6 +457,7 @@ export interface FileRouteTypes {
     | '/(app)/(Gestion)/Proveedores'
     | '/(app)/(Gestion)/Solicitudes'
     | '/(app)/(Seguridad)/Auditoria'
+    | '/(app)/(Gestion)/Afiliados/Facturas'
     | '/(app)/(Gestion)/Afiliados/Lecturas'
     | '/(app)/(Gestion)/Inventario/Categorias'
     | '/(app)/(Gestion)/Inventario/Movimientos'
@@ -469,6 +487,7 @@ export interface RootRouteChildren {
   appGestionProveedoresRoute: typeof appGestionProveedoresRoute
   appGestionSolicitudesRoute: typeof appGestionSolicitudesRoute
   appSeguridadAuditoriaRoute: typeof appSeguridadAuditoriaRoute
+  appGestionAfiliadosFacturasRoute: typeof appGestionAfiliadosFacturasRoute
   appGestionAfiliadosLecturasRoute: typeof appGestionAfiliadosLecturasRoute
   appGestionInventarioCategoriasRoute: typeof appGestionInventarioCategoriasRoute
   appGestionInventarioMovimientosRoute: typeof appGestionInventarioMovimientosRoute
@@ -598,21 +617,21 @@ declare module '@tanstack/react-router' {
     '/(app)/(Gestion)/Usuarios/': {
       id: '/(app)/(Gestion)/Usuarios/'
       path: '/Usuarios'
-      fullPath: '/Usuarios'
+      fullPath: '/Usuarios/'
       preLoaderRoute: typeof appGestionUsuariosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/(Gestion)/Inventario/': {
       id: '/(app)/(Gestion)/Inventario/'
       path: '/Inventario'
-      fullPath: '/Inventario'
+      fullPath: '/Inventario/'
       preLoaderRoute: typeof appGestionInventarioIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/(Gestion)/Afiliados/': {
       id: '/(app)/(Gestion)/Afiliados/'
       path: '/Afiliados'
-      fullPath: '/Afiliados'
+      fullPath: '/Afiliados/'
       preLoaderRoute: typeof appGestionAfiliadosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -651,10 +670,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appGestionAfiliadosLecturasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(app)/(Gestion)/Afiliados/Facturas': {
+      id: '/(app)/(Gestion)/Afiliados/Facturas'
+      path: '/Afiliados/Facturas'
+      fullPath: '/Afiliados/Facturas'
+      preLoaderRoute: typeof appGestionAfiliadosFacturasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(app)/(Gestion)/Inventario/Materiales/': {
       id: '/(app)/(Gestion)/Inventario/Materiales/'
       path: '/Inventario/Materiales'
-      fullPath: '/Inventario/Materiales'
+      fullPath: '/Inventario/Materiales/'
       preLoaderRoute: typeof appGestionInventarioMaterialesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -685,6 +711,7 @@ const rootRouteChildren: RootRouteChildren = {
   appGestionProveedoresRoute: appGestionProveedoresRoute,
   appGestionSolicitudesRoute: appGestionSolicitudesRoute,
   appSeguridadAuditoriaRoute: appSeguridadAuditoriaRoute,
+  appGestionAfiliadosFacturasRoute: appGestionAfiliadosFacturasRoute,
   appGestionAfiliadosLecturasRoute: appGestionAfiliadosLecturasRoute,
   appGestionInventarioCategoriasRoute: appGestionInventarioCategoriasRoute,
   appGestionInventarioMovimientosRoute: appGestionInventarioMovimientosRoute,

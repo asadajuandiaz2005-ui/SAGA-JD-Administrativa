@@ -1,7 +1,7 @@
 import { Home } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { LuTags, LuActivity, LuRuler, LuPackage, LuShield } from 'react-icons/lu';
-import { FaBoxes, FaUsers, FaTruck, FaUserFriends, FaBook,FaClipboardList, FaHandHoldingWater, FaRegQuestionCircle, FaEdit, FaImage, FaHistory, FaTachometerAlt } from 'react-icons/fa';
+import { FaBoxes, FaUsers, FaTruck, FaUserFriends, FaBook,FaClipboardList, FaHandHoldingWater, FaRegQuestionCircle, FaEdit, FaImage, FaHistory, FaTachometerAlt, FaFileInvoiceDollar } from 'react-icons/fa';
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { GrHelpBook } from "react-icons/gr";
 import { IoDocumentTextOutline } from 'react-icons/io5';
@@ -122,6 +122,11 @@ export const breadcrumbConfig: BreadcrumbConfig = {
   '/Afiliados/Lecturas': {
     label: 'Gestión de Lecturas',
     icon: IoDocumentTextOutline as LucideIcon,
+  },
+
+  '/Afiliados/Facturas': {
+    label: 'Gestión de Facturas',
+    icon: FaFileInvoiceDollar as LucideIcon,
   },
 
 };

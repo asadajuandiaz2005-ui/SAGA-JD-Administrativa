@@ -1,4 +1,4 @@
-import { FaUserFriends, FaBook, FaHandHoldingWater, FaClipboardList, FaHistory, FaBoxes, FaUsers, FaTruck, FaRegQuestionCircle, FaEdit, FaImage, FaShieldAlt, FaTachometerAlt } from "react-icons/fa";
+import { FaUserFriends, FaBook, FaHandHoldingWater, FaClipboardList, FaHistory, FaBoxes, FaUsers, FaTruck, FaRegQuestionCircle, FaEdit, FaImage, FaShieldAlt, FaTachometerAlt, FaFileInvoiceDollar } from "react-icons/fa";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { GrHelpBook } from "react-icons/gr";
 import { IoDocumentTextOutline } from "react-icons/io5";
@@ -35,4 +35,5 @@ export const modules = [
 
   // Subrutas de Abonados (ocultas del dashboard)
   { name: 'Lecturas', icon: <IoDocumentTextOutline />, path: '/Afiliados/Lecturas', Permiso: 'abonados', hidden: true },
+  { name: 'Facturas', icon: <FaFileInvoiceDollar />, path: '/Afiliados/Facturas', Permiso: 'abonados', hidden: true },
 ]

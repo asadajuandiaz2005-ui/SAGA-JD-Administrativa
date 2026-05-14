@@ -525,6 +525,12 @@ export default function AbonadosTable() {
                         >
                             Lecturas
                         </button>
+                        <button
+                            onClick={() => navigate({ to: '/Afiliados/Facturas' })}
+                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors"
+                        >
+                            Facturas
+                        </button>
                     </div>
                 </div>
             </div>
