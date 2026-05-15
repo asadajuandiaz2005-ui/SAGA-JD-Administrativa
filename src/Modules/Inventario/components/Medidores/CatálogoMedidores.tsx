@@ -4,7 +4,6 @@ import {
   createColumnHelper,
   useReactTable,
   getCoreRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
   flexRender
@@ -48,6 +47,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const [medidorEstadoPagoSeleccionado, setMedidorEstadoPagoSeleccionado] = useState<Medidor | null>(null);
   const [selectedMedidor, setSelectedMedidor] = useState<Medidor | null>(null);
   const [estadoFilter, setEstadoFilter] = useState<string>('Todos');
+  const [estadoPagoFilter, setEstadoPagoFilter] = useState<string>('Todos');
   const [notification, setNotification] = useState<{
     type: 'success' | 'error' | 'info';
     title: string;
@@ -66,6 +66,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const medidoresNoInstalados = useMedidoresPorEstado('no-instalados');
   const medidoresInstalados = useMedidoresPorEstado('instalados');
   const medidoresAveriados = useMedidoresPorEstado('averiados');
+  const medidoresPendientes = useMedidoresPorEstado('pendientes');
   const updateEstadoMutation = useUpdateEstadoMedidor();
   const updateEstadoPagoMutation = useUpdateEstadoPagoMedidor();
 
@@ -90,6 +91,11 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
     isLoading = medidoresAveriados.isLoading;
     error = medidoresAveriados.error;
     refetch = medidoresAveriados.refetch;
+  } else if (estadoFilter === 'Pendiente') {
+    medidores = medidoresPendientes.data ?? [];
+    isLoading = medidoresPendientes.isLoading;
+    error = medidoresPendientes.error;
+    refetch = medidoresPendientes.refetch;
   } else {
     medidores = medidoresTodos.data ?? [];
     isLoading = medidoresTodos.isLoading;
@@ -150,6 +156,43 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
 
     return 'Pendiente';
   };
+
+  const medidoresFiltrados = useMemo(() => {
+    if (estadoPagoFilter === 'Todos') return medidores;
+    return medidores.filter(m => getEstadoPagoNombre(m) === estadoPagoFilter);
+  }, [medidores, estadoPagoFilter]);
+
+  const medidoresConBusqueda = useMemo(() => {
+    if (!globalFilter) return medidoresFiltrados;
+
+    const searchLower = globalFilter.toLowerCase();
+    return medidoresFiltrados.filter(m => {
+      const numero = m.Numero_Medidor?.toString().toLowerCase() || '';
+      const estado = m.Estado_Medidor?.Nombre_Estado_Medidor?.toLowerCase() || '';
+      const estadoPago = getEstadoPagoNombre(m).toLowerCase();
+
+      // Obtener nombre del afiliado usando la misma lógica que en la columna
+      let afiliadoNombre = '';
+      if (m.Afiliado) {
+        if (m.Afiliado.Tipo_Entidad === 1) {
+          afiliadoNombre = `${m.Afiliado.Nombre || ''} ${m.Afiliado.Primer_Apellido || ''} ${m.Afiliado.Segundo_Apellido || ''}`.trim();
+          if (!afiliadoNombre) afiliadoNombre = m.Afiliado.Nombre_Completo || '';
+        } else if (m.Afiliado.Tipo_Entidad === 2) {
+          afiliadoNombre = m.Afiliado.Razon_Social || m.Afiliado.Nombre_Completo || '';
+        } else {
+          afiliadoNombre = m.Afiliado.Nombre_Completo || m.Afiliado.Razon_Social || '';
+        }
+      }
+      afiliadoNombre = afiliadoNombre.toLowerCase();
+
+      return (
+        numero.includes(searchLower) ||
+        afiliadoNombre.includes(searchLower) ||
+        estado.includes(searchLower) ||
+        estadoPago.includes(searchLower)
+      );
+    });
+  }, [medidoresFiltrados, globalFilter]);
 
   const openEstadoPagoDialog = (medidor: Medidor) => {
     if (!medidor.Afiliado) return;
@@ -441,17 +484,14 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   );
 
   const table = useReactTable({
-    data: medidores,
+    data: medidoresConBusqueda,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      globalFilter,
       pagination,
     },
-    onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     initialState: {
       pagination: {
@@ -500,6 +540,20 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                 <option value="No instalado">No instalado</option>
                 <option value="Instalado">Instalado</option>
                 <option value="Averiado">Averiado</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <label htmlFor='estadoPago' className="text-xs sm:text-sm font-medium text-gray-700">Pago:</label>
+              <select
+                id='estadoPago'
+                value={estadoPagoFilter}
+                onChange={(e) => setEstadoPagoFilter(e.target.value)}
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+              >
+                <option value="Todos">Todos</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Pagado">Pagado</option>
+                <option value="Libre">Libre</option>
               </select>
             </div>
           </div>

@@ -314,7 +314,7 @@ const AsignarAfiliadoMedidorModal = ({
          
           <button
             onClick={handleConfirmar}
-            disabled={!selectedAfiliado || !escrituraFile || !planosFile || !estadoPago || guardando}
+            disabled={!selectedAfiliado || guardando}
             className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {guardando ? (
