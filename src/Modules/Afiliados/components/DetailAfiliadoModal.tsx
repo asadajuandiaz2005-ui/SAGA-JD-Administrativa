@@ -514,6 +514,14 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                     <h4 className="text-base font-bold text-gray-900">
                                                         Medidor #{medidor.Id_Medidor}
                                                     </h4>
+                                                    {medidor.Estado_Medidor?.Id_Estado_Medidor === 2 &&
+                                                        !medidor.Certificacion_Literal &&
+                                                        !medidor.Planos_Terreno && (
+                                                        <span
+                                                            className="w-3 h-3 bg-red-500 rounded-full"
+                                                            title="Este medidor no tiene archivos adjuntos"
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

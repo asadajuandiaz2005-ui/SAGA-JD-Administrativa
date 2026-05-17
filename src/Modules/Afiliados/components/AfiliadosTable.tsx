@@ -14,6 +14,7 @@ import CreateModal from './CreateAfiliadoModal';
 import EditModal from './EditAfiliadoModal';
 import AsignarMedidorAfiliadoModal from './AsignarMedidorAfiliadoModal';
 import { useUserPermissions } from '@/Modules/Auth/Hooks/PermissionHook';
+import { useMedidoresSinArchivos } from '@/Modules/Inventario/hooks/useMedidoresSinArchivos';
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -47,6 +48,7 @@ type AfiliadoUnificado = {
 export default function AbonadosTable() {
     const { afiliadosFisicos, isLoading: loadingFisicos, isError: errorFisicos, refetch: refetchFisicos, updateEstadoAfiliadoFisico: updateEstadoMutationFisico } = useAfiliadosFisicos();
     const { afiliadosJuridicos, isLoading: loadingJuridicos, isError: errorJuridicos, refetch: refetchJuridicos, updateEstadoAfiliadoJuridico: updateEstadoMutationJuridico } = useAfiliadosJuridicos();
+    const { conteoPorAfiliado } = useMedidoresSinArchivos();
     const navigate = useNavigate();
     const { showError } = useAlerts();
     const { canCreate, canEdit } = useUserPermissions();
@@ -226,9 +228,21 @@ export default function AbonadosTable() {
                     nombreFinal = datosOriginales.Razon_Social || 'Sin razón social';
                 }
 
+                const sinArchivos = conteoPorAfiliado.get(fila.Id) ?? 0;
+
                 return (
-                    <div className="font-medium text-left max-w-[80px] sm:max-w-[150px] md:max-w-xs truncate" title={nombreFinal}>
-                        {nombreFinal}
+                    <div className="flex items-center gap-1.5">
+                        <span className="font-medium text-left max-w-[80px] sm:max-w-[150px] md:max-w-xs truncate" title={nombreFinal}>
+                            {nombreFinal}
+                        </span>
+                        {sinArchivos > 0 && (
+                            <span
+                                className="shrink-0 bg-red-500 text-white text-[9px] rounded-full w-4 h-4 flex items-center justify-center font-bold"
+                                title={`${sinArchivos} medidor${sinArchivos > 1 ? 'es' : ''} sin archivos`}
+                            >
+                                {sinArchivos > 9 ? '9+' : sinArchivos}
+                            </span>
+                        )}
                     </div>
                 );
             },

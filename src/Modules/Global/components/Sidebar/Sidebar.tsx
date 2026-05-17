@@ -23,6 +23,7 @@ import { LuKey } from "react-icons/lu"
 import { ChangePasswordModal } from "@/Modules/Auth/Components/ChangePassword"
 import { useAuth } from "@/Modules/Auth/Context/AuthContext"
 import { useNotificacionesSolicitudes } from '../../../Solicitudes/Hooks/HookNotificaciones'
+import { useMedidoresSinArchivos } from '../../../Inventario/hooks/useMedidoresSinArchivos'
 
 export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
   const [_hovered, setHovered] = useState(false)
@@ -33,6 +34,7 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
   const { showSuccess } = useAlerts()
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const { totalPendientes } = useNotificacionesSolicitudes()
+  const { totalMedidoresSinArchivos } = useMedidoresSinArchivos()
 
   const { user, isLoading } = useAuth()
   const currentUser = {
@@ -141,6 +143,11 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
                           {(mod.name === 'Revisión de Solicitudes' || mod.path === '/Solicitudes') && totalPendientes > 0 && (
                             <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium group-data-[collapsible=icon]:hidden">
                               {totalPendientes > 9 ? '9+' : totalPendientes}
+                            </span>
+                          )}
+                          {mod.path === '/Afiliados' && totalMedidoresSinArchivos > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium group-data-[collapsible=icon]:hidden">
+                              {totalMedidoresSinArchivos > 9 ? '9+' : totalMedidoresSinArchivos}
                             </span>
                           )}
                         </Link>

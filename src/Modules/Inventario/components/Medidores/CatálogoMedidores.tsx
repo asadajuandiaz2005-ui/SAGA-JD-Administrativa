@@ -566,7 +566,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                 id='estadoPago'
                 value={estadoPagoFilter}
                 onChange={(e) => setEstadoPagoFilter(e.target.value)}
-                className="px-2 py-1.5 sm:px-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border bor                                                             der-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
               >
                 <option value="Todos">Todos</option>
                 <option value="Pendiente">Pendiente</option>
