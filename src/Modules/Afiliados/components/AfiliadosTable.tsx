@@ -293,7 +293,7 @@ export default function AbonadosTable() {
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-blue-100 text-blue-700'
                             }`}>
-                            {tipo === 'Físico' ? <User className="size-2 sm:size-3.5" /> : <Building className="size-2 sm:size-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
+                            {tipo === 'Físico' ? <User className="w-2 h-2 sm:w-3.5 sm:h-3.5" /> : <Building className="w-2 h-2 sm:w-3.5 sm:h-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
                         </span>
                     </div>
                 );
@@ -464,7 +464,7 @@ export default function AbonadosTable() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full size-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 <span className="ml-2 text-gray-600">Cargando afiliados...</span>
             </div>
         );
@@ -483,7 +483,7 @@ export default function AbonadosTable() {
             {/* Encabezado con filtro de estado, búsqueda y botón */}
             <div className="bg-white rounded-lg p-3">
                 <div className="flex items-start gap-4 flex-col justify-start">
-                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Gestión de afiliados</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de afiliados</h2>
                     <p className="text-[10px] sm:text-sm text-gray-600 pb-2 sm:pb-4">Gestiona los afiliados de la ASADA</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-end mt-2 sm:mt-0">
@@ -496,7 +496,7 @@ export default function AbonadosTable() {
                                     : 'border-gray-300 hover:bg-gray-50'
                             }`}
                         >
-                            <LuFilter className="size-3 sm:size-4" />
+                            <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span className="hidden sm:inline">Filtros</span>
                             {activeFiltersCount > 0 && (
                                 <span className="bg-blue-500 text-white text-[9px] sm:text-xs rounded-full w-4 sm:w-5 h-4 sm:h-5 flex items-center justify-center">
@@ -510,11 +510,11 @@ export default function AbonadosTable() {
                             className="px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
                             title="Descargar PDF"
                         >
-                            <LuFileDown className="size-3 sm:size-4" />
-                            <span className="hidden sm:inline">{isDownloadingPdf ? 'Generando…' : 'Descargar PDF'}</span>
+                            <LuFileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">{isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}</span>
                         </button>
                         <div className="relative flex-1 max-w-md w-full min-w-[120px]">
-                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-3 sm:size-4" />
+                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
                             <input
                                 type="text"
                                 placeholder="Buscar afiliados..."
@@ -528,7 +528,7 @@ export default function AbonadosTable() {
                                 onClick={() => setShowCreateModal(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors whitespace-nowrap"
                             >
-                                <Plus className="size-3 sm:size-4" />
+                                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
                                 <span className="hidden sm:inline">Nuevo Afiliado</span>
                                 <span className="sm:hidden">Nuevo</span>
                             </button>
@@ -738,7 +738,7 @@ export default function AbonadosTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
+                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
@@ -746,7 +746,7 @@ export default function AbonadosTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="size-3 sm:size-4" />
+                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <span className="text-[10px] sm:text-sm text-gray-700 mx-1 sm:mx-2 whitespace-nowrap">
                                 <span className="hidden sm:inline">Página </span>{table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -757,7 +757,7 @@ export default function AbonadosTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="size-3 sm:size-4" />
+                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -765,7 +765,7 @@ export default function AbonadosTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
+                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </button>
                         </div>
                     </div>

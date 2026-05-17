@@ -122,8 +122,8 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                 <div className={`w-full px-3 py-2.5 border rounded-lg bg-gray-50 flex items-center justify-between cursor-pointer hover:bg-gray-100 transition-colors ${errors[errorKey] ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}>
                     <div className="flex items-center gap-2 min-w-0">
                         {file
-                            ? <FileText className="size-4 text-blue-500 shrink-0" />
-                            : <Upload className="size-4 text-gray-400 shrink-0" />
+                            ? <FileText className="w-4 h-4 text-blue-500 shrink-0" />
+                            : <Upload className="w-4 h-4 text-gray-400 shrink-0" />
                         }
                         <span className={`text-sm truncate ${file ? 'text-gray-800' : 'text-gray-400'}`}>
                             {file ? file.name : 'Seleccionar archivo...'}
@@ -145,10 +145,10 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                 {/* Header */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                        <div className="size-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                        <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
                             {modo === 'asignar'
-                                ? <Link2 className="size-4 text-blue-600" />
-                                : <PlusCircle className="size-4 text-blue-600" />
+                                ? <Link2 className="w-4 h-4 text-blue-600" />
+                                : <PlusCircle className="w-4 h-4 text-blue-600" />
                             }
                         </div>
                         <div>
@@ -167,7 +167,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                         onClick={onClose}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-1 shrink-0"
                     >
-                        <X className="size-5" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
@@ -177,7 +177,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                     {/* Sección del medidor */}
                     <div>
                         <div className="flex items-center gap-2 mb-3">
-                            <Gauge className="size-4 text-blue-600" />
+                            <Gauge className="w-4 h-4 text-blue-600" />
                             <h3 className="text-sm font-semibold text-gray-700">
                                 {modo === 'asignar' ? 'Seleccionar Medidor' : 'Número de Medidor'}
                             </h3>
@@ -186,7 +186,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                         {modo === 'asignar' ? (
                             <>
                                 <div className="relative mb-2">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4 pointer-events-none" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
                                     <input
                                         type="text"
                                         placeholder="Buscar por número..."
@@ -199,7 +199,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                                 <div className="border border-gray-200 rounded-lg overflow-hidden max-h-44 overflow-y-auto bg-white">
                                     {loadingMedidores ? (
                                         <div className="flex items-center justify-center py-6 gap-2 text-sm text-gray-500">
-                                            <div className="animate-spin rounded-full size-4 border-b-2 border-blue-600" />
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
                                             Cargando medidores...
                                         </div>
                                     ) : medidoresFiltrados.length === 0 ? (
@@ -223,7 +223,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                                                             <span className="font-medium">Medidor #{m.Numero_Medidor}</span>
                                                             <div className="flex items-center gap-2">
                                                                 <span className="text-xs text-gray-500">{m.Estado_Medidor?.Nombre_Estado_Medidor}</span>
-                                                                {selected && <CheckCircle2 className="size-4 text-blue-500" />}
+                                                                {selected && <CheckCircle2 className="w-4 h-4 text-blue-500" />}
                                                             </div>
                                                         </button>
                                                     </li>
@@ -235,7 +235,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
 
                                 {medidorSeleccionado && (
                                     <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg">
-                                        <CheckCircle2 className="size-4 text-blue-500 shrink-0" />
+                                        <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
                                         <span className="text-sm text-blue-700 font-medium">
                                             Seleccionado: Medidor #{medidorSeleccionado.Numero_Medidor}
                                         </span>
@@ -300,7 +300,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                     {/* Documentos del terreno */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
-                            <FileText className="size-4 text-blue-600" />
+                            <FileText className="w-4 h-4 text-blue-600" />
                             <h3 className="text-sm font-semibold text-gray-700">Documentos del Terreno</h3>
                         </div>
                         {renderFileInput('Certificación Literal', escrituraFile, setEscrituraFile, 'escritura')}

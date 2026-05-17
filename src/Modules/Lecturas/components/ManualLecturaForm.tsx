@@ -27,18 +27,18 @@ export default function ManualLecturaForm({
 
   const handleMedidorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    setFormData(prev => ({ ...prev, Numero_Medidor: value }));
+    setFormData({ ...formData, Numero_Medidor: value });
 
     if (isNaN(value) || value <= 0) {
-      setErrors(prev => ({ ...prev, medidor: "Debe ingresar un número de medidor válido" }));
+      setErrors({ ...errors, medidor: "Debe ingresar un número de medidor válido" });
     } else {
-      setErrors(prev => ({ ...prev, medidor: "" }));
+      setErrors({ ...errors, medidor: "" });
     }
   };
 
   const handleLecturaActualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
-    setFormData(prev => ({ ...prev, Valor_Lectura: value }));
+    setFormData({ ...formData, Valor_Lectura: value });
 
     if (isNaN(value) || value < 0) {
       setErrors({ 
@@ -46,7 +46,7 @@ export default function ManualLecturaForm({
         lecturaActual: "Debe ingresar un valor válido mayor o igual a 0" 
       });
     } else {
-      setErrors(prev => ({ ...prev, lecturaActual: "" }));
+      setErrors({ ...errors, lecturaActual: "" });
     }
   };
 
@@ -159,7 +159,7 @@ export default function ManualLecturaForm({
           disabled={!isFormValid || isSubmitting}
           className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
         >
-          {isSubmitting ? "Creando…" : "Crear Lectura"}
+          {isSubmitting ? "Creando..." : "Crear Lectura"}
         </button>
         <button
           type="button"
