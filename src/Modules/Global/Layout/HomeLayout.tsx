@@ -28,7 +28,7 @@ export const HomeLayout = ({ children }: { children: (allowedModules: any) => Re
               <AppSidebar allowedModules={allowedModules} />
               <SidebarInset className="flex flex-col h-full">
                 <header className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between min-h-[93px]">
-                  <SidebarTrigger className="md:hidden w-16 h-16 inline-flex items-center justify-center" />
+                  <SidebarTrigger className="md:hidden size-16 inline-flex items-center justify-center" />
                   <div className=" flex-1">
                     <Breadcrumbs />
                   </div>

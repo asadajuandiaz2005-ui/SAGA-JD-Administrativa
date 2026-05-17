@@ -106,11 +106,11 @@ export default function DescargarPdfModal({
             <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-lg flex flex-col overflow-hidden max-h-[90vh]">
                 <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <FileDown className="w-5 h-5 text-blue-600" />
+                        <div className="size-9 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <FileDown className="size-5 text-blue-600" />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-gray-900">{titulo}</h2>
+                            <h2 className="text-lg font-semibold text-gray-900">{titulo}</h2>
                             {descripcion && (
                                 <p className="text-xs text-gray-500 mt-0.5">{descripcion}</p>
                             )}
@@ -240,8 +240,8 @@ export default function DescargarPdfModal({
                         disabled={isLoading || (hayColumnas && columnasSeleccionadas.length === 0)}
                         className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                        <FileDown className="w-4 h-4" />
-                        {isLoading ? "Generando..." : "Descargar PDF"}
+                        <FileDown className="size-4" />
+                        {isLoading ? "Generando…" : "Descargar PDF"}
                     </button>
                     <button
                         onClick={onClose}

@@ -133,7 +133,7 @@ const EditCategoriaModal: React.FC<EditCategoriaModalProps> = ({ isOpen, onClose
     <div className="fixed inset-0 bg-opacity-10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-md mx-4 flex flex-col overflow-hidden max-h-[90vh]">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
-          <h2 className="text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-900">
             Editar Categoría
           </h2>
         </div>
@@ -195,7 +195,7 @@ const EditCategoriaModal: React.FC<EditCategoriaModalProps> = ({ isOpen, onClose
                 disabled={updateCategoriaMutation.isPending}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
               >
-                {updateCategoriaMutation.isPending ? 'Actualizando...' : 'Actualizar Categoría'}
+                {updateCategoriaMutation.isPending ? 'Actualizando…' : 'Actualizar Categoría'}
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -210,7 +210,7 @@ const EditCategoriaModal: React.FC<EditCategoriaModalProps> = ({ isOpen, onClose
                   onClick={(e) => handleSubmit(e as any)}
                   disabled={updateCategoriaMutation.isPending}
                 >
-                  {updateCategoriaMutation.isPending ? 'Actualizando...' : 'Confirmar'}
+                  {updateCategoriaMutation.isPending ? 'Actualizando…' : 'Confirmar'}
                 </AlertDialogAction>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
               </AlertDialogFooter>

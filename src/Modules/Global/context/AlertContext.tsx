@@ -1,4 +1,4 @@
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, { createContext, use, type ReactNode } from 'react';
 import { AlertContainer } from '../components/Alert/ui/AlertContainer';
 import { useAlert } from '../hooks/useAlert';
 
@@ -23,7 +23,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 };
 
 export const useAlerts = (): AlertContextType => {
-  const context = useContext(AlertContext);
+  const context = use(AlertContext);
   if (!context) {
     throw new Error('useAlerts must be used within an AlertProvider');
   }

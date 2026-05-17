@@ -41,7 +41,7 @@ const FilterMaterialModal: React.FC<FilterMaterialModalProps> = ({
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         <div className="sticky top-0 bg-white flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 z-10">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
-            <LuFilter className="w-5 h-5" />
+            <LuFilter className="size-5" />
             Filtros Avanzados
           </h2>
           <button
@@ -49,17 +49,17 @@ const FilterMaterialModal: React.FC<FilterMaterialModalProps> = ({
             className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Cerrar"
           >
-            <LuX className="w-5 h-5" />
+            <LuX className="size-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 gap-y-4 sm:gap-y-6 scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
           <div>
             <div className="block text-sm font-medium text-gray-700 mb-2">
               Filtrar por Categorías
             </div>
-            <div className="space-y-2">
-              <label className="flex items-center space-x-2">
+            <div className="gap-y-2">
+              <label className="flex items-center gap-x-2">
                 <input
                   type="checkbox"
                   checked={filters.soloConCategorias || false}
@@ -72,7 +72,7 @@ const FilterMaterialModal: React.FC<FilterMaterialModalProps> = ({
                 />
                 <span className="text-sm text-gray-700">Solo materiales con categorías</span>
               </label>
-              <label className="flex items-center space-x-2">
+              <label className="flex items-center gap-x-2">
                 <input
                   type="checkbox"
                   checked={filters.soloSinCategorias || false}
@@ -92,8 +92,8 @@ const FilterMaterialModal: React.FC<FilterMaterialModalProps> = ({
             <div className="block text-sm font-medium text-gray-700 mb-2">
               Filtrar por Stock
             </div>
-            <div className="space-y-3">
-              <label className="flex items-center space-x-2">
+            <div className="gap-y-3">
+              <label className="flex items-center gap-x-2">
                 <input
                   type="checkbox"
                   checked={filters.conStock || false}

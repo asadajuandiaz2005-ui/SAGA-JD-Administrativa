@@ -139,7 +139,7 @@ export default function FAQForm({ onClose }: Readonly<FAQFormProps>) {
                             className={`px-4 py-2 rounded-lg shadow-sm text-sm ${isValid ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
                             disabled={!isValid || createFAQMutation.isPending}
                         >
-                            {createFAQMutation.isPending ? 'Creando...' : 'Crear Pregunta'}
+                            {createFAQMutation.isPending ? 'Creando…' : 'Crear Pregunta'}
                         </button>
                         <button
                             type="button"

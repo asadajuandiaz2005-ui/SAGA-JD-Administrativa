@@ -9,14 +9,14 @@ const NotFound = () => {
           <img 
             src="https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-5529.jpg" 
             alt="404 Not Found" 
-            className="w-80 h-80 object-contain"
+            className="size-80 object-contain"
           />
         </div>
         
         {/* Contenido */}
-        <div className="flex flex-col items-center bg-white rounded-xl shadow-lg px-8 py-8 w-full">
-          <h1 className="text-gray-800 text-5xl font-extrabold mb-3">¡Oops!</h1>
-          <h2 className="text-blue-600 text-2xl font-bold mb-4">Página no encontrada</h2>
+        <div className="flex flex-col items-center bg-white rounded-xl shadow-lg p-8 w-full">
+          <h1 className="text-gray-800 text-5xl font-semibold mb-3">¡Oops!</h1>
+          <h2 className="text-blue-600 text-2xl font-semibold mb-4">Página no encontrada</h2>
           <p className="text-lg text-gray-600 mb-6 text-center max-w-md leading-relaxed">
             La página que buscas no existe o ha sido movida.
             Verifica la URL o regresa al inicio.

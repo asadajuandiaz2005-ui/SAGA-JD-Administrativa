@@ -33,14 +33,14 @@ const RoleDetailModal: React.FC<RoleDetailModalProps> = ({ roleId, isOpen, onClo
         <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-3xl flex flex-col overflow-hidden max-h-[90vh]">
           <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                 Detalles del Rol
               </h2>
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <LuX className="w-5 h-5" />
+                <LuX className="size-5" />
               </button>
             </div>
           </div>
@@ -48,17 +48,17 @@ const RoleDetailModal: React.FC<RoleDetailModalProps> = ({ roleId, isOpen, onClo
           <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100 p-6">
             {isLoading ? (
               <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full size-32 border-b-2 border-blue-600"></div>
               </div>
             ) : (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                   <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <LuShield className="w-6 h-6 text-blue-600" />
+                      <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <LuShield className="size-6 text-blue-600" />
                       </div>
-                      <h3 className="text-base font-bold text-gray-900">Información del Rol</h3>
+                      <h3 className="text-base font-semibold text-gray-900">Información del Rol</h3>
                     </div>
                   </div>
                   <div className="p-5">
@@ -88,10 +88,10 @@ const RoleDetailModal: React.FC<RoleDetailModalProps> = ({ roleId, isOpen, onClo
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                   <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <LuLock className="w-4 h-4 text-blue-600" />
+                      <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <LuLock className="size-4 text-blue-600" />
                       </div>
-                      <h3 className="text-base font-bold text-gray-900">Permisos por Módulo</h3>
+                      <h3 className="text-base font-semibold text-gray-900">Permisos por Módulo</h3>
                     </div>
                   </div>
                   
@@ -101,11 +101,11 @@ const RoleDetailModal: React.FC<RoleDetailModalProps> = ({ roleId, isOpen, onClo
                         <div key={modulo} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <LuFolderTree className="w-5 h-5 text-blue-600" />
+                              <div className="size-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <LuFolderTree className="size-5 text-blue-600" />
                               </div>
                               <div>
-                                <h4 className="font-bold text-gray-900 text-sm capitalize">{modulo}</h4>
+                                <h4 className="font-semibold text-gray-900 text-sm capitalize">{modulo}</h4>
                                 <p className="text-xs text-gray-600">
                                   Módulo del sistema
                                 </p>

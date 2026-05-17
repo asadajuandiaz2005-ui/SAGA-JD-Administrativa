@@ -263,7 +263,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, onClose, usert })
                         : 'bg-blue-600 hover:bg-blue-700' 
                   }`}
                 >
-                  {updateUserMutation.isPending ? 'Actualizando...' : 'Actualizar Usuario'}
+                  {updateUserMutation.isPending ? 'Actualizando…' : 'Actualizar Usuario'}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -278,7 +278,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ isOpen, onClose, usert })
                     onClick={() => form.handleSubmit()}
                     disabled={updateUserMutation.isPending}
                   >
-                    {updateUserMutation.isPending ? 'Actualizando...' : 'Confirmar'}
+                    {updateUserMutation.isPending ? 'Actualizando…' : 'Confirmar'}
                   </AlertDialogAction>
                   <AlertDialogCancel>Cancelar</AlertDialogCancel>
                 </AlertDialogFooter>

@@ -221,7 +221,7 @@ export default function ActasTable() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center p-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full size-8 border-b-2 border-blue-600"></div>
             </div>
         );
     }
@@ -242,13 +242,13 @@ export default function ActasTable() {
             {/* Encabezado con búsqueda y botón */}
             <div className="bg-white rounded-lg p-3">
                 <div className="flex items-start gap-4 flex-col justify-start">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de Actas</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Gestión de Actas</h2>
                     <p className="text-[10px] sm:text-sm text-gray-600 pb-2 sm:pb-4">Lleva un control de las actas de reuniones</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-end mt-2 sm:mt-0">
                     <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
                         <div className="relative flex-1 max-w-md w-full">
-                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
+                            <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-3 sm:size-4" />
                             <input
                                 type="text"
                                 placeholder="Buscar actas..."
@@ -262,7 +262,7 @@ export default function ActasTable() {
                                 onClick={() => setFormVisible(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm rounded-md sm:rounded-lg flex items-center gap-1 sm:gap-2 transition-colors whitespace-nowrap"
                             >
-                                <LuPlus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <LuPlus className="size-3 sm:size-4" />
                                 Nueva Acta
                             </button>
                         )}
@@ -391,7 +391,7 @@ export default function ActasTable() {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Primera página"
               >
-                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
@@ -399,7 +399,7 @@ export default function ActasTable() {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página anterior"
               >
-                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardArrowLeft className="size-3 sm:size-4" />
               </button>
               <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
                 {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
@@ -410,7 +410,7 @@ export default function ActasTable() {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página siguiente"
               >
-                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardArrowRight className="size-3 sm:size-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -418,7 +418,7 @@ export default function ActasTable() {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Última página"
               >
-                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
               </button>
             </div>
           </div>

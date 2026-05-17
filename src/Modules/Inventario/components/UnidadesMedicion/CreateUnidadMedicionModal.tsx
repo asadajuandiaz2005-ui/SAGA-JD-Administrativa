@@ -183,7 +183,7 @@ const CreateUnidadMedicionModal: React.FC<CreateUnidadMedicionModalProps> = ({
               disabled={createUnidadMedicionMutation.isPending}
               className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {createUnidadMedicionMutation.isPending ? 'Creando...' : 'Crear'}
+              {createUnidadMedicionMutation.isPending ? 'Creando…' : 'Crear'}
             </button>
             <button
               type="button"

@@ -281,7 +281,7 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
 
     const nombreSolicitanteMostrado = (() => {
         if (!requiereInfoAfiliado) return info.nombre;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         if (!afiliadoInfo) return info.nombre;
         if (afiliadoInfo.tipoEntidad === 2) return afiliadoInfo.data.Razon_Social || info.nombre;
 
@@ -291,26 +291,26 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
 
     const tipoIdentificacionMostrado = (() => {
         if (!requiereInfoAfiliado) return info.Tipo_Identificacion;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         if (afiliadoInfo?.tipoEntidad === 1) return afiliadoInfo.data.Tipo_Identificacion || info.Tipo_Identificacion;
         return info.Tipo_Identificacion;
     })();
 
     const telefonoMostrado = (() => {
         if (!requiereInfoAfiliado) return info.Numero_Telefono;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         return afiliadoInfo?.data?.Numero_Telefono || info.Numero_Telefono;
     })();
 
     const correoMostrado = (() => {
         if (!requiereInfoAfiliado) return info.Correo;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         return afiliadoInfo?.data?.Correo || info.Correo;
     })();
 
     const direccionMostrada = (() => {
         if (!requiereInfoAfiliado) return info.Direccion_Exacta;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         return afiliadoInfo?.data?.Direccion_Exacta || info.Direccion_Exacta;
     })();
 
@@ -589,7 +589,7 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                             disabled={!canClose}
                             className="text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
                         >
-                            <X className="w-5 h-5" />
+                            <X className="size-5" />
                         </button>
                     </div>
                 </div>
@@ -599,8 +599,8 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                     {/* Header Card de la Solicitud */}
                     <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-lg mb-6 shadow-md">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                <User className="w-6 h-6 text-blue-600" />
+                            <div className="size-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                <User className="size-6 text-blue-600" />
                             </div>
                             <div className="flex-1">
                                 <p className="text-blue-100 text-sm mb-1">{info.tipoSolicitud}</p>
@@ -846,12 +846,12 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                         >
                             {marcarEnRevisionMutation.isPending ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                     ENVIANDO...
                                 </>
                             ) : (
                                 <>
-                                    <Check className="w-4 h-4" />
+                                    <Check className="size-4" />
                                     Marcar en revisión
                                 </>
                             )}
@@ -866,12 +866,12 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                         >
                             {isLoading ? (
                                 <>
-                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                     Poner en espera...
                                 </>
                             ) : (
                                 <>
-                                    <Check className="w-4 h-4" />
+                                    <Check className="size-4" />
                                     {info.estadoId === 3
                                         ? ((() => {
                                             const tipoSolicitud = mapearTipoSolicitud(info.tipoSolicitud);
@@ -894,7 +894,7 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                     >
 
                         <>
-                            <XCircle className="w-4 h-4" />
+                            <XCircle className="size-4" />
                             Rechazar solicitud
                         </>
 
@@ -1122,7 +1122,7 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                             disabled={!montoPago || !motivoCambio.trim() || aprobarYEnEsperaMutation.isPending}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
                         >
-                            {aprobarYEnEsperaMutation.isPending ? 'Procesando...' : 'Confirmar'}
+                            {aprobarYEnEsperaMutation.isPending ? 'Procesando…' : 'Confirmar'}
                         </AlertDialogAction>
                         <AlertDialogCancel
                             onClick={() => {
@@ -1174,7 +1174,7 @@ const ModalSolicitud: React.FC<ModalSolicitudProps> = ({ isOpen, onClose, solici
                             disabled={!montoPago || aprobarYEnEsperaMutation.isPending}
                             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
                         >
-                            {aprobarYEnEsperaMutation.isPending ? 'Procesando...' : 'Confirmar'}
+                            {aprobarYEnEsperaMutation.isPending ? 'Procesando…' : 'Confirmar'}
                         </AlertDialogAction>
                         <AlertDialogCancel
                             onClick={() => {

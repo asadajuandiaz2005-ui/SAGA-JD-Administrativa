@@ -29,7 +29,7 @@ const MaterialSelector: React.FC<MaterialSelectorProps> = ({
         onClick={() => setShowCreateModal(true)}
         className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
       >
-        <LuPlus className="w-3 h-3" />
+        <LuPlus className="size-3" />
         Nuevo Material
       </button>
       </div>
@@ -48,7 +48,7 @@ const MaterialSelector: React.FC<MaterialSelectorProps> = ({
     ) : (
       <div className="space-y-3">
         <div className="relative">
-          <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-5" />
           <input
             type="text"
             placeholder="Buscar material por nombre o categoría..."
@@ -59,7 +59,7 @@ const MaterialSelector: React.FC<MaterialSelectorProps> = ({
         </div>
         {loadingMateriales ? (
           <div className="text-center py-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full size-6 border-b-2 border-blue-600 mx-auto"></div>
             <p className="text-sm text-gray-500 mt-2">Cargando materiales...</p>
           </div>
         ) : (

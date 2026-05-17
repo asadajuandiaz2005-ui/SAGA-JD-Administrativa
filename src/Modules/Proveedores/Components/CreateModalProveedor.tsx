@@ -414,16 +414,16 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             {tipoProveedor === 'fisico' ? (
-              <LuUser className="w-6 h-6 text-blue-600" />
+              <LuUser className="size-6 text-blue-600" />
             ) : (
-              <LuBuilding2 className="w-6 h-6 text-blue-600" />
+              <LuBuilding2 className="size-6 text-blue-600" />
             )}
             <h2 className="text-xl font-semibold text-gray-900">
               Registrar Proveedor {tipoProveedor === 'fisico' ? 'Físico' : 'Jurídico'}
             </h2>
           </div>
           <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <LuX className="w-6 h-6" />
+            <LuX className="size-6" />
           </button>
         </div>
 
@@ -442,7 +442,7 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
                   : 'bg-white text-gray-600 border-2 border-gray-200 hover:bg-gray-50'
                 }`}
             >
-              <LuUser className="w-4 h-4" />
+              <LuUser className="size-4" />
               Físico
             </button>
             <button
@@ -457,7 +457,7 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
                   : 'bg-white text-gray-600 border-2 border-gray-200 hover:bg-gray-50'
                 }`}
             >
-              <LuBuilding2 className="w-4 h-4" />
+              <LuBuilding2 className="size-4" />
               Jurídico
             </button>
           </div>
@@ -540,7 +540,7 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
                               />
                               {loadingCedula && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                                  <div className="animate-spin rounded-full size-5 border-b-2 border-blue-600"></div>
                                 </div>
                               )}
                             </div>
@@ -656,7 +656,7 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
                         />
                         {loadingCedulaJuridica && (
                           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                            <div className="animate-spin rounded-full size-5 border-b-2 border-blue-600"></div>
                           </div>
                         )}
                       </div>
@@ -773,7 +773,7 @@ const CreateModalProveedor = ({ onClose, setShowCreateModal }: CreateModalProvee
                     : 'bg-blue-600 hover:bg-blue-700'
                   }`}
               >
-                {isCreating ? 'Creando...' : `Crear Proveedor ${tipoProveedor === 'fisico' ? 'Físico' : 'Jurídico'}`}
+                {isCreating ? 'Creando…' : `Crear Proveedor ${tipoProveedor === 'fisico' ? 'Físico' : 'Jurídico'}`}
               </button>
               <button
                 type="button"

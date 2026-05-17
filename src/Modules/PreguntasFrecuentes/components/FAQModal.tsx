@@ -19,7 +19,7 @@ const FAQModal = ({ isOpen, onClose, faq }: FAQModalProps) => {
                 {/* Header */}
                 <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-xl font-bold text-gray-900">Detalle de Pregunta Frecuente</h1>
+                        <h1 className="text-xl font-semibold text-gray-900">Detalle de Pregunta Frecuente</h1>
                         <button 
                             onClick={onClose} 
                             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -36,10 +36,10 @@ const FAQModal = ({ isOpen, onClose, faq }: FAQModalProps) => {
                         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                             <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <MessageSquare className="w-4 h-4 text-blue-600" />
+                                    <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <MessageSquare className="size-4 text-blue-600" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900">Información de la Pregunta</h3>
+                                    <h3 className="text-base font-semibold text-gray-900">Información de la Pregunta</h3>
                                 </div>
                             </div>
 
@@ -89,10 +89,10 @@ const FAQModal = ({ isOpen, onClose, faq }: FAQModalProps) => {
                         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                             <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <User className="w-4 h-4 text-blue-600" />
+                                    <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <User className="size-4 text-blue-600" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900">Información de Registro</h3>
+                                    <h3 className="text-base font-semibold text-gray-900">Información de Registro</h3>
                                 </div>
                             </div>
 

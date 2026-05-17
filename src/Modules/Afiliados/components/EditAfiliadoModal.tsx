@@ -325,6 +325,7 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, persona }) => {
                                             </label>
                                             <select
                                                 value={field.state.value}
+                                                onChange={() => { /* No editable */ }}
                                                 disabled
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
                                             >
@@ -536,8 +537,8 @@ const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, persona }) => {
                             >
                                 {isSubmitting ? (
                                     <>
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        Actualizando...
+                                        <div className="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Actualizando…
                                     </>
                                 ) : (
                                     'Actualizar Afiliado'

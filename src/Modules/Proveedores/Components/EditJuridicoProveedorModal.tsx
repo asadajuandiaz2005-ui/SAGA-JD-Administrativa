@@ -228,7 +228,7 @@ const EditProveedorJuridicoModal: React.FC<EditProveedorJuridicoModalProps> = ({
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">Editar Proveedor Jurídico</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <LuX className="w-6 h-6" />
+            <LuX className="size-6" />
           </button>
         </div>
 
@@ -374,7 +374,7 @@ const EditProveedorJuridicoModal: React.FC<EditProveedorJuridicoModalProps> = ({
                         : 'bg-blue-600 hover:bg-blue-700'
                       }`}
                   >
-                    {isUpdating ? 'Actualizando...' : 'Actualizar Proveedor'}
+                    {isUpdating ? 'Actualizando…' : 'Actualizar Proveedor'}
                   </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -395,7 +395,7 @@ const EditProveedorJuridicoModal: React.FC<EditProveedorJuridicoModalProps> = ({
                       }}
                       disabled={isUpdating}
                     >
-                      <span>{isUpdating ? 'Actualizando...' : 'Actualizar'}</span>
+                      <span>{isUpdating ? 'Actualizando…' : 'Actualizar'}</span>
                     </AlertDialogAction>
                     <AlertDialogCancel disabled={isUpdating}>
                       <span>Cancelar</span>

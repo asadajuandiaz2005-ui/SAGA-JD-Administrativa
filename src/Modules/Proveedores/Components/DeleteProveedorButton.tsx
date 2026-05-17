@@ -57,8 +57,8 @@ const DeleteProveedorButton: React.FC<DeleteProveedorButtonProps> = ({
       >
         {isDeleting ? (
           <>
-            <span className="animate-spin inline-block w-3 h-3 border border-red-800 border-t-transparent rounded-full mr-1"></span>
-            Eliminando...
+            <span className="animate-spin inline-block size-3 border border-red-800 border-t-transparent rounded-full mr-1"></span>
+            Eliminando…
           </>
         ) : (
           '🗑️ Eliminar'
@@ -82,7 +82,7 @@ const DeleteProveedorButton: React.FC<DeleteProveedorButtonProps> = ({
               disabled={isDeleting}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isDeleting ? 'Eliminando...' : 'Eliminar'}
+              {isDeleting ? 'Eliminando…' : 'Eliminar'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -12,10 +12,10 @@ export const InventarioDashboard: React.FC<InventarioDashboardProps> = ({ onNavi
       <div className="text-center">
         <div className="flex items-center justify-center mb-4">
           <div className="p-3 bg-blue-100 rounded-full">
-            <FaBoxes className="w-8 h-8 md:w-12 md:h-12 text-blue-600" />
+            <FaBoxes className="size-8 md:size-12 text-blue-600" />
           </div>
         </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
           Gestión del Inventario
         </h1>
         <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto px-4">
@@ -33,7 +33,7 @@ export const InventarioDashboard: React.FC<InventarioDashboardProps> = ({ onNavi
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="text-blue-600">
-                    <LuPackage className="w-6 h-6 md:w-8 md:h-8" />
+                    <LuPackage className="size-6 md:size-8" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-gray-900">
                     Materiales
@@ -59,7 +59,7 @@ export const InventarioDashboard: React.FC<InventarioDashboardProps> = ({ onNavi
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="text-green-600">
-                    <LuTags className="w-6 h-6 md:w-8 md:h-8" />
+                    <LuTags className="size-6 md:size-8" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-gray-900">
                     Categorías
@@ -85,7 +85,7 @@ export const InventarioDashboard: React.FC<InventarioDashboardProps> = ({ onNavi
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="text-purple-600">
-                    <LuRuler className="w-6 h-6 md:w-8 md:h-8" />
+                    <LuRuler className="size-6 md:size-8" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-gray-900">
                     Unidades de Medición
@@ -111,7 +111,7 @@ export const InventarioDashboard: React.FC<InventarioDashboardProps> = ({ onNavi
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="text-orange-600">
-                    <LuActivity className="w-6 h-6 md:w-8 md:h-8" />
+                    <LuActivity className="size-6 md:size-8" />
                   </div>
                   <h3 className="text-lg md:text-xl font-semibold text-gray-900">
                     Movimientos
