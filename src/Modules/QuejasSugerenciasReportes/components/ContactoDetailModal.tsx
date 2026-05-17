@@ -104,7 +104,7 @@ const ContactoDetailModal = ({ item, isOpen, onClose }: ContactoDetailModalProps
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                           Nombre
                         </label>
-                        <p className="text-sm font-medium text-gray-900">{item.nombre}</p>
+                        <p className="text-sm font-medium text-gray-900 break-all">{item.nombre}</p>
                       </div>
                     )}
                     {item.primerApellido && (
@@ -112,7 +112,7 @@ const ContactoDetailModal = ({ item, isOpen, onClose }: ContactoDetailModalProps
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                           Primer Apellido
                         </label>
-                        <p className="text-sm font-medium text-gray-900">{item.primerApellido}</p>
+                        <p className="text-sm font-medium text-gray-900 break-all">{item.primerApellido}</p>
                       </div>
                     )}
                     {item.segundoApellido && (
@@ -120,7 +120,7 @@ const ContactoDetailModal = ({ item, isOpen, onClose }: ContactoDetailModalProps
                         <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                           Segundo Apellido
                         </label>
-                        <p className="text-sm font-medium text-gray-900">{item.segundoApellido}</p>
+                        <p className="text-sm font-medium text-gray-900 break-all">{item.segundoApellido}</p>
                       </div>
                     )}
                   </div>
@@ -142,11 +142,11 @@ const ContactoDetailModal = ({ item, isOpen, onClose }: ContactoDetailModalProps
               <div className="p-5">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Mensaje - Columna Izquierda */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-gray-50 p-4 rounded-lg min-w-0">
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                       Descripción
                     </label>
-                    <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed break-words">{item.mensaje}</p>
+                    <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed break-all">{item.mensaje}</p>
                   </div>
 
                   {/* Archivo Adjunto - Columna Derecha */}

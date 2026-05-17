@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import DescargarPdfModal, { type OpcionFiltro, type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
+import { LuFileDown } from 'react-icons/lu';
 import {
   useReactTable,
   getCoreRowModel,
@@ -57,6 +60,8 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<MaterialFilterOptions>({});
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
   const [estadoFilter, setEstadoFilter] = useState<string>('Todos'); // Por defecto mostrar todos
   const updateEstadoMutation = useUpdateEstadoMaterial();
   const navigate = useNavigate();
@@ -667,6 +672,15 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
                 </span>
               )}
             </button>
+            <button
+              onClick={() => setIsDownloadOpen(true)}
+              disabled={isDownloadingPdf}
+              className="sm:flex-none justify-center whitespace-nowrap px-2 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md flex items-center gap-1 sm:gap-2 hover:bg-gray-50 transition-colors text-xs sm:text-sm disabled:opacity-50"
+              title="Descargar PDF"
+            >
+              <LuFileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+            </button>
           </div>
     <div className="flex w-full flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-end">
       {/* Fila 2 en móvil / Centro en desktop */}
@@ -845,6 +859,51 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
         onClose={() => setShowFilterModal(false)}
         onApplyFilters={handleApplyFilters}
         currentFilters={appliedFilters}
+      />
+
+      <DescargarPdfModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
+        titulo="Descargar Materiales"
+        descripcion="Filtra por estado y columnas. Genera reporte PDF descargable."
+        grupos={[
+          {
+            key: 'estados',
+            titulo: 'Estados a incluir',
+            opciones: (() => {
+              const map = new Map<number, string>();
+              todosMateriales.forEach((m: any) => {
+                const id = m.Estado_Material?.Id_Estado_Material;
+                const label = m.Estado_Material?.Nombre_Estado_Material;
+                if (typeof id === 'number' && label) map.set(id, label);
+              });
+              return Array.from(map.entries())
+                .map(([id, label]) => ({ id, label } as OpcionFiltro))
+                .sort((a, b) => a.label.localeCompare(b.label, 'es'));
+            })(),
+          } as GrupoFiltro,
+        ]}
+        columnas={[
+          { key: 'nombre',    label: 'Nombre',        obligatoria: true },
+          { key: 'cantidad',  label: 'Cantidad' },
+          { key: 'unidad',    label: 'Unidad' },
+          { key: 'precio',    label: 'Precio Unit.' },
+          { key: 'estado',    label: 'Estado' },
+          { key: 'proveedor', label: 'Proveedor' },
+          { key: 'entrada',   label: 'Fecha entrada' },
+        ] as OpcionColumna[]}
+        isLoading={isDownloadingPdf}
+        onConfirm={(f) => {
+          const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
+          downloadPdf({
+            url: '/Inventario/materiales/pdf',
+            filename: `Materiales_${new Date().toISOString().slice(0, 10)}`,
+            payload: {
+              estados: estadosSel.length ? estadosSel : undefined,
+              columnas: f.columnas.length ? f.columnas : undefined,
+            },
+          }, { onSuccess: () => setIsDownloadOpen(false) });
+        }}
       />
 
       </div>

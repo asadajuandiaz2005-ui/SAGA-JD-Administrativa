@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import DescargarPdfModal, { type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
+import { LuFileDown } from 'react-icons/lu';
 import {
   createColumnHelper,
   flexRender,
@@ -54,6 +57,8 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<MovimientoFilterOptions>({});
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
 
   const pageSizeOptions = [5, 10, 20, 50];
   const [pagination, setPagination] = useState({
@@ -444,6 +449,15 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
                 </span>
               )}
             </button>
+            <button
+              onClick={() => setIsDownloadOpen(true)}
+              disabled={isDownloadingPdf}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors text-xs sm:text-sm whitespace-nowrap disabled:opacity-50"
+              title="Descargar PDF"
+            >
+              <LuFileDown className="w-4 h-4" />
+              {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+            </button>
           </div>
           
           {/* Fila 2 en móvil: Búsqueda y Botón */}
@@ -604,6 +618,51 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
         onClose={() => setIsFilterModalOpen(false)}
         onApplyFilters={handleApplyFilters}
         currentFilters={appliedFilters}
+      />
+
+      <DescargarPdfModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
+        titulo="Descargar Movimientos"
+        descripcion="Filtra por tipo y columnas. Genera reporte PDF descargable."
+        grupos={[
+          {
+            key: 'tipos',
+            titulo: 'Tipos de movimiento',
+            opciones: (() => {
+              const set = new Set<string>();
+              (movimientos ?? []).forEach((m: any) => {
+                if (m.Tipo_Movimiento) set.add(m.Tipo_Movimiento);
+              });
+              return Array.from(set).sort().map(t => ({
+                id: t,
+                label: t === 'Entrada' ? 'Entrada (Ingreso)' : t === 'Salida' ? 'Salida (Egreso)' : t,
+              }));
+            })(),
+          } as GrupoFiltro,
+        ]}
+        columnas={[
+          { key: 'fecha',         label: 'Fecha',          obligatoria: true },
+          { key: 'tipo',          label: 'Tipo' },
+          { key: 'material',      label: 'Material' },
+          { key: 'cantidad',      label: 'Cantidad' },
+          { key: 'anterior',      label: 'Cant. Anterior' },
+          { key: 'nueva',         label: 'Cant. Nueva' },
+          { key: 'usuario',       label: 'Usuario' },
+          { key: 'observaciones', label: 'Observaciones' },
+        ] as OpcionColumna[]}
+        isLoading={isDownloadingPdf}
+        onConfirm={(f) => {
+          const tiposSel = (f.grupos.tipos ?? []).filter((v): v is string => typeof v === 'string');
+          downloadPdf({
+            url: '/Inventario/movimientos/pdf',
+            filename: `Movimientos_${new Date().toISOString().slice(0, 10)}`,
+            payload: {
+              tipos: tiposSel.length ? tiposSel : undefined,
+              columnas: f.columnas.length ? f.columnas : undefined,
+            },
+          }, { onSuccess: () => setIsDownloadOpen(false) });
+        }}
       />
     </div>
   );

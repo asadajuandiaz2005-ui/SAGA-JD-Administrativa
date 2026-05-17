@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { LuSearch, LuFilter } from 'react-icons/lu';
+import { LuSearch, LuFilter, LuFileDown } from 'react-icons/lu';
 import { useAuth } from '@/Modules/Auth/Context/AuthContext';
 import {
   createColumnHelper,
@@ -22,6 +22,8 @@ import type { Auditoria } from '../models/Auditoria';
 import type { AuditoriaFilterOptions } from '../types/AuditoriaTypes';
 import DetailAuditoriaModal from './DetailAuditoriaModal';
 import FilterAuditoriaModal from './FilterAuditoriaModal';
+import DescargarPdfModal, { type OpcionFiltro, type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
 
 const columnHelper = createColumnHelper<Auditoria>();
 
@@ -44,6 +46,51 @@ const CatálogoAuditorias = () => {
     pageIndex: 0,
     pageSize: 5,
   });
+
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
+
+  const modulosOpcionesPdf = useMemo<OpcionFiltro[]>(() => {
+    const set = new Set<string>();
+    auditorias.forEach(a => { if (a.Modulo) set.add(a.Modulo); });
+    return Array.from(set).sort().map(m => ({ id: m, label: m }));
+  }, [auditorias]);
+
+  const accionesOpcionesPdf = useMemo<OpcionFiltro[]>(() => {
+    const set = new Set<string>();
+    auditorias.forEach(a => { if (a.Accion) set.add(a.Accion); });
+    return Array.from(set).sort().map(a => ({ id: a, label: a }));
+  }, [auditorias]);
+
+  const columnasOpcionesPdf: OpcionColumna[] = [
+    { key: 'fecha',    label: 'Fecha',    obligatoria: true },
+    { key: 'modulo',   label: 'Módulo' },
+    { key: 'accion',   label: 'Acción' },
+    { key: 'registro', label: 'Registro' },
+    { key: 'usuario',  label: 'Usuario' },
+    { key: 'rol',      label: 'Rol' },
+  ];
+
+  const gruposFiltrosPdf: GrupoFiltro[] = [
+    { key: 'modulos',  titulo: 'Módulos',  opciones: modulosOpcionesPdf },
+    { key: 'acciones', titulo: 'Acciones', opciones: accionesOpcionesPdf },
+  ];
+
+  const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[] }) => {
+    const modulosSel = (f.grupos.modulos ?? []).filter((v): v is string => typeof v === 'string');
+    const accionesSel = (f.grupos.acciones ?? []).filter((v): v is string => typeof v === 'string');
+    downloadPdf({
+      url: '/auditoria/pdf',
+      filename: `Auditoria_${new Date().toISOString().slice(0, 10)}`,
+      payload: {
+        modulos: modulosSel.length ? modulosSel : undefined,
+        acciones: accionesSel.length ? accionesSel : undefined,
+        columnas: f.columnas.length ? f.columnas : undefined,
+      },
+    }, {
+      onSuccess: () => setIsDownloadOpen(false),
+    });
+  };
 
   const handleViewDetail = (auditoria: Auditoria) => {
     setSelectedAuditoria(auditoria);
@@ -247,7 +294,7 @@ const CatálogoAuditorias = () => {
       {/* Search & Filter Bar */}
       <div className="p-2 sm:p-4 flex flex-row items-center justify-between md:justify-end gap-2 sm:gap-4">
 
-        <div className='flex items-center'>
+        <div className='flex items-center gap-2'>
           <button
               onClick={() => setShowFilterModal(true)}
               className={`px-2 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-sm border rounded-md flex items-center gap-1 sm:gap-2 transition-colors ${
@@ -263,6 +310,15 @@ const CatálogoAuditorias = () => {
                   {Object.values(appliedFilters).filter(Boolean).length}
                 </span>
               )}
+            </button>
+            <button
+              onClick={() => setIsDownloadOpen(true)}
+              disabled={isDownloadingPdf}
+              className="px-2 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md flex items-center gap-1 sm:gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              title="Descargar PDF"
+            >
+              <LuFileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+              {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
             </button>
         </div>
          <div className="relative flex-1 max-w-md w-full">
@@ -443,6 +499,17 @@ const CatálogoAuditorias = () => {
         onClose={() => setShowFilterModal(false)}
         onApplyFilters={handleApplyFilters}
         currentFilters={appliedFilters}
+      />
+
+      <DescargarPdfModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
+        titulo="Descargar Auditoría"
+        descripcion="Filtra por módulo, acción y columnas. Genera reporte PDF descargable."
+        grupos={gruposFiltrosPdf}
+        columnas={columnasOpcionesPdf}
+        isLoading={isDownloadingPdf}
+        onConfirm={handleConfirmDownload}
       />
     </div>
   );

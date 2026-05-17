@@ -31,6 +31,12 @@ export const renderTipoCell = (item: ContactoItem) => {
 };
 
 export const renderPersonaCell = (item: ContactoItem) => {
+  const formatNamePart = (part?: string, isMobile = false) => {
+    if (!part) return '';
+    const limit = isMobile ? 5 : 10;
+    return part.length > limit ? part.substring(0, limit) + '...' : part;
+  };
+
   const nombreCompleto = item._nombreCompleto || [item.nombre, item.primerApellido, item.segundoApellido]
     .filter(Boolean)
     .join(' ');
@@ -39,19 +45,33 @@ export const renderPersonaCell = (item: ContactoItem) => {
     return <span className="text-[7px] sm:text-sm text-gray-400 italic font-medium whitespace-nowrap">Anónimo</span>;
   }
 
-  const truncatedMobile = nombreCompleto.length > 15 ? nombreCompleto.substring(0, 15) + '...' : nombreCompleto;
+  const truncatedDesktopParts = [
+    formatNamePart(item.nombre, false),
+    formatNamePart(item.primerApellido, false),
+    formatNamePart(item.segundoApellido, false)
+  ].filter(Boolean).join(' ');
+
+  const truncatedMobileParts = [
+    formatNamePart(item.nombre, true),
+    formatNamePart(item.primerApellido, true),
+    formatNamePart(item.segundoApellido, true)
+  ].filter(Boolean).join(' ');
+
+  const mobileDisplay = truncatedMobileParts || (nombreCompleto.length > 20 ? nombreCompleto.substring(0, 20) + '...' : nombreCompleto);
+  const desktopDisplay = truncatedDesktopParts || (nombreCompleto.length > 45 ? nombreCompleto.substring(0, 45) + '...' : nombreCompleto);
+
 
   return (
     <div title={nombreCompleto} className="font-medium whitespace-nowrap text-gray-700">
-      <span className="hidden sm:inline text-sm">{nombreCompleto}</span>
-      <span className="sm:hidden text-[7px]">{truncatedMobile}</span>
+      <span className="hidden sm:inline text-sm">{desktopDisplay}</span>
+      <span className="sm:hidden text-[7px]">{mobileDisplay}</span>
     </div>
   );
 };
 
 export const renderMensajeCell = (mensaje?: string) => {
   if (!mensaje) return <span className="text-[7px] sm:text-sm text-gray-400">-</span>;
-  const truncatedDesktop = mensaje.length > 50 ? mensaje.substring(0, 50) + '...' : mensaje;
+  const truncatedDesktop = mensaje.length > 30 ? mensaje.substring(0, 30) + '...' : mensaje;
   const truncatedMobile = mensaje.length > 15 ? mensaje.substring(0, 15) + '...' : mensaje;
   return (
     <div title={mensaje}>
