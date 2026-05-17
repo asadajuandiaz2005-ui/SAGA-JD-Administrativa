@@ -5,7 +5,7 @@ import { useProveedoresJuridicos } from '../Hook/hookjuridicoproveedor';
 import { formatCedulaJuridica, formatPhoneNumberDisplay } from '../Schema/SchemaProveedorJuridico';
 import type { ProveedorFisico } from '../Models/TablaProveedo/tablaFisicoProveedor';
 import type { ProveedorJuridico } from '../Models/TablaProveedo/tablaJuridicoProveedor';
-import { LuFilter, LuSearch } from 'react-icons/lu';
+import { LuFilter, LuSearch, LuFileDown } from 'react-icons/lu';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown, MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from 'react-icons/md';
 import ActionButtons from './ActionButtons';
 import FilterProveedorModal from './FilterProveedorModal';
@@ -15,6 +15,8 @@ import EditFisicoProveedoresModal from './EditFisicoProveedoresModal';
 import EditJuridicoProveedorModal from './EditJuridicoProveedorModal';
 import CreateModalProveedor from './CreateModalProveedor';
 import { useUserPermissions } from '@/Modules/Auth/Hooks/PermissionHook';
+import DescargarPdfModal, { type OpcionFiltro, type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
 
 
 // Tipo unificado para la tabla (similar al patrón de AbonadosTable)
@@ -39,9 +41,13 @@ export default function ProveedoresTable() {
     // Hooks para obtener ambos tipos de proveedores
     const { proveedoresFisicos, } = useProveedoresFisicos();
     const { proveedoresJuridicos, } = useProveedoresJuridicos();
-    const { canCreate } = useUserPermissions();
+    const { canCreate, canView } = useUserPermissions();
 
     const hasCreatePermission = canCreate('proveedores');
+    const hasViewPermission = canView('proveedores');
+
+    const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+    const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
 
     const [globalFilter, setGlobalFilter] = useState('');
     // Filtros específicos solicitados: por tipo y por estado
@@ -111,6 +117,65 @@ export default function ProveedoresTable() {
         });
         return ['Todos', ...Array.from(setEstados)];
     }, [proveedoresUnificados]);
+
+    // Opciones de estados para el modal de descarga (id + label, sin duplicados)
+    const estadosOpcionesPdf = useMemo<OpcionFiltro[]>(() => {
+        const map = new Map<number, string>();
+        proveedoresUnificados.forEach(p => {
+            const id = p.Estado_Proveedor?.Id_Estado_Proveedor;
+            const label = p.Estado_Proveedor?.Estado_Proveedor;
+            if (typeof id === 'number' && label) map.set(id, label);
+        });
+        return Array.from(map.entries())
+            .map(([id, label]) => ({ id, label }))
+            .sort((a, b) => a.label.localeCompare(b.label, 'es', { sensitivity: 'base' }));
+    }, [proveedoresUnificados]);
+
+    const columnasOpcionesPdf: OpcionColumna[] = [
+        { key: 'nombre',         label: 'Nombre',          obligatoria: true },
+        { key: 'tipo',           label: 'Tipo' },
+        { key: 'identificacion', label: 'Identificación' },
+        { key: 'telefono',       label: 'Teléfono' },
+        { key: 'estado',         label: 'Estado' },
+        { key: 'creacion',       label: 'Fecha creación' },
+    ];
+
+    const gruposFiltrosPdf: GrupoFiltro[] = [
+        {
+            key: 'tipo',
+            titulo: 'Tipo',
+            multi: false,
+            opciones: [
+                { id: 1, label: 'Físico' },
+                { id: 2, label: 'Jurídico' },
+            ],
+        },
+        {
+            key: 'estados',
+            titulo: 'Estados a incluir',
+            opciones: estadosOpcionesPdf,
+        },
+    ];
+
+    const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[] }) => {
+        const tipoSel = f.grupos.tipo?.[0];
+        const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
+
+        downloadPdf(
+            {
+                url: '/Proveedores/pdf',
+                filename: `Proveedores_${new Date().toISOString().slice(0, 10)}`,
+                payload: {
+                    estados: estadosSel.length ? estadosSel : undefined,
+                    columnas: f.columnas.length ? f.columnas : undefined,
+                    tipo: typeof tipoSel === 'number' ? tipoSel : undefined,
+                },
+            },
+            {
+                onSuccess: () => setIsDownloadOpen(false),
+            }
+        );
+    };
 
     const activeFiltersCount = useMemo(() => {
         let c = 0;
@@ -289,7 +354,7 @@ export default function ProveedoresTable() {
                 </div>
                 
                 <div className="flex flex-col gap-3 sm:flex-row items-stretch sm:items-center justify-end pt-2">
-                   <div className="flex w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0">
+                   <div className="flex w-full sm:w-auto gap-2 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
                        <button
                             onClick={() => setIsFilterOpen(true)}
                             className={`px-3 py-1.5 sm:px-4 sm:py-2 border rounded-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap text-xs sm:text-sm w-full sm:w-auto ${
@@ -306,6 +371,17 @@ export default function ProveedoresTable() {
                             </span>
                             )}
                         </button>
+                        {hasViewPermission && (
+                            <button
+                                onClick={() => setIsDownloadOpen(true)}
+                                disabled={isDownloadingPdf}
+                                className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors whitespace-nowrap text-xs sm:text-sm w-full sm:w-auto disabled:opacity-50"
+                                title="Descargar PDF"
+                            >
+                                <LuFileDown className="w-4 h-4" />
+                                {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+                            </button>
+                        )}
                    </div>
 
                     <div className="w-full flex gap-2 sm:flex-1 sm:max-w-md">
@@ -342,6 +418,17 @@ export default function ProveedoresTable() {
                     setTipoFilter(f.tipo);
                     setEstadoFilter(f.estado);
                 }}
+            />
+
+            <DescargarPdfModal
+                isOpen={isDownloadOpen}
+                onClose={() => setIsDownloadOpen(false)}
+                titulo="Descargar Proveedores"
+                descripcion="Filtra por tipo, estado y columnas. Genera reporte PDF descargable."
+                grupos={gruposFiltrosPdf}
+                columnas={columnasOpcionesPdf}
+                isLoading={isDownloadingPdf}
+                onConfirm={handleConfirmDownload}
             />
 
             <div className="bg-white rounded-2xl shadow-sm border border-sky-100 overflow-hidden max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100 mb-4">

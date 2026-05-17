@@ -1,4 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
+import DescargarPdfModal, { type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
+import { LuFileDown } from 'react-icons/lu';
 import { LuPlus, LuSearch } from 'react-icons/lu';
 import {
   createColumnHelper,
@@ -48,6 +51,8 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const [medidorEstadoPagoSeleccionado, setMedidorEstadoPagoSeleccionado] = useState<Medidor | null>(null);
   const [selectedMedidor, setSelectedMedidor] = useState<Medidor | null>(null);
   const [estadoFilter, setEstadoFilter] = useState<string>('Todos');
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
   const [notification, setNotification] = useState<{
     type: 'success' | 'error' | 'info';
     title: string;
@@ -502,6 +507,15 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
                 <option value="Averiado">Averiado</option>
               </select>
             </div>
+            <button
+              onClick={() => setIsDownloadOpen(true)}
+              disabled={isDownloadingPdf}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors text-xs sm:text-sm whitespace-nowrap disabled:opacity-50"
+              title="Descargar PDF"
+            >
+              <LuFileDown className="w-4 h-4" />
+              {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+            </button>
           </div>
           
           {/* Fila 2 en móvil: Búsqueda */}
@@ -712,6 +726,50 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <DescargarPdfModal
+        isOpen={isDownloadOpen}
+        onClose={() => setIsDownloadOpen(false)}
+        titulo="Descargar Medidores"
+        descripcion="Filtra por estado y columnas. Genera reporte PDF descargable."
+        grupos={[
+          {
+            key: 'estados',
+            titulo: 'Estados a incluir',
+            ayuda: 'Si no seleccionas ningún estado, se incluirán todos por defecto.',
+            opciones: (() => {
+              const map = new Map<number, string>();
+              (medidoresTodos.data ?? []).forEach((m: any) => {
+                const id = m.Estado_Medidor?.Id_Estado_Medidor;
+                const label = m.Estado_Medidor?.Nombre_Estado_Medidor;
+                if (typeof id === 'number' && label) map.set(id, label);
+              });
+              return Array.from(map.entries())
+                .map(([id, label]) => ({ id, label }))
+                .sort((a, b) => a.label.localeCompare(b.label, 'es'));
+            })(),
+          } as GrupoFiltro,
+        ]}
+        columnas={[
+          { key: 'numero',   label: 'N° Medidor',    obligatoria: true },
+          { key: 'estado',   label: 'Estado' },
+          { key: 'afiliado', label: 'Afiliado' },
+          { key: 'pago',     label: 'Estado Pago' },
+          { key: 'creacion', label: 'Fecha creación' },
+        ] as OpcionColumna[]}
+        isLoading={isDownloadingPdf}
+        onConfirm={(f) => {
+          const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
+          downloadPdf({
+            url: '/Inventario/medidores/pdf',
+            filename: `Medidores_${new Date().toISOString().slice(0, 10)}`,
+            payload: {
+              estados: estadosSel.length ? estadosSel : undefined,
+              columnas: f.columnas.length ? f.columnas : undefined,
+            },
+          }, { onSuccess: () => setIsDownloadOpen(false) });
+        }}
+      />
     </div>
   );
 };

@@ -67,11 +67,11 @@ const ResponderModal: React.FC<ResponderModalProps> = ({ item, isOpen, onClose }
         <div className="p-6 space-y-4">
           <div>
             <h3 className="text-md font-semibold text-gray-700 mb-2">De:</h3>
-            <p className="text-gray-600">{item.nombre} &lt;{item.correo}&gt;</p>
+            <p className="text-gray-600 break-all">{item.nombre} &lt;{item.correo}&gt;</p>
           </div>
           <div>
             <h3 className="text-md font-semibold text-gray-700 mb-2">Mensaje:</h3>
-            <p className="text-gray-600 whitespace-pre-wrap">{item.mensaje}</p>
+            <p className="text-gray-600 whitespace-pre-wrap break-all">{item.mensaje}</p>
           </div>
         </div>
 

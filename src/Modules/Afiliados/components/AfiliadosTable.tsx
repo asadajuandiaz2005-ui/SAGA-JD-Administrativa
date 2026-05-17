@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import DescargarPdfModal, { type OpcionColumna, type GrupoFiltro, type OpcionFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
+import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
+import { LuFileDown } from 'react-icons/lu';
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, getSortedRowModel, getPaginationRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
 import { User, Building, Plus } from 'lucide-react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight, MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
@@ -62,6 +65,8 @@ export default function AbonadosTable() {
         busquedaAvanzada: ''
     });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+    const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false); // ✅ Agregar estado para EditModal
@@ -499,6 +504,15 @@ export default function AbonadosTable() {
                                 </span>
                             )}
                         </button>
+                        <button
+                            onClick={() => setIsDownloadOpen(true)}
+                            disabled={isDownloadingPdf}
+                            className="px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                            title="Descargar PDF"
+                        >
+                            <LuFileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="hidden sm:inline">{isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}</span>
+                        </button>
                         <div className="relative flex-1 max-w-md w-full min-w-[120px]">
                             <LuSearch className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3 sm:w-4 sm:h-4" />
                             <input
@@ -541,6 +555,62 @@ export default function AbonadosTable() {
                 onClose={() => setIsFilterOpen(false)}
                 currentFilters={activeFilters}
                 onApplyFilters={(f) => setActiveFilters(f)}
+            />
+
+            <DescargarPdfModal
+                isOpen={isDownloadOpen}
+                onClose={() => setIsDownloadOpen(false)}
+                titulo="Descargar Afiliados"
+                descripcion="Filtra por tipo, estado y columnas. Genera reporte PDF descargable."
+                grupos={[
+                    {
+                        key: 'tipo',
+                        titulo: 'Tipo de afiliado',
+                        multi: false,
+                        opciones: [
+                            { id: 1, label: 'Físico' },
+                            { id: 2, label: 'Jurídico' },
+                        ],
+                    },
+                    {
+                        key: 'estados',
+                        titulo: 'Estados a incluir',
+                        opciones: (() => {
+                            const map = new Map<number, string>();
+                            datosUnificados.forEach((a: any) => {
+                                const id = a.Estado?.Id_Estado_Afiliado;
+                                const label = a.Estado?.Nombre_Estado;
+                                if (typeof id === 'number' && label) map.set(id, label);
+                            });
+                            return Array.from(map.entries())
+                                .map(([id, label]) => ({ id, label } as OpcionFiltro))
+                                .sort((a, b) => a.label.localeCompare(b.label, 'es'));
+                        })(),
+                    },
+                ] as GrupoFiltro[]}
+                columnas={[
+                    { key: 'nombre',         label: 'Nombre / Razón Social', obligatoria: true },
+                    { key: 'tipo',           label: 'Tipo' },
+                    { key: 'identificacion', label: 'Identificación' },
+                    { key: 'correo',         label: 'Correo' },
+                    { key: 'telefono',       label: 'Teléfono' },
+                    { key: 'estado',         label: 'Estado' },
+                    { key: 'creacion',       label: 'Fecha creación' },
+                ] as OpcionColumna[]}
+                isLoading={isDownloadingPdf}
+                onConfirm={(f) => {
+                    const tipoSel = f.grupos.tipo?.[0];
+                    const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
+                    downloadPdf({
+                        url: '/afiliados/pdf',
+                        filename: `Afiliados_${new Date().toISOString().slice(0, 10)}`,
+                        payload: {
+                            tipo: typeof tipoSel === 'number' ? tipoSel : undefined,
+                            estados: estadosSel.length ? estadosSel : undefined,
+                            columnas: f.columnas.length ? f.columnas : undefined,
+                        },
+                    }, { onSuccess: () => setIsDownloadOpen(false) });
+                }}
             />
 
             {/* Tabla con scroll vertical y horizontal */}
