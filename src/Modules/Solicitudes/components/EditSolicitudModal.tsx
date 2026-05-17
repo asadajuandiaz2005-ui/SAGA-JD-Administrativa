@@ -250,24 +250,7 @@ const EditSolicitudModal: React.FC<EditSolicitudModalProps> = ({ isOpen, onClose
                         {/* Campos para solicitudes físicas */}
                         {solicitud.tipo === 'solicitud-fisica' && (
                             <>
-                                <form.Field name="Nombre">
-                                    {(field) => (
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Nombre *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={field.state.value}
-                                                onChange={createInputHandler('nombre', field.handleChange, NOMBRE_MAX_LENGTH)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Nombre"
-                                                maxLength={NOMBRE_MAX_LENGTH}
-                                            />
-                                            {renderCharCounter(fieldCharCounts.nombre, NOMBRE_MAX_LENGTH, false)}
-                                        </div>
-                                    )}
-                                </form.Field>
+                               
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <form.Field name="Apellido1">

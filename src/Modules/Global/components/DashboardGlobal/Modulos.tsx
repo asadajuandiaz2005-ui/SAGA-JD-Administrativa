@@ -1,10 +1,11 @@
 import { useAllowedModules } from '../../../Auth/provider/PermisoProvider'
 import ModuleCard from './ModuleCard'
+import { useMedidoresSinArchivos } from '../../../Inventario/hooks/useMedidoresSinArchivos'
 
 const Modulos = () => {
   const { allowedModules } = useAllowedModules()
+  const { totalMedidoresSinArchivos } = useMedidoresSinArchivos()
 
-  // Filtrar módulos ocultos (como Roles que solo se accede desde Usuarios)
   const visibleModules = allowedModules.filter(mod => !mod.hidden)
 
   return (
@@ -19,10 +20,11 @@ const Modulos = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {visibleModules.map((mod) => (
               <ModuleCard
-                key={`${mod.name}-${mod.path}`}
+                 key={`${mod.name}-${mod.path}`}
                 name={mod.name}
                 icon={mod.icon}
                 path={mod.path}
+                badge={mod.path === '/Afiliados' ? totalMedidoresSinArchivos : undefined}
               />
             ))}
           </div>

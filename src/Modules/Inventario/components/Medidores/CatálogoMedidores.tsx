@@ -7,7 +7,6 @@ import {
   createColumnHelper,
   useReactTable,
   getCoreRowModel,
-  getFilteredRowModel,
   getSortedRowModel,
   getPaginationRowModel,
   flexRender
@@ -36,6 +35,8 @@ import type { Medidor, EstadoPagoMedidorNombre } from '../../models/Medidor';
 import CreateMedidorModal from './CreateMedidorModal';
 import DetailMedidorModal from './DetailMedidorModal';
 import AsignarAfiliadoMedidorModal from './AsignarAfiliadoMedidorModal';
+import SubirArchivosMedidorModal from './SubirArchivosMedidorModal';
+import { subirArchivosMedidorInventario } from '../../service/MedidorServices';
 
 interface CatalogoMedidoresProps {
   onBack?: () => void;
@@ -47,12 +48,14 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isAsignarModalOpen, setIsAsignarModalOpen] = useState(false);
+  const [isSubirArchivosModalOpen, setIsSubirArchivosModalOpen] = useState(false);
   const [showEstadoPagoDialog, setShowEstadoPagoDialog] = useState(false);
   const [medidorEstadoPagoSeleccionado, setMedidorEstadoPagoSeleccionado] = useState<Medidor | null>(null);
   const [selectedMedidor, setSelectedMedidor] = useState<Medidor | null>(null);
   const [estadoFilter, setEstadoFilter] = useState<string>('Todos');
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const { mutate: downloadPdf, isPending: isDownloadingPdf } = useDownloadModulePdf();
+  const [estadoPagoFilter, setEstadoPagoFilter] = useState<string>('Todos');
   const [notification, setNotification] = useState<{
     type: 'success' | 'error' | 'info';
     title: string;
@@ -71,6 +74,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   const medidoresNoInstalados = useMedidoresPorEstado('no-instalados');
   const medidoresInstalados = useMedidoresPorEstado('instalados');
   const medidoresAveriados = useMedidoresPorEstado('averiados');
+  const medidoresPendientes = useMedidoresPorEstado('pendientes');
   const updateEstadoMutation = useUpdateEstadoMedidor();
   const updateEstadoPagoMutation = useUpdateEstadoPagoMedidor();
 
@@ -95,6 +99,11 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
     isLoading = medidoresAveriados.isLoading;
     error = medidoresAveriados.error;
     refetch = medidoresAveriados.refetch;
+  } else if (estadoFilter === 'Pendiente') {
+    medidores = medidoresPendientes.data ?? [];
+    isLoading = medidoresPendientes.isLoading;
+    error = medidoresPendientes.error;
+    refetch = medidoresPendientes.refetch;
   } else {
     medidores = medidoresTodos.data ?? [];
     isLoading = medidoresTodos.isLoading;
@@ -155,6 +164,43 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
 
     return 'Pendiente';
   };
+
+  const medidoresFiltrados = useMemo(() => {
+    if (estadoPagoFilter === 'Todos') return medidores;
+    return medidores.filter(m => getEstadoPagoNombre(m) === estadoPagoFilter);
+  }, [medidores, estadoPagoFilter]);
+
+  const medidoresConBusqueda = useMemo(() => {
+    if (!globalFilter) return medidoresFiltrados;
+
+    const searchLower = globalFilter.toLowerCase();
+    return medidoresFiltrados.filter(m => {
+      const numero = m.Numero_Medidor?.toString().toLowerCase() || '';
+      const estado = m.Estado_Medidor?.Nombre_Estado_Medidor?.toLowerCase() || '';
+      const estadoPago = getEstadoPagoNombre(m).toLowerCase();
+
+      // Obtener nombre del afiliado usando la misma lógica que en la columna
+      let afiliadoNombre = '';
+      if (m.Afiliado) {
+        if (m.Afiliado.Tipo_Entidad === 1) {
+          afiliadoNombre = `${m.Afiliado.Nombre || ''} ${m.Afiliado.Primer_Apellido || ''} ${m.Afiliado.Segundo_Apellido || ''}`.trim();
+          if (!afiliadoNombre) afiliadoNombre = m.Afiliado.Nombre_Completo || '';
+        } else if (m.Afiliado.Tipo_Entidad === 2) {
+          afiliadoNombre = m.Afiliado.Razon_Social || m.Afiliado.Nombre_Completo || '';
+        } else {
+          afiliadoNombre = m.Afiliado.Nombre_Completo || m.Afiliado.Razon_Social || '';
+        }
+      }
+      afiliadoNombre = afiliadoNombre.toLowerCase();
+
+      return (
+        numero.includes(searchLower) ||
+        afiliadoNombre.includes(searchLower) ||
+        estado.includes(searchLower) ||
+        estadoPago.includes(searchLower)
+      );
+    });
+  }, [medidoresFiltrados, globalFilter]);
 
   const openEstadoPagoDialog = (medidor: Medidor) => {
     if (!medidor.Afiliado) return;
@@ -337,8 +383,23 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
               }
 
               if (estadoId === 2) {
+                const sinArchivos =
+                  !info.row.original.Certificacion_Literal && !info.row.original.Planos_Terreno;
                 return (
                   <>
+                    {sinArchivos && (
+                      <button
+                        className="px-1.5 py-1 sm:px-2 sm:py-1 bg-amber-500 text-white text-[9px] sm:text-xs rounded hover:bg-amber-600 transition-colors w-auto whitespace-nowrap"
+                        onClick={() => {
+                          setSelectedMedidor(info.row.original);
+                          setIsSubirArchivosModalOpen(true);
+                        }}
+                        title="Subir archivos del terreno"
+                      >
+                        <span className="hidden sm:inline">Subir Archivos</span>
+                        <span className="sm:hidden">Archivos</span>
+                      </button>
+                    )}
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button
@@ -446,17 +507,14 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   );
 
   const table = useReactTable({
-    data: medidores,
+    data: medidoresConBusqueda,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
-      globalFilter,
       pagination,
     },
-    onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     initialState: {
       pagination: {
@@ -516,6 +574,20 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
               <LuFileDown className="size-4" />
               {isDownloadingPdf ? 'Generando…' : 'Descargar PDF'}
             </button>
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <label htmlFor='estadoPago' className="text-xs sm:text-sm font-medium text-gray-700">Pago:</label>
+              <select
+                id='estadoPago'
+                value={estadoPagoFilter}
+                onChange={(e) => setEstadoPagoFilter(e.target.value)}
+                className="px-2 py-1.5 sm:px-3 sm:py-2 border bor                                                             der-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm"
+              >
+                <option value="Todos">Todos</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Pagado">Pagado</option>
+                <option value="Libre">Libre</option>
+              </select>
+            </div>
           </div>
           
           {/* Fila 2 en móvil: Búsqueda */}
@@ -701,6 +773,28 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
               type: 'success',
               title: 'Medidor asignado',
               description: `El medidor #${selectedMedidor.Numero_Medidor} fue asignado correctamente.`,
+            });
+          }}
+        />
+      )}
+
+      {selectedMedidor && (
+        <SubirArchivosMedidorModal
+          isOpen={isSubirArchivosModalOpen}
+          numeroMedidor={selectedMedidor.Numero_Medidor}
+          onClose={() => {
+            setIsSubirArchivosModalOpen(false);
+            setSelectedMedidor(null);
+          }}
+          onSubir={(cert, planos) =>
+            subirArchivosMedidorInventario(selectedMedidor.Id_Medidor, cert, planos)
+          }
+          onSuccess={() => {
+            refetch();
+            setNotification({
+              type: 'success',
+              title: 'Archivos subidos',
+              description: `Los archivos del medidor #${selectedMedidor.Numero_Medidor} fueron guardados correctamente.`,
             });
           }}
         />

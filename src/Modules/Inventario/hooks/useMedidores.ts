@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateMedidorData } from '../models/Medidor';
-import { getAllMedidores, getMedidoresNoInstalados, getMedidoresInstalados, getMedidoresAveriados, getMedidoresAfiliado, createMedidor, updateEstadoMedidor, updateEstadoPagoMedidor } from '../service/MedidorServices';
+import { getAllMedidores, getMedidoresNoInstalados, getMedidoresInstalados, getMedidoresAveriados, getMedidoresPendientes, getMedidoresPagados, getMedidoresLibres, getMedidoresAfiliado, createMedidor, updateEstadoMedidor, updateEstadoPagoMedidor } from '../service/MedidorServices';
 import type { EstadoPagoMedidorNombre } from '../models/Medidor';
 import { useAlerts } from '@/Modules/Global/context/AlertContext';
 
@@ -13,19 +13,20 @@ export const useMedidores = () => {
 };
 
 // Hook para obtener medidores por estado
-export const useMedidoresPorEstado = (estado: 'no-instalados' | 'instalados' | 'averiados') => {
-  let queryFn;
-  if (estado === 'no-instalados') {
-    queryFn = getMedidoresNoInstalados;
-  } else if (estado === 'instalados') {
-    queryFn = getMedidoresInstalados;
-  } else {
-    queryFn = getMedidoresAveriados;
-  }
+export const useMedidoresPorEstado = (estado: 'no-instalados' | 'instalados' | 'averiados' | 'pendientes' | 'pagados' | 'libres' | 'desconectados') => {
+  const queryFnMap = {
+    'no-instalados': getMedidoresNoInstalados,
+    'instalados': getMedidoresInstalados,
+    'averiados': getMedidoresAveriados,
+    'pendientes': getMedidoresPendientes,
+    'pagados': getMedidoresPagados,
+    'libres': getMedidoresLibres,
+    'desconectados': getMedidoresAveriados,
+  };
 
   return useQuery({
     queryKey: ['medidores', estado],
-    queryFn,
+    queryFn: queryFnMap[estado],
   });
 };
 
