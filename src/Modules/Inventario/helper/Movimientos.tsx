@@ -26,10 +26,12 @@ export const MaterialCategories: React.FC<{ categorias: CategoriaMaterial[]; emp
 );
 
 // Helper to render material info
+const EMPTY_CATEGORIES_PROPS = {};
+
 export const MaterialInfo: React.FC<{ material: Material; showCategories?: boolean; categoriesProps?: any }> = ({
   material,
   showCategories = true,
-  categoriesProps = {}
+  categoriesProps = EMPTY_CATEGORIES_PROPS
 }) => (
   <div className="min-w-0 w-full">
     <p className="text-sm font-medium text-gray-900 break-words">{material.Nombre_Material}</p>

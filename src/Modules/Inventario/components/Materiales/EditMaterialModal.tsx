@@ -205,14 +205,14 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
     <div className="fixed inset-0 bg-opacity-10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-lg mx-4 flex flex-col overflow-hidden max-h-[90vh]">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
-          <h2 className="text-xl font-bold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-900">
             Editar Material
           </h2>
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
-          <form id="edit-material-form" onSubmit={handleOpenConfirm} className="p-6 space-y-4">
-            <div className="space-y-4">
+          <form id="edit-material-form" onSubmit={handleOpenConfirm} className="p-6 gap-y-4">
+            <div className="gap-y-4">
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label htmlFor="nombre" className="block text-sm flex gap-2 font-medium text-gray-700">
@@ -245,7 +245,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                     onClick={() => setIsCreateUnidadMedicionModalOpen(true)}
                     className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <LuPlus className="w-3 h-3" />
+                    <LuPlus className="size-3" />
                     Nueva
                   </button>
                 </label>
@@ -254,7 +254,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   value={formData.Id_Unidad_Medicion || ''}
                   onChange={(e) => {
                     const value = parseInt(e.target.value) || 0;
-                    setFormData({ ...formData, Id_Unidad_Medicion: value });
+                    setFormData(prev => ({ ...prev, Id_Unidad_Medicion: value }));
                     if (formErrors.Id_Unidad_Medicion) {
                       setFormErrors(prev => ({ ...prev, Id_Unidad_Medicion: '' }));
                     }
@@ -290,7 +290,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   value={formData.Precio_Unitario}
                   onChange={(e) => {
                     const value = parseFloat(e.target.value) || 0;
-                    setFormData({ ...formData, Precio_Unitario: value });
+                    setFormData(prev => ({ ...prev, Precio_Unitario: value }));
                     if (formErrors.Precio_Unitario) {
                       setFormErrors(prev => ({ ...prev, Precio_Unitario: '' }));
                     }
@@ -319,7 +319,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   value={formData.Numero_Estanteria}
                   onChange={(e) => {
                     const value = parseInt(e.target.value) || 1;
-                    setFormData({ ...formData, Numero_Estanteria: value });
+                    setFormData(prev => ({ ...prev, Numero_Estanteria: value }));
                     if (formErrors.Numero_Estanteria) {
                       setFormErrors(prev => ({ ...prev, Numero_Estanteria: '' }));
                     }
@@ -392,7 +392,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                     onClick={() => setIsCreateProveedorModalOpen(true)}
                     className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <LuPlus className="w-3 h-3" />
+                    <LuPlus className="size-3" />
                     Nuevo
                   </button>
                 </label>
@@ -439,7 +439,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   onClick={() => setIsCreateCategoriaModalOpen(true)}
                   className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                 >
-                  <LuPlus className="w-3 h-3" />
+                  <LuPlus className="size-3" />
                   Nueva
                 </button>
               </div>
@@ -449,7 +449,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   : 'border-gray-300'
                 }`}>
                 {categorias.map((categoria) => (
-                  <label key={categoria.Id_Categoria} className="flex items-center space-x-2">
+                  <label key={categoria.Id_Categoria} className="flex items-center gap-x-2">
                     <input
                       type="checkbox"
                       checked={selectedCategorias.includes(categoria.Id_Categoria)}
@@ -480,7 +480,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
               disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Actualizando...' : 'Actualizar Material'}
+              {isSubmitting ? 'Actualizando…' : 'Actualizar Material'}
             </Button>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -494,7 +494,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                   onClick={handleConfirmUpdate}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Actualizando...' : 'Confirmar'}
+                  {isSubmitting ? 'Actualizando…' : 'Confirmar'}
                 </AlertDialogAction>
                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
               </AlertDialogFooter>

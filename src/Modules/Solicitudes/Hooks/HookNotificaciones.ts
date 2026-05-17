@@ -54,41 +54,41 @@ export const useNotificacionesSolicitudes = () => {
   const notificaciones = useMemo((): NotificacionSolicitud[] => {
     const notificacionesArray: NotificacionSolicitud[] = [];
 
-    // Procesar solicitudes físicas pendientes
-    solicitudesFisicas
-      .filter(solicitud => solicitud.Estado?.Nombre_Estado === 'Pendiente')
-      .forEach((solicitud, index) => {
-        const nombreCompleto = `${solicitud.Nombre || ''} ${solicitud.Apellido1 || ''} ${solicitud.Apellido2 || ''}`.trim();
-        
-        notificacionesArray.push({
-          id: `fisica-${index + 1}`,
-          tipo: 'fisica',
-          tipoSolicitud: solicitud.Tipo_Solicitud,
-          nombre: nombreCompleto,
-          cedula: solicitud.Tipo_Identificacion,
-          fechaCreacion: solicitud.Fecha_Creacion,
-          mensaje: `Nueva solicitud de ${solicitud.Tipo_Solicitud.toLowerCase()} de ${nombreCompleto}`,
-          solicitudOriginal: solicitud
-        });
-      });
+    // Procesar solicitudes físicas pendientes (single pass)
+    let fisicaIdx = 0;
+    for (const solicitud of solicitudesFisicas) {
+      if (solicitud.Estado?.Nombre_Estado !== 'Pendiente') continue;
+      const nombreCompleto = `${solicitud.Nombre || ''} ${solicitud.Apellido1 || ''} ${solicitud.Apellido2 || ''}`.trim();
 
-    // Procesar solicitudes jurídicas pendientes
-    solicitudesJuridicas
-      .filter(solicitud => solicitud.Estado?.Nombre_Estado === 'Pendiente')
-      .forEach((solicitud, index) => {
-        const razonSocial = solicitud.Razon_Social || 'Sin razón social';
-        
-        notificacionesArray.push({
-          id: `juridica-${index + 1}`,
-          tipo: 'juridica',
-          tipoSolicitud: solicitud.Tipo_Solicitud,
-          nombre: razonSocial,
-          cedula: solicitud.Cedula_Juridica,
-          fechaCreacion: solicitud.Fecha_Creacion,
-          mensaje: `Nueva solicitud de ${solicitud.Tipo_Solicitud.toLowerCase()} de ${razonSocial}`,
-          solicitudOriginal: solicitud
-        });
+      notificacionesArray.push({
+        id: `fisica-${++fisicaIdx}`,
+        tipo: 'fisica',
+        tipoSolicitud: solicitud.Tipo_Solicitud,
+        nombre: nombreCompleto,
+        cedula: solicitud.Tipo_Identificacion,
+        fechaCreacion: solicitud.Fecha_Creacion,
+        mensaje: `Nueva solicitud de ${solicitud.Tipo_Solicitud.toLowerCase()} de ${nombreCompleto}`,
+        solicitudOriginal: solicitud
       });
+    }
+
+    // Procesar solicitudes jurídicas pendientes (single pass)
+    let juridicaIdx = 0;
+    for (const solicitud of solicitudesJuridicas) {
+      if (solicitud.Estado?.Nombre_Estado !== 'Pendiente') continue;
+      const razonSocial = solicitud.Razon_Social || 'Sin razón social';
+
+      notificacionesArray.push({
+        id: `juridica-${++juridicaIdx}`,
+        tipo: 'juridica',
+        tipoSolicitud: solicitud.Tipo_Solicitud,
+        nombre: razonSocial,
+        cedula: solicitud.Cedula_Juridica,
+        fechaCreacion: solicitud.Fecha_Creacion,
+        mensaje: `Nueva solicitud de ${solicitud.Tipo_Solicitud.toLowerCase()} de ${razonSocial}`,
+        solicitudOriginal: solicitud
+      });
+    }
 
     // Ordenar por fecha de creación 
     return notificacionesArray.sort((a, b) => {

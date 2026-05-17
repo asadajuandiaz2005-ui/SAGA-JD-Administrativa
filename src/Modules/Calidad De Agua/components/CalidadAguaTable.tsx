@@ -158,13 +158,13 @@ export default function CalidadAguaTable() {
           >
             {info.getValue() ? (
               <>
-                <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <Eye className="size-2.5 sm:size-3" />
                 <span className=" sm:inline">Visible</span>
 
               </>
             ) : (
               <>
-                <EyeOff className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                <EyeOff className="size-2.5 sm:size-3" />
                 <span className=" sm:inline">Oculto</span>
 
               </>
@@ -238,13 +238,13 @@ export default function CalidadAguaTable() {
       {/* Encabezado con búsqueda y botón */}
       <div className="bg-white rounded-lg p-3">
         <div className="flex items-start gap-4 flex-col justify-start">
-          <h2 className="text-2xl font-bold text-gray-900">Gestión de Calidad de Agua</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">Gestión de Calidad de Agua</h2>
           <p className="text-sm text-gray-600 pb-4">Gestiona los documentos de los resultados de la calidad de agua</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <div className="relative flex-1 max-w-md">
-              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5" />
+              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 size-3.5" />
               <input
                 type="text"
                 placeholder="Buscar archivos..."
@@ -258,7 +258,7 @@ export default function CalidadAguaTable() {
                 onClick={() => setFormVisible(true)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-[10px] sm:text-xs rounded-md flex items-center gap-2 transition-colors whitespace-nowrap"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="size-3.5" />
                 <span className="hidden sm:inline">Nuevo Archivo</span>
                 <span className="sm:hidden">Nuevo</span>
               </button>
@@ -322,7 +322,7 @@ export default function CalidadAguaTable() {
               {isLoading ? (
                 <tr>
                   <td colSpan={columns.length} className="px-2 sm:px-4 py-8 text-center text-xs sm:text-sm text-slate-500">
-                    Cargando...
+                    Cargando…
                   </td>
                 </tr>
               ) : table.getRowModel().rows.length === 0 ? (
@@ -375,7 +375,7 @@ export default function CalidadAguaTable() {
                   className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Primera página"
                 >
-                  <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
                 </button>
                 <button
                   onClick={() => table.previousPage()}
@@ -383,7 +383,7 @@ export default function CalidadAguaTable() {
                   className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Página anterior"
                 >
-                  <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <MdKeyboardArrowLeft className="size-3 sm:size-4" />
                 </button>
                 <span className="text-[10px] sm:text-xs text-gray-700 whitespace-nowrap mx-1">
                   Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -394,7 +394,7 @@ export default function CalidadAguaTable() {
                   className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Página siguiente"
                 >
-                  <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <MdKeyboardArrowRight className="size-3 sm:size-4" />
                 </button>
                 <button
                   onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -402,7 +402,7 @@ export default function CalidadAguaTable() {
                   className="p-0.5 sm:p-1 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Última página"
                 >
-                  <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
                 </button>
               </div>
             </div>

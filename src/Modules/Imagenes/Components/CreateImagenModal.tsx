@@ -16,7 +16,7 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
 
   const [nombre, setNombre] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [_preview, setPreview] = useState<string | null>(null);
+  const previewRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { mutateAsync, isPending } = useCreateImagen();
   const [nombreError, setNombreError] = useState("");
@@ -49,7 +49,7 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0] || null;
     setFile(selected);
-    if (selected) setPreview(URL.createObjectURL(selected));
+    if (selected) previewRef.current = URL.createObjectURL(selected);
   };
 
   //  Enviar formulario
@@ -75,7 +75,7 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
       showSuccess("¡Imagen subida exitosamente!");
       setNombre("");
       setFile(null);
-      setPreview(null);
+      previewRef.current = null;
       onClose();
       refetch();
     } catch (error) {
@@ -153,7 +153,7 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
             disabled={isPending}
             className="w-full px-4 py-3 rounded-lg border-2 border-dashed border-sky-300 bg-sky-50 hover:bg-sky-100 transition-colors cursor-pointer flex flex-col items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <svg className="w-8 h-8 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="size-8 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <span className="text-sky-600 font-medium">
@@ -185,7 +185,7 @@ export default function ImagenForm({ onClose, refetch }: ImagenFormProps) {
           >
             {isPending ? (
               <span className="flex items-center gap-2">
-                Subiendo...
+                Subiendo…
               </span>
             ) : (
               "Subir Imagen"

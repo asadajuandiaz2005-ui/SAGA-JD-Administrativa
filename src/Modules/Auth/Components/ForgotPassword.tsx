@@ -56,7 +56,7 @@ export default function ForgotPassword() {
       <div className="w-full md:w-[50vw] flex items-center justify-center bg-whitesmoke">
         <div className="w-full max-w-sm min-h-[400px] p-8 rounded-xl shadow-lg flex flex-col justify-center items-center bg-gray-200">
 
-          <h2 className="text-2xl font-bold text-center text-sky-600 mb-6">
+          <h2 className="text-2xl font-semibold text-center text-sky-600 mb-6">
             Restablecer Contraseña
           </h2>
 
@@ -108,7 +108,7 @@ export default function ForgotPassword() {
                 disabled={mutation.isPending}
                 className="bg-blue-900 hover:bg-sky-700 text-white px-4 py-2 rounded-full text-sm"
               >
-                {mutation.isPending ? 'Cargando...' : 'Restablecer Contraseña'}
+                {mutation.isPending ? 'Cargando…' : 'Restablecer Contraseña'}
               </button>
             </div>
           </form>

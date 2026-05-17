@@ -230,7 +230,7 @@ const CreateUserModal = ({ onClose, setShowCreateModal }: CreateUserProps) => {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
+                      {showPassword ? <LuEyeOff className="size-4" /> : <LuEye className="size-4" />}
                     </button>
                   </div>
                   
@@ -277,7 +277,7 @@ const CreateUserModal = ({ onClose, setShowCreateModal }: CreateUserProps) => {
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
-                      {showConfirmPassword ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
+                      {showConfirmPassword ? <LuEyeOff className="size-4" /> : <LuEye className="size-4" />}
                     </button>
                   </div>
                   
@@ -344,7 +344,7 @@ const CreateUserModal = ({ onClose, setShowCreateModal }: CreateUserProps) => {
                 : 'bg-blue-600 hover:bg-blue-700' 
             }`}
           >
-            {createUserMutation.isPending ? 'Creando...' : 'Crear Usuario'}
+            {createUserMutation.isPending ? 'Creando…' : 'Crear Usuario'}
           </button>
           <button
             type="button"

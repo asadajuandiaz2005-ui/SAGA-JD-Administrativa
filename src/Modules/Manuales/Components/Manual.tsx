@@ -137,8 +137,10 @@ const resolveModulePermission = (manual: ManualWithMetadata): string | null => {
 
   for (const candidate of candidates) {
     const tokenMatches = splitTokens(candidate)
-      .map((token) => moduleTokenMap.get(getCompactKey(token)))
-      .filter(Boolean);
+      .flatMap((token) => {
+        const m = moduleTokenMap.get(getCompactKey(token));
+        return m ? [m] : [];
+      });
 
     if (tokenMatches.length > 0) {
       return tokenMatches[0] ?? null;
@@ -181,7 +183,7 @@ const Manuales = () => {
     if (isLoadingManuales || isLoadingPermissions) {
       return (
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full size-12 border-b-2 border-blue-600"></div>
         </div>
       );
     }
@@ -208,7 +210,7 @@ const Manuales = () => {
       <div className="flex flex-col items-center w-full">
         {/* 🔹 Título centrado arriba */}
         <div className="flex items-center gap-2 sm:gap-4 flex-col justify-center text-center">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Ocupas ayuda?</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Ocupas ayuda?</h2>
             <p className="text-xs sm:text-sm text-gray-600 pb-2 sm:pb-4">Aquí puedes encontrar los manuales de usuario disponibles.</p>
         </div>
         

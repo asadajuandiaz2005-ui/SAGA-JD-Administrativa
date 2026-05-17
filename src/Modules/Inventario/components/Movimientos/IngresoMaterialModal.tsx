@@ -117,7 +117,7 @@ const IngresoMaterialModal: React.FC<IngresoMaterialModalProps> = ({
               disabled={ingresoMutation.isPending}
               className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {ingresoMutation.isPending ? 'Procesando...' : 'Realizar Ingreso'}
+              {ingresoMutation.isPending ? 'Procesando…' : 'Realizar Ingreso'}
             </button>
             <button
               type="button"

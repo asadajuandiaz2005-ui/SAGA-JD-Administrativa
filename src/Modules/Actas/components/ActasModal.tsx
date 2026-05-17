@@ -17,11 +17,11 @@ const ActasModal = ({ isOpen, onClose, acta }: ActasModalProps) => {
                 {/* Header */}
                 <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+                        <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                             Detalle del Acta
                         </h1>
                         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-                            <LuX className="w-5 h-5" />
+                            <LuX className="size-5" />
                         </button>
                     </div>
                 </div>
@@ -32,10 +32,10 @@ const ActasModal = ({ isOpen, onClose, acta }: ActasModalProps) => {
                         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                             <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <Info className="w-4 h-4 text-blue-600" />
+                                    <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <Info className="size-4 text-blue-600" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900">Información General</h3>
+                                    <h3 className="text-base font-semibold text-gray-900">Información General</h3>
                                 </div>
                             </div>
 
@@ -65,7 +65,7 @@ const ActasModal = ({ isOpen, onClose, acta }: ActasModalProps) => {
                                         </div>
                                         {!acta?.Archivos || acta.Archivos.length === 0 ? (
                                             <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-dashed border-gray-300 rounded-xl p-6 text-center">
-                                                <div className="inline-flex items-center justify-center w-12 h-12 bg-gray-200 rounded-full mb-3">
+                                                <div className="inline-flex items-center justify-center size-12 bg-gray-200 rounded-full mb-3">
                                                     <FileText size={24} className="text-gray-400" />
                                                 </div>
                                                 <p className="text-gray-500 text-sm font-medium">No hay archivos disponibles</p>
@@ -129,10 +129,10 @@ const ActasModal = ({ isOpen, onClose, acta }: ActasModalProps) => {
                         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                             <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                        <User className="w-4 h-4 text-blue-600" />
+                                    <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <User className="size-4 text-blue-600" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900">Información de Registro</h3>
+                                    <h3 className="text-base font-semibold text-gray-900">Información de Registro</h3>
                                 </div>
                             </div>
 

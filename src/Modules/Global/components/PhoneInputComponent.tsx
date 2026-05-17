@@ -82,8 +82,8 @@ const PhoneInputComponent = ({
         }
     };
 
-    const [selectedCountry, setSelectedCountry] = useState<string>(getCountryFromValue(value));
-    const [phoneNumber, setPhoneNumber] = useState<string>(
+    const [selectedCountry, setSelectedCountry] = useState<string>(() => getCountryFromValue(value));
+    const [phoneNumber, setPhoneNumber] = useState<string>(() =>
         getPhoneNumberWithoutCountryCode(value, getCountryFromValue(value))
     );
 

@@ -36,12 +36,12 @@ const FilterContactoModal: React.FC<FilterContactoModalProps> = ({
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-            <LuFilter className="w-5 h-5" />
+            <LuFilter className="size-5" />
             Filtros Avanzados
           </h2>
         </div>
 
-        <div className="p-6 space-y-4 overflow-y-auto max-h-[calc(90vh-140px)] scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
+        <div className="p-6 gap-y-4 overflow-y-auto max-h-[calc(90vh-140px)] scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
           
           {/* Filtro por Estado (solo para reportes) */}
 
@@ -68,7 +68,7 @@ const FilterContactoModal: React.FC<FilterContactoModalProps> = ({
             <div className="block text-sm font-medium text-gray-700 mb-2">
               Rango de Fechas
             </div>
-            <div className="space-y-2">
+            <div className="gap-y-2">
               <div>
                 <label htmlFor="fecha-inicio" className="block text-xs text-gray-600 mb-1">
                   Fecha desde
@@ -107,7 +107,7 @@ const FilterContactoModal: React.FC<FilterContactoModalProps> = ({
             <div className="block text-sm font-medium text-gray-700 mb-2">
               Adjuntos
             </div>
-            <label className="flex items-center space-x-2">
+            <label className="flex items-center gap-x-2">
               <input
                 type="checkbox"
                 checked={filters.conAdjunto || false}

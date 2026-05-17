@@ -182,7 +182,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
 
     const nombreMostrado = (() => {
         if (!requiereInfoAfiliado) return afiliadoInfoBase.nombre;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         if (!afiliadoInfo) return afiliadoInfoBase.nombre;
         if (afiliadoInfo.tipoEntidad === 2) return afiliadoInfo.data.Razon_Social || afiliadoInfoBase.nombre;
         const nombre = `${afiliadoInfo.data.Nombre || ''} ${afiliadoInfo.data.Apellido1 || ''} ${afiliadoInfo.data.Apellido2 || ''}`.trim();
@@ -191,7 +191,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
 
     const telefonoMostrado = (() => {
         if (!requiereInfoAfiliado) return afiliadoInfoBase.telefono;
-        if (loadingAfiliadoInfo) return 'Cargando...';
+        if (loadingAfiliadoInfo) return 'Cargando…';
         return afiliadoInfo?.data?.Numero_Telefono || afiliadoInfoBase.telefono;
     })();
 
@@ -269,14 +269,14 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                 <div className="bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-5xl mx-4 max-h-[90vh] overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-xl font-semibold text-gray-900">
                             Asignar Medidor
                         </h2>
                         <button
                             onClick={onClose}
                             className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                         >
-                            <LuX className="w-5 h-5" />
+                            <LuX className="size-5" />
                         </button>
                     </div>
 
@@ -352,14 +352,14 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                                             onClick={() => setShowCreateMedidor(true)}
                                             className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
                                         >
-                                            <LuPlus className="w-4 h-4" />
+                                            <LuPlus className="size-4" />
                                             Nuevo Medidor
                                         </button>
                                     </div>
 
                                     {/* Buscador */}
                                     <div className="relative mb-4">
-                                        <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                                        <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-5" />
                                         <input
                                             type="text"
                                             value={busquedaMedidor}
@@ -373,7 +373,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                                     <div className="space-y-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
                                         {loadingMedidores ? (
                                             <div className="text-center py-8">
-                                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                                                <div className="animate-spin rounded-full size-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
                                                 <p className="text-sm text-gray-500">Cargando medidores...</p>
                                             </div>
                                         ) : medidoresFiltrados.length === 0 ? (
@@ -404,8 +404,8 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                                                             )}
                                                         </div>
                                                         {medidorSeleccionado?.Id_Medidor === medidor.Id_Medidor && (
-                                                            <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                                                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                            <div className="size-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                                                <svg className="size-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                                                 </svg>
                                                             </div>
@@ -439,7 +439,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                                                     className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                                     title="Deseleccionar"
                                                 >
-                                                    <LuX className="w-5 h-5" />
+                                                    <LuX className="size-5" />
                                                 </button>
                                             </div>
                                         </div>
@@ -472,7 +472,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                             disabled={!medidorSeleccionado || !estadoPago || asignarMedidorMutation.isPending}
                             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            {asignarMedidorMutation.isPending ? 'Asignando...' : 'Asignar Medidor'}
+                            {asignarMedidorMutation.isPending ? 'Asignando…' : 'Asignar Medidor'}
                         </button>
                         <button
                             onClick={onClose}
@@ -511,7 +511,7 @@ const ModalMedidor = ({ isOpen, onClose, onMedidorAsignado, tipoSolicitud, solic
                             onClick={handleConfirmAsignacion}
                             disabled={asignarMedidorMutation.isPending}
                         >
-                            {asignarMedidorMutation.isPending ? 'Asignando...' : 'Confirmar asignación'}
+                            {asignarMedidorMutation.isPending ? 'Asignando…' : 'Confirmar asignación'}
                         </AlertDialogAction>
                         <AlertDialogCancel disabled={asignarMedidorMutation.isPending}>
                             Cancelar

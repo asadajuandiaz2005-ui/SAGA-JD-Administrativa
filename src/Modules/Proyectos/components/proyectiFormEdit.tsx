@@ -248,7 +248,7 @@ export default function ProyectoFormEdit({ proyecto, onClose }: ProyectoFormEdit
                             }`}
                             disabled={!isFormValid || updateProyectoMutation.isPending}
                         >
-                            {updateProyectoMutation.isPending ? 'Guardando...' : 'Guardar Cambios'}
+                            {updateProyectoMutation.isPending ? 'Guardando…' : 'Guardar Cambios'}
                         </button>
                         <button
                             type="button"
@@ -277,7 +277,7 @@ export default function ProyectoFormEdit({ proyecto, onClose }: ProyectoFormEdit
                             onClick={handleConfirmedSubmit}
                             disabled={updateProyectoMutation.isPending}
                         >
-                            {updateProyectoMutation.isPending ? 'Guardando...' : 'Confirmar'}
+                            {updateProyectoMutation.isPending ? 'Guardando…' : 'Confirmar'}
                         </AlertDialogAction>
                         <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     </AlertDialogFooter>

@@ -390,14 +390,14 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                     const idCreadoF: number = creadoF?.Id_Afiliado ?? creadoF?.id ?? null;
                     // Medidores adicionales (índice > 0) se asignan por separado con archivos
                     if (idCreadoF && medidoresPendientes.length > 1) {
-                        for (const mp of medidoresPendientes.slice(1)) {
+                        await Promise.all(medidoresPendientes.slice(1).map(async (mp) => {
                             if (mp.tipo === 'asignar') {
                                 await asignarMedidorConArchivos(mp.idMedidor, idCreadoF, mp.escrituraFile, mp.planosFile, mp.estadoPago);
                             } else {
                                 const nuevo = await createMedidor({ Numero_Medidor: mp.numeroMedidor });
                                 await asignarMedidorConArchivos(nuevo.Id_Medidor, idCreadoF, mp.escrituraFile, mp.planosFile, mp.estadoPago);
                             }
-                        }
+                        }));
                     }
                     showSuccess('Éxito', 'Afiliado físico creado exitosamente.');
                 } else {
@@ -428,14 +428,14 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                     const idCreadoJ: number = creadoJ?.Id_Afiliado ?? creadoJ?.id ?? null;
                     // Medidores adicionales (índice > 0) se asignan por separado con archivos
                     if (idCreadoJ && medidoresPendientes.length > 1) {
-                        for (const mp of medidoresPendientes.slice(1)) {
+                        await Promise.all(medidoresPendientes.slice(1).map(async (mp) => {
                             if (mp.tipo === 'asignar') {
                                 await asignarMedidorConArchivos(mp.idMedidor, idCreadoJ, mp.escrituraFile, mp.planosFile, mp.estadoPago);
                             } else {
                                 const nuevo = await createMedidor({ Numero_Medidor: mp.numeroMedidor });
                                 await asignarMedidorConArchivos(nuevo.Id_Medidor, idCreadoJ, mp.escrituraFile, mp.planosFile, mp.estadoPago);
                             }
-                        }
+                        }));
                     }
                     showSuccess('Éxito', 'Afiliado jurídico creado exitosamente.');
                 }
@@ -494,7 +494,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
         <div className="mt-6 pt-5 border-t border-gray-200 space-y-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <Gauge className="w-4 h-4 text-blue-600" />
+                    <Gauge className="size-4 text-blue-600" />
                     <h3 className="text-sm font-semibold text-gray-700">Medidores <span className="text-gray-400 font-normal">(opcional)</span></h3>
                 </div>
                 {medidoresPendientes.length > 0 && (
@@ -508,8 +508,8 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                         <li key={mp.uid} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5">
                             <div className="flex items-center gap-2 min-w-0">
                                 {mp.tipo === 'asignar'
-                                    ? <Link2 className="w-4 h-4 text-blue-500 shrink-0" />
-                                    : <PlusCircle className="w-4 h-4 text-blue-500 shrink-0" />}
+                                    ? <Link2 className="size-4 text-blue-500 shrink-0" />
+                                    : <PlusCircle className="size-4 text-blue-500 shrink-0" />}
                                 <span className="text-sm font-medium text-gray-800">Medidor #{mp.numeroMedidor}</span>
                                 <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-600">
                                     {mp.tipo === 'asignar' ? 'Asignar' : 'Nuevo'}
@@ -517,7 +517,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                             </div>
                             <div className="flex items-center gap-3 shrink-0">
                                 <div className="flex items-center gap-1 text-xs text-gray-500 border border-gray-200 rounded px-1.5 py-0.5 bg-white">
-                                    <FileText className="w-3 h-3 text-blue-400" />
+                                    <FileText className="size-3 text-blue-400" />
                                     <span>2 docs</span>
                                 </div>
                                 <button
@@ -525,7 +525,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                                     onClick={() => handleQuitarMedidor(mp.uid)}
                                     className="text-gray-400 hover:text-red-500 transition-colors"
                                 >
-                                    <X className="w-4 h-4" />
+                                    <X className="size-4" />
                                 </button>
                             </div>
                         </li>
@@ -539,14 +539,14 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                     onClick={() => { setMedidorModalModo('asignar'); setMedidorModalOpen(true); }}
                     className="flex items-center gap-1.5 px-3 py-2 text-sm text-blue-600 border border-blue-200 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                 >
-                    <Link2 className="w-4 h-4" /> Asignar existente
+                    <Link2 className="size-4" /> Asignar existente
                 </button>
                 <button
                     type="button"
                     onClick={() => { setMedidorModalModo('agregar'); setMedidorModalOpen(true); }}
                     className="flex items-center gap-1.5 px-3 py-2 text-sm text-blue-600 border border-blue-200 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
                 >
-                    <PlusCircle className="w-4 h-4" /> Agregar nuevo
+                    <PlusCircle className="size-4" /> Agregar nuevo
                 </button>
             </div>
         </div>
@@ -641,7 +641,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                                         />
                                         {loadingCedula && (
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                                                <div className="animate-spin rounded-full size-5 border-b-2 border-blue-600"></div>
                                             </div>
                                         )}
                                     </div>
@@ -956,7 +956,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                             />
                             {loadingCedulaJuridica && (
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                                    <div className="animate-spin rounded-full size-5 border-b-2 border-blue-600"></div>
                                 </div>
                             )}
                         </div>
@@ -1135,16 +1135,16 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                     <div className="flex items-center gap-3">
                         {tipoActivo === 'afiliado-fisico' ? (
-                            <User className="w-6 h-6 text-blue-600" />
+                            <User className="size-6 text-blue-600" />
                         ) : (
-                            <Building2 className="w-6 h-6 text-blue-600" />
+                            <Building2 className="size-6 text-blue-600" />
                         )}
                         <h2 className="text-xl font-semibold text-gray-900">
                             Nuevo afiliado {tipoActivo === 'afiliado-fisico' ? 'físico' : 'jurídico'}
                         </h2>
                     </div>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-                        <X className="w-6 h-6" />
+                        <X className="size-6" />
                     </button>
                 </div>
 
@@ -1163,7 +1163,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                                     : 'bg-white text-gray-600 border-2 border-gray-200 hover:bg-gray-50'
                                 }`}
                         >
-                            <User className="w-4 h-4" />
+                            <User className="size-4" />
                             Físico
                         </button>
                         <button
@@ -1178,7 +1178,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                                     : 'bg-white text-gray-600 border-2 border-gray-200 hover:bg-gray-50'
                                 }`}
                         >
-                            <Building2 className="w-4 h-4" />
+                            <Building2 className="size-4" />
                             Jurídico
                         </button>
                     </div>
@@ -1210,7 +1210,7 @@ const CreateModal = ({ isOpen, onClose }: CreateModalProps) => {
                                 : 'bg-blue-600 hover:bg-blue-700'
                             }`}
                     >
-                        {isSubmitting ? 'Creando...' : `Crear Afiliado ${tipoActivo === 'afiliado-fisico' ? 'Físico' : 'Jurídico'}`}
+                        {isSubmitting ? 'Creando…' : `Crear Afiliado ${tipoActivo === 'afiliado-fisico' ? 'Físico' : 'Jurídico'}`}
                     </button>
                     <button
                         type="button"

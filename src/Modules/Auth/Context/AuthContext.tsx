@@ -1,5 +1,5 @@
 // src/Modules/Auth/Context/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import React, { createContext, use, useEffect, useState, type ReactNode } from 'react';
 import { getCurrentUser } from '../Services/AuthService';
 import type { Usuario } from '@/Modules/Usuarios/Models/Usuario';
 import type { AuthState } from '../Types/AuthTypes';
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 export const useAuth = (): AuthState => {
-  const context = useContext(AuthContext);
+  const context = use(AuthContext);
   if (!context) {
     throw new Error('useAuth debe usarse dentro de AuthProvider');
   }

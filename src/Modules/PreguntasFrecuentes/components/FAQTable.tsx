@@ -106,12 +106,12 @@ export default function FAQTable() {
                             >
                                 {info.getValue() ? (
                                     <>
-                                        <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                        <Eye className="size-2.5 sm:size-3" />
                                         <span className=" sm:inline">Visible</span>
                                     </>
                                 ) : (
                                     <>
-                                        <EyeOff className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                        <EyeOff className="size-2.5 sm:size-3" />
                                         <span className=" sm:inline">Oculto</span>
                                     </>
                                 )}
@@ -131,7 +131,7 @@ export default function FAQTable() {
                                     onClick={() => handleToggleVisibility(info.row.original)}
                                     disabled={toggleVisibleMutation.isPending}
                                 >
-                                    {toggleVisibleMutation.isPending ? 'Actualizando...' : 'Confirmar'}
+                                    {toggleVisibleMutation.isPending ? 'Actualizando…' : 'Confirmar'}
                                 </AlertDialogAction>
                                 <AlertDialogCancel>
                                     Cancelar
@@ -147,12 +147,12 @@ export default function FAQTable() {
                     }`}>
                         {info.getValue() ? (
                             <>
-                                <Eye className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                <Eye className="size-2.5 sm:size-3" />
                                 <span className="hidden sm:inline">Visible</span>
                             </>
                         ) : (
                             <>
-                                <EyeOff className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                                <EyeOff className="size-2.5 sm:size-3" />
                                 <span className="hidden sm:inline">Oculto</span>
                             </>
                         )}
@@ -208,7 +208,7 @@ export default function FAQTable() {
                                         onClick={() => handleDelete(info.row.original)}
                                         disabled={deleteFAQMutation.isPending}
                                     >
-                                        {deleteFAQMutation.isPending ? 'Eliminando...' : 'Eliminar'}
+                                        {deleteFAQMutation.isPending ? 'Eliminando…' : 'Eliminar'}
                                     </AlertDialogAction>
                                     <AlertDialogCancel>
                                         Cancelar
@@ -271,13 +271,13 @@ export default function FAQTable() {
             {/* Encabezado con búsqueda y botón */}
             <div className="bg-white rounded-lg p-3">
                 <div className="flex items-start gap-4 flex-col justify-start">
-                    <h2 className="text-2xl font-bold text-gray-900">Edición de Preguntas Frecuentes</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900">Edición de Preguntas Frecuentes</h2>
                     <p className="text-sm text-gray-600 pb-4">Gestiona las preguntas frecuentes de la ASADA</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-end">
                     <div className="flex items-center gap-4 w-full sm:w-auto">
                         <div className="relative flex-1 max-w-md">
-                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
+                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-3" />
                             <input
                                 type="text"
                                 placeholder="Buscar preguntas..."
@@ -291,7 +291,7 @@ export default function FAQTable() {
                                 onClick={() => setFormVisible(true)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 text-[10px] sm:text-xs rounded-md flex items-center gap-2 transition-colors"
                             >
-                                <LuPlus className="w-3 h-3" />
+                                <LuPlus className="size-3" />
                                 Crear Pregunta
                             </button>
                         )}
@@ -332,8 +332,8 @@ export default function FAQTable() {
                                                         >
                                                             <span className="flex items-center gap-1">
                                                                 {flexRender(header.column.columnDef.header, header.getContext())}
-                                                                {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline w-3 h-3" />}
-                                                                {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline w-3 h-3" />}
+                                                                {header.column.getIsSorted() === 'asc' && <MdKeyboardArrowUp className="inline size-3" />}
+                                                                {header.column.getIsSorted() === 'desc' && <MdKeyboardArrowDown className="inline size-3" />}
                                                             </span>
                                                         </button>
                                                     );
@@ -399,7 +399,7 @@ export default function FAQTable() {
                                 className="p-0.5 sm:p-1 rounded-md border bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
@@ -407,7 +407,7 @@ export default function FAQTable() {
                                 className="p-0.5 sm:p-1 rounded-md border bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardArrowLeft className="size-3 sm:size-4" />
                             </button>
                             <span className="text-[10px] sm:text-xs text-gray-700 whitespace-nowrap">
                                 {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -418,7 +418,7 @@ export default function FAQTable() {
                                 className="p-0.5 sm:p-1 rounded-md border bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardArrowRight className="size-3 sm:size-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -426,7 +426,7 @@ export default function FAQTable() {
                                 className="p-0.5 sm:p-1 rounded-md border bg-white text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
                             </button>
                         </div>
                     </div>

@@ -47,11 +47,11 @@ const DetailAuditoriaModal = ({
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+            <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
               Detalle de Auditoría
             </h1>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-              <LuX className="w-5 h-5" />
+              <LuX className="size-5" />
             </button>
           </div>
         </div>
@@ -63,7 +63,7 @@ const DetailAuditoriaModal = ({
 
             <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="p-2 rounded-lg">
-                <LuFileText className="w-5 h-5 text-blue-600" />
+                <LuFileText className="size-5 text-blue-600" />
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase">
@@ -78,7 +78,7 @@ const DetailAuditoriaModal = ({
             {/* Acción */}
             <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="p-2 rounded-lg">
-                <LuActivity className="w-5 h-5 text-blue-600" />
+                <LuActivity className="size-5 text-blue-600" />
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase">
@@ -97,7 +97,7 @@ const DetailAuditoriaModal = ({
             {/* Usuario */}
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="p-2 rounded-lg">
-                <LuUser className="w-5 h-5 text-blue-600" />
+                <LuUser className="size-5 text-blue-600" />
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase">
@@ -118,7 +118,7 @@ const DetailAuditoriaModal = ({
             {/* Fecha */}
             <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="p-2">
-                <LuCalendar className="w-5 h-5 text-blue-600" />
+                <LuCalendar className="size-5 text-blue-600" />
               </div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-500 uppercase">
@@ -133,7 +133,7 @@ const DetailAuditoriaModal = ({
             {/* ID Registro */}
             <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2">
               <div className="p-2">
-                <LuDatabase className="w-5 h-5 text-blue-600" />
+                <LuDatabase className="size-5 text-blue-600" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-gray-500 uppercase">
@@ -152,7 +152,7 @@ const DetailAuditoriaModal = ({
             {datosAnteriores && (
               <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                 <h3 className="text-sm font-semibold text-red-900 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span className="size-2 bg-red-500 rounded-full"></span>
                   Datos Anteriores
                 </h3>
                 <div className="bg-white rounded p-3 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-red-600 scrollbar-track-red-100">
@@ -169,7 +169,7 @@ const DetailAuditoriaModal = ({
             {datosNuevos && (
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <h3 className="text-sm font-semibold text-green-900 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="size-2 bg-green-500 rounded-full"></span>
                   Datos Nuevos
                 </h3>
                 <div className="bg-white rounded p-3 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-green-600 scrollbar-track-green-100">

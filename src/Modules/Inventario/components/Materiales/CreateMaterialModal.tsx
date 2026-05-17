@@ -157,12 +157,12 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 shrink-0">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Crear Nuevo Material</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-            <LuX className="w-5 h-5 sm:w-6 sm:h-6" />
+            <LuX className="size-5 sm:size-6" />
           </button>
         </div>
 
         <div className="p-4 sm:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100 flex-1">
-          <form id="create-material-form" onSubmit={handleSubmit} className="space-y-4">
+          <form id="create-material-form" onSubmit={handleSubmit} className="gap-y-4">
             <div>
               <label htmlFor="nombre-material" className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre del Material <span className="text-red-500">*</span>
@@ -211,7 +211,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                   onClick={() => setIsCreateUnidadMedicionModalOpen(true)}
                   className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                 >
-                  <LuPlus className="w-3 h-3" />
+                  <LuPlus className="size-3" />
                   Nueva
                 </button>
               </label>
@@ -327,7 +327,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                     onClick={() => setIsCreateProveedorModalOpen(true)}
                     className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <LuPlus className="w-3 h-3" />
+                    <LuPlus className="size-3" />
                     Nuevo
                   </button>
                 </label>
@@ -365,7 +365,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                   onClick={() => setIsCreateCategoriaModalOpen(true)}
                   className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
                 >
-                  <LuPlus className="w-3 h-3" />
+                  <LuPlus className="size-3" />
                   Nueva
                 </button>
               </div>
@@ -376,12 +376,12 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
                   </div>
                 ) : (
                   categories.map((categoria: CategoriaMaterial) => (
-                    <label key={categoria.Id_Categoria} className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded">
+                    <label key={categoria.Id_Categoria} className="flex items-center gap-x-2 p-2 hover:bg-gray-50 rounded">
                       <input
                         type="checkbox"
                         checked={(formData.IDS_Categorias ?? []).includes(categoria.Id_Categoria)}
                         onChange={(e) => handleCategoryChange(categoria.Id_Categoria, e.target.checked)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 size-4"
                       />
                       <span className="text-sm text-gray-700 leading-tight">{categoria.Nombre_Categoria}</span>
                     </label>
@@ -401,7 +401,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
             disabled={createMaterialMutation.isPending}
             className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {createMaterialMutation.isPending ? 'Creando...' : 'Crear Material'}
+            {createMaterialMutation.isPending ? 'Creando…' : 'Crear Material'}
           </button>
           <button
             type="button"

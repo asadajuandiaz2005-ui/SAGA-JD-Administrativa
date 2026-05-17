@@ -93,7 +93,7 @@ const EstadoButtons: React.FC<EstadoButtonsProps> = ({
                     disabled={isLoading || estadoActual === 'Aprobada en Espera' || estadoActual === 'Completada'}
                     className="px-3 py-1 rounded-md bg-green-100 text-green-700 hover:bg-green-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-green-200"
                 >
-                    {aprobarMutation.isPending ? 'Procesando...' : '✓ Aprobar'}
+                    {aprobarMutation.isPending ? 'Procesando…' : '✓ Aprobar'}
                 </button>
 
                 {/* Botón para completar */}
@@ -102,7 +102,7 @@ const EstadoButtons: React.FC<EstadoButtonsProps> = ({
                     disabled={isLoading || estadoActual === 'Completada' || estadoActual === 'Rechazada'}
                     className="px-3 py-1 rounded-md bg-blue-100 text-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-blue-200"
                 >
-                    {completarMutation.isPending ? 'Procesando...' : '✓ Completar'}
+                    {completarMutation.isPending ? 'Procesando…' : '✓ Completar'}
                 </button>
 
                 {/* Botón para rechazar */}
@@ -111,7 +111,7 @@ const EstadoButtons: React.FC<EstadoButtonsProps> = ({
                     disabled={isLoading || estadoActual === 'Rechazada' || estadoActual === 'Completada'}
                     className="px-3 py-1 rounded-md bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium border border-red-200"
                 >
-                    {rechazarMutation.isPending ? 'Procesando...' : '✗ Rechazar'}
+                    {rechazarMutation.isPending ? 'Procesando…' : '✗ Rechazar'}
                 </button>
             </div>
 

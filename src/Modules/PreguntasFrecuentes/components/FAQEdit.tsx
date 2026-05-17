@@ -153,7 +153,7 @@ export default function FAQEdit({ faq, onClose }: FAQEditProps) {
                                         : 'bg-blue-600 hover:bg-blue-700'
                                 }`}
                             >
-                                {updateFAQMutation.isPending ? "Actualizando..." : "Actualizar Pregunta"}
+                                {updateFAQMutation.isPending ? "Actualizando…" : "Actualizar Pregunta"}
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -168,7 +168,7 @@ export default function FAQEdit({ faq, onClose }: FAQEditProps) {
                                     onClick={handleSubmit}
                                     disabled={updateFAQMutation.isPending}
                                 >
-                                    {updateFAQMutation.isPending ? 'Actualizando...' : 'Confirmar'}
+                                    {updateFAQMutation.isPending ? 'Actualizando…' : 'Confirmar'}
                                 </AlertDialogAction>
                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
                             </AlertDialogFooter>

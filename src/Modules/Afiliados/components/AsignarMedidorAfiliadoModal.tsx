@@ -68,8 +68,8 @@ const AsignarMedidorAfiliadoModal: React.FC<AsignarMedidorAfiliadoModalProps> = 
             const funcionAsignarExistente = esJuridico ? asignarMedidorExistenteAfiliadoJuridico : asignarMedidorExistenteAfiliado;
             const funcionCrearYAsignar = esJuridico ? crearYAsignarMedidorAfiliadoJuridico : crearYAsignarMedidorAfiliado;
 
-            // Procesar cada medidor pendiente
-            for (const medidor of medidoresPendientes) {
+            // Procesar cada medidor pendiente en paralelo (operaciones independientes)
+            await Promise.all(medidoresPendientes.map(async (medidor) => {
                 if (medidor.tipo === 'asignar') {
                     await funcionAsignarExistente(
                         afiliadoId,
@@ -87,7 +87,7 @@ const AsignarMedidorAfiliadoModal: React.FC<AsignarMedidorAfiliadoModalProps> = 
                         medidor.estadoPago
                     );
                 }
-            }
+            }));
 
             showSuccess('Medidor(es) asignado(s) correctamente');
             limpiarEstado();
@@ -189,7 +189,7 @@ const AsignarMedidorAfiliadoModal: React.FC<AsignarMedidorAfiliadoModalProps> = 
                             disabled={!puedeGuardar}
                             className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {guardando ? 'Asignando...' : 'Guardar Asignaciones'}
+                            {guardando ? 'Asignando…' : 'Guardar Asignaciones'}
                         </button>
 
                         <button
