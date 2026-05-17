@@ -13,7 +13,7 @@ import {
 import { Link, useLocation } from '@tanstack/react-router'
 import { useLogout } from '../../../Auth/Hooks/AuthHook'
 import * as Accordion from "@radix-ui/react-accordion"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { HiLogout } from 'react-icons/hi'
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi'
 import { sections, type AppSidebarProps } from "../../types/Sections"
@@ -23,9 +23,10 @@ import { LuKey } from "react-icons/lu"
 import { ChangePasswordModal } from "@/Modules/Auth/Components/ChangePassword"
 import { useAuth } from "@/Modules/Auth/Context/AuthContext"
 import { useNotificacionesSolicitudes } from '../../../Solicitudes/Hooks/HookNotificaciones'
+import { useMedidoresSinArchivos } from '../../../Inventario/hooks/useMedidoresSinArchivos'
 
 export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
-  const [_hovered, setHovered] = useState(false)
+  const hoveredRef = useRef(false)
   const [openSections, setOpenSections] = useState<number[]>([])
   const location = useLocation()
   const logoutMutation = useLogout()
@@ -33,6 +34,7 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
   const { showSuccess } = useAlerts()
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const { totalPendientes } = useNotificacionesSolicitudes()
+  const { totalMedidoresSinArchivos } = useMedidoresSinArchivos()
 
   const { user, isLoading } = useAuth()
   const currentUser = {
@@ -62,13 +64,13 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
       aria-hidden="true"
       className="relative"
       onMouseEnter={() => {
-        setHovered(true)
+        hoveredRef.current = true
         window.setTimeout(() => {
           setSidebarOpen(true)
         }, 200)
       }}
       onMouseLeave={() => {
-        setHovered(false)
+        hoveredRef.current = false
         window.setTimeout(() => {
           setSidebarOpen(false)
         }, 200)
@@ -81,11 +83,11 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
       >
         <SidebarHeader className="border-b border-sidebar-border">
           <div className="flex flex-col items-center p-2">
-            <Link to={'/Home'} className='w-15 h-15 rounded-lg flex items-center justify-center text-white font-bold'>
-              <img src="/Logo_ASADA_Juan_Díaz.png" alt='logo' className='w-15 h-15 rounded-full group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8' />
+            <Link to={'/Home'} className='size-15 rounded-lg flex items-center justify-center text-white font-bold'>
+              <img src="/Logo_ASADA_Juan_Díaz.png" alt='logo' className='size-15 rounded-full group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8' />
             </Link>
 
-            <h2 className="font-bold text-2xl text-center text-sidebar-foreground mt-2 group-data-[collapsible=icon]:hidden">
+            <h2 className="font-semibold text-2xl text-center text-sidebar-foreground mt-2 group-data-[collapsible=icon]:hidden">
               Panel Administrativo
             </h2>
           </div>
@@ -120,8 +122,8 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
 
                   <Accordion.Content className="accordion-content p-0">
                     <ul>
-                      {sectionModules.filter(mod => !mod.hidden).map((mod, index) => (
-                        <li key={`${mod.name}-${mod.path}-${index}`}>
+                      {sectionModules.flatMap(mod => mod.hidden ? [] : [mod]).map((mod) => (
+                        <li key={`${mod.name}-${mod.path}`}>
                           <Link
                             to={mod.path}
                             className={`flex items-center px-4 py-2 rounded-lg transition-colors
@@ -130,15 +132,20 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600'}
                             `}
                           >
-                            <span className="w-6 h-6 flex items-center justify-center">{mod.icon}</span>
+                            <span className="size-6 flex items-center justify-center">{mod.icon}</span>
                             <span className="ml-2 group-data-[collapsible=icon]:hidden">{mod.name}</span>
 
                             {(mod.name === 'Revisión de Solicitudes' || mod.path === '/Solicitudes') && totalPendientes > 0 && (
-                              <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium group-data-[collapsible=icon]:hidden">
+                              <span className="ml-auto bg-red-500 text-white text-xs rounded-full size-5 flex items-center justify-center font-medium group-data-[collapsible=icon]:hidden">
                                 {totalPendientes > 9 ? '9+' : totalPendientes}
                               </span>
                             )}
-                          </Link>
+                            {mod.path === '/Afiliados' && totalMedidoresSinArchivos > 0 && (
+                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium group-data-[collapsible=icon]:hidden">
+                              {totalMedidoresSinArchivos > 9 ? '9+' : totalMedidoresSinArchivos}
+                            </span>
+                          )}
+                        </Link>
                         </li>
                       ))}
                     </ul>
@@ -150,12 +157,12 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
         </SidebarContent>
 
         <SidebarFooter className="border-t border-sidebar-border">
-          <div className="flex space-x-3 m-2 ">
+          <div className="flex gap-x-3 m-2 ">
             {isLoading ? (
-              <div className="w-8 h-8 bg-gray-300 rounded-full animate-pulse" />
+              <div className="size-8 bg-gray-300 rounded-full animate-pulse" />
             ) : (
               <>
-                <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
+                <div className="size-8 bg-gray-400 rounded-full flex items-center justify-center text-white text-sm font-medium flex-shrink-0">
                   {(currentUser.name ? currentUser.name.toLocaleUpperCase().split(' ').map(n => n[0]).join('') : '')}
                 </div>
                 <div className="group-data-[collapsible=icon]:hidden">
@@ -167,14 +174,14 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
           </div>
 
           <SidebarSeparator />
-          <ul className="space-y-1 p-2 flex flex-col group-data-[collapsible=icon]:items-center">
+          <ul className="gap-y-1 p-2 flex flex-col group-data-[collapsible=icon]:items-center">
             <li>
               <Button
                 variant="outline"
                 onClick={() => setShowChangePasswordModal(true)}
                 className="flex items-center w-full px-4 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
               >
-                <LuKey className="w-4 h-4" />
+                <LuKey className="size-4" />
                 <span className="ml-2 group-data-[collapsible=icon]:hidden">
                   Cambiar Contraseña
                 </span>
@@ -187,7 +194,7 @@ export function AppSidebar({ allowedModules }: Readonly<AppSidebarProps>) {
                     variant="celeste"
                     className="flex items-center w-full px-4 py-2 rounded-lg"
                   >
-                    <HiLogout className="w-4 h-4" />
+                    <HiLogout className="size-4" />
                     <span className="ml-2 group-data-[collapsible=icon]:hidden">
                       {logoutMutation.isPending ? 'Cerrando...' : 'Cerrar Sesión'}
                     </span>

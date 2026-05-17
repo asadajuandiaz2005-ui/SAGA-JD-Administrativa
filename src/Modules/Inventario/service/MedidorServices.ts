@@ -14,6 +14,25 @@ export const getMedidoresNoInstalados = async (): Promise<Medidor[]> => {
   return response.data;
 };
 
+export const getMedidoresPendientes = async (): Promise<Medidor[]> => {
+  const response = await axiosPrivate.get(`/Inventario/medidores/pendientes`);
+  return response.data;
+};
+
+export const getMedidoresPagados = async (): Promise<Medidor[]> => {
+  const response = await axiosPrivate.get(`/Inventario/medidores/pagados`);
+  return response.data;
+};
+
+export const getMedidoresLibres = async (): Promise<Medidor[]> => {
+  const response = await axiosPrivate.get(`/Inventario/medidores/libre`);
+  return response.data;
+};
+
+
+
+
+
 // Obtener medidores disponibles (sin asignar)
 export const getMedidoresDisponibles = async (): Promise<Medidor[]> => {
   const response = await axiosPrivate.get(`/Inventario/medidores/disponibles`);
@@ -74,8 +93,8 @@ export const asignarMedidorAAfiliado = async (idMedidor: number, idAfiliado: num
 export const asignarMedidorConArchivos = async (
   idMedidor: number,
   idAfiliado: number,
-  certificacionFile: File,
-  planosFile: File,
+  certificacionFile: File | null,
+  planosFile: File | null,
   estadoPago?: EstadoPagoMedidorNombre
 ): Promise<void> => {
   const formData = new FormData();
@@ -84,9 +103,24 @@ export const asignarMedidorConArchivos = async (
   if (estadoPago) {
     formData.append('Estado_Pago_Medidor', estadoPago);
   }
-  formData.append('Certificacion_Literal', certificacionFile);
-  formData.append('Planos_Terreno', planosFile);
+
+  if(certificacionFile) formData.append('Certificacion_Literal', certificacionFile);
+  if(planosFile) formData.append('Planos_Terreno', planosFile);
+
   await axiosPrivate.post(`/Inventario/asignar/medidor/afiliado`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
+export const subirArchivosMedidorInventario = async (
+  idMedidor: number,
+  certificacionFile: File | null,
+  planosFile: File | null
+): Promise<void> => {
+  const formData = new FormData();
+  if (certificacionFile) formData.append('Certificacion_Literal', certificacionFile);
+  if (planosFile) formData.append('Planos_Terreno', planosFile);
+  await axiosPrivate.post(`/Inventario/medidor/${idMedidor}/archivos`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 };

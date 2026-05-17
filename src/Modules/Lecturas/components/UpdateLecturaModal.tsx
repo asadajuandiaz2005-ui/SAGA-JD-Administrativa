@@ -34,17 +34,17 @@ export default function UpdateLecturaModal({ lectura, onClose }: UpdateLecturaMo
   const handleLecturaActualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const value = rawValue === "" ? 0 : Number.parseFloat(rawValue);
-    setFormData({ ...formData, Valor_Lectura: value });
+    setFormData(prev => ({ ...prev, Valor_Lectura: value }));
 
     if (rawValue === "" || Number.isNaN(value) || value < 0) {
-      setErrors({ ...errors, lecturaActual: "Debe ingresar un valor válido mayor o igual a 0" });
+      setErrors(prev => ({ ...prev, lecturaActual: "Debe ingresar un valor válido mayor o igual a 0" }));
     } else if (value < lectura.Valor_Lectura_Anterior) {
       setErrors({
         ...errors,
         lecturaActual: `La lectura actual no puede ser menor a la anterior (${lectura.Valor_Lectura_Anterior} m³)`,
       });
     } else {
-      setErrors({ ...errors, lecturaActual: "" });
+      setErrors(prev => ({ ...prev, lecturaActual: "" }));
     }
   };
 
@@ -105,7 +105,7 @@ export default function UpdateLecturaModal({ lectura, onClose }: UpdateLecturaMo
           <form id="update-lectura-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5">
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
               <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                <h3 className="text-base font-bold text-gray-900">Información del Medidor</h3>
+                <h3 className="text-base font-semibold text-gray-900">Información del Medidor</h3>
               </div>
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-3 rounded-lg min-w-0">
@@ -141,7 +141,7 @@ export default function UpdateLecturaModal({ lectura, onClose }: UpdateLecturaMo
                 id="tarifa"
                 value={formData.Id_Tipo_Tarifa}
                 onChange={(e) =>
-                  setFormData({ ...formData, Id_Tipo_Tarifa: Number.parseInt(e.target.value, 10) })
+                  setFormData(prev => ({ ...prev, Id_Tipo_Tarifa: Number.parseInt(e.target.value, 10) }))
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 required
@@ -202,7 +202,7 @@ export default function UpdateLecturaModal({ lectura, onClose }: UpdateLecturaMo
             }
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
-            {updateLecturaMutation.isPending ? "Guardando..." : "Guardar Cambios"}
+            {updateLecturaMutation.isPending ? "Guardando…" : "Guardar Cambios"}
           </button>
           <button
             type="button"

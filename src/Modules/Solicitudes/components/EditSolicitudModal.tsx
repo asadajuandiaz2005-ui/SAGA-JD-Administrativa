@@ -208,7 +208,7 @@ const EditSolicitudModal: React.FC<EditSolicitudModalProps> = ({ isOpen, onClose
                         onClick={onClose}
                         className="p-2 hover:bg-gray-50 rounded-full transition-colors"
                     >
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="size-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
@@ -250,24 +250,7 @@ const EditSolicitudModal: React.FC<EditSolicitudModalProps> = ({ isOpen, onClose
                         {/* Campos para solicitudes físicas */}
                         {solicitud.tipo === 'solicitud-fisica' && (
                             <>
-                                <form.Field name="Nombre">
-                                    {(field) => (
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                Nombre *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={field.state.value}
-                                                onChange={createInputHandler('nombre', field.handleChange, NOMBRE_MAX_LENGTH)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Nombre"
-                                                maxLength={NOMBRE_MAX_LENGTH}
-                                            />
-                                            {renderCharCounter(fieldCharCounts.nombre, NOMBRE_MAX_LENGTH, false)}
-                                        </div>
-                                    )}
-                                </form.Field>
+                               
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <form.Field name="Apellido1">
@@ -469,7 +452,7 @@ const EditSolicitudModal: React.FC<EditSolicitudModalProps> = ({ isOpen, onClose
                         disabled={isSaving}
                         className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                        {isSaving ? 'Actualizando...' : 'Actualizar Solicitud'}
+                        {isSaving ? 'Actualizando…' : 'Actualizar Solicitud'}
                     </button>
                     <button
                         type="button"

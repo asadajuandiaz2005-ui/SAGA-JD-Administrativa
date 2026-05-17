@@ -284,7 +284,7 @@ export default function FacturaTable() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full size-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -299,7 +299,7 @@ export default function FacturaTable() {
     <div className="space-y-6">
       <div className="bg-white rounded-lg p-3">
         <div className="flex items-start gap-4 flex-col justify-start">
-          <h2 className="text-2xl font-bold text-gray-900">Gestión de Facturas</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">Gestión de Facturas</h2>
           <p className="text-sm text-gray-600 pb-4">
             Administra las facturas generadas y registra pagos
           </p>
@@ -326,7 +326,7 @@ export default function FacturaTable() {
                 className="px-2 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1.5 transition-colors text-xs sm:text-sm disabled:opacity-50"
                 title="Forzar chequeo de facturas vencidas"
               >
-                <LuRefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isCheckingVencidas ? "animate-spin" : ""}`} />
+                <LuRefreshCw className={`size-3.5 sm:size-4 ${isCheckingVencidas ? "animate-spin" : ""}`} />
                 Chequear vencidas
               </button>
             )}
@@ -334,7 +334,7 @@ export default function FacturaTable() {
 
           <div className="flex w-full sm:w-auto items-stretch sm:items-center justify-end">
             <div className="relative w-full sm:w-80">
-              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 size-3.5 sm:size-4" />
               <input
                 type="text"
                 placeholder="Buscar en todas las columnas..."
@@ -421,7 +421,7 @@ export default function FacturaTable() {
               className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
               title="Primera página"
             >
-              <MdKeyboardDoubleArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <MdKeyboardDoubleArrowLeft className="size-3.5 sm:size-5" />
             </button>
             <button
               onClick={() => table.previousPage()}
@@ -429,7 +429,7 @@ export default function FacturaTable() {
               className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
               title="Página anterior"
             >
-              <MdKeyboardArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <MdKeyboardArrowLeft className="size-3.5 sm:size-5" />
             </button>
             <span className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm whitespace-nowrap">
               Pág. {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
@@ -440,7 +440,7 @@ export default function FacturaTable() {
               className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
               title="Página siguiente"
             >
-              <MdKeyboardArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <MdKeyboardArrowRight className="size-3.5 sm:size-5" />
             </button>
             <button
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -448,7 +448,7 @@ export default function FacturaTable() {
               className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50"
               title="Última página"
             >
-              <MdKeyboardDoubleArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              <MdKeyboardDoubleArrowRight className="size-3.5 sm:size-5" />
             </button>
           </div>
         </div>
@@ -470,7 +470,7 @@ export default function FacturaTable() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={handleConfirmarPago} disabled={isMarkingPaid}>
-              {isMarkingPaid ? "Procesando..." : "Confirmar pago"}
+              {isMarkingPaid ? "Procesando…" : "Confirmar pago"}
             </AlertDialogAction>
             <AlertDialogCancel disabled={isMarkingPaid}>Cancelar</AlertDialogCancel>
           </AlertDialogFooter>
@@ -509,7 +509,7 @@ export default function FacturaTable() {
               disabled={isAnulando}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isAnulando ? "Anulando..." : "Confirmar anulación"}
+              {isAnulando ? "Anulando…" : "Confirmar anulación"}
             </AlertDialogAction>
             <AlertDialogCancel disabled={isAnulando}>Cancelar</AlertDialogCancel>
           </AlertDialogFooter>

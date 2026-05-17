@@ -19,7 +19,7 @@ const MovimientoTypeSelector: React.FC<MovimientoTypeIconProps> = ({
             : 'border-gray-200 hover:border-gray-300'
         }`}
       >
-        <LuPlus className="w-6 h-6 mx-auto mb-1" />
+        <LuPlus className="size-6 mx-auto mb-1" />
         <span className="block text-sm font-medium">Entrada</span>
       </button>
       <button
@@ -30,7 +30,7 @@ const MovimientoTypeSelector: React.FC<MovimientoTypeIconProps> = ({
             : 'border-gray-200 hover:border-gray-300'
         }`}
       >
-        <LuMinus className="w-6 h-6 mx-auto mb-1" />
+        <LuMinus className="size-6 mx-auto mb-1" />
         <span className="block text-sm font-medium">Salida</span>
       </button>
     </div>

@@ -19,7 +19,7 @@ import type { SolicitudFisica } from '../Models/ModelosFisicas';
 import type { SolicitudJuridica } from '../Models/ModelosJuridicos';
 
 // Importar modal de edición
-import EditSolicitudModal from './EditSolicitudModal';
+/* import EditSolicitudModal from './EditSolicitudModal'; */
 import ModalSolicitud from './ModalSolicitud';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown, MdKeyboardDoubleArrowLeft, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowRight } from 'react-icons/md';
 import { LuSearch, LuFilter } from 'react-icons/lu';
@@ -47,9 +47,9 @@ type SolicitudUnificada = {
 
 export default function SolicitudesTable() {
     // Hooks para ambos tipos de solicitudes
-    const { canEdit, canView } = useUserPermissions();
+    const { /*canEdit,*/ canView } = useUserPermissions();
 
-    const hasEditPermission = canEdit('solicitudes');
+    /* const hasEditPermission = canEdit('solicitudes'); */
     const hasViewPermission = canView('solicitudes');
     const { data: solicitudesFisicas, isLoading: loadingFisicas, isError: errorFisicos } = useSolicitudesFisicas();
     const { data: solicitudesJuridicas, isLoading: loadingJuridicas, isError: errorJuridicos } = useSolicitudesJuridicas();
@@ -63,7 +63,7 @@ export default function SolicitudesTable() {
         busquedaAvanzada: '',
     });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [solicitudesEditadas, setSolicitudesEditadas] = useState<Record<string, SolicitudFisica | SolicitudJuridica>>({});
+    /* const [solicitudesEditadas, setSolicitudesEditadas] = useState<Record<string, SolicitudFisica | SolicitudJuridica>>({}); */
 
     const activeFiltersCount = useMemo(() => {
         let count = 0;
@@ -75,7 +75,7 @@ export default function SolicitudesTable() {
         return count;
     }, [activeFilters, globalFilter]);
 
-    const isSolicitudEditable = (estadoNombre?: string) => {
+    /*const isSolicitudEditable = (estadoNombre?: string) => {
         const estadoNormalizado = (estadoNombre || '').toLowerCase();
 
         return ![
@@ -86,20 +86,20 @@ export default function SolicitudesTable() {
             'rechazada',
             'rechazado',
         ].includes(estadoNormalizado);
-    };
+    };*/
 
 
     // Estados para el modal de edición
-    const [showEditModal, setShowEditModal] = useState(false);
+    /*const [showEditModal, setShowEditModal] = useState(false);
     const [selectedSolicitud, setSelectedSolicitud] = useState<{
         id: number | string;
         tipo: 'solicitud-fisica' | 'solicitud-juridica';
         datos: SolicitudFisica | SolicitudJuridica;
-    } | null>(null);
+    } | null>(null);*/
 
-    const buildSolicitudEditKey = (tipo: 'solicitud-fisica' | 'solicitud-juridica', id: number | string) => `${tipo}-${id}`;
+    /*const buildSolicitudEditKey = (tipo: 'solicitud-fisica' | 'solicitud-juridica', id: number | string) => `${tipo}-${id}`;*/
 
-    const handleSolicitudGuardada = (solicitudActualizada: {
+    /*const handleSolicitudGuardada = (solicitudActualizada: {
         id: number | string;
         tipo: 'solicitud-fisica' | 'solicitud-juridica';
         datos: SolicitudFisica | SolicitudJuridica;
@@ -127,7 +127,7 @@ export default function SolicitudesTable() {
                 datos: solicitudActualizada.datos,
             };
         });
-    };
+    };*/
 
     // Estados para el modal de gestión de solicitudes (aprobar/rechazar)
     const [showGestionModal, setShowGestionModal] = useState(false);
@@ -212,14 +212,15 @@ export default function SolicitudesTable() {
             // Buscar ID real en la solicitud (backend usa Id_Solicitud)
             const solicitudConId = solicitud as any;
             const idReal = solicitudConId.Id_Solicitud || solicitudConId.id || solicitudConId.Id || solicitudConId.ID;
-            const solicitudLocal = (idReal && solicitudesEditadas[buildSolicitudEditKey('solicitud-fisica', idReal)]) as SolicitudFisica | undefined;
+            /*const solicitudLocal = (idReal && solicitudesEditadas[buildSolicitudEditKey('solicitud-fisica', idReal)]) as SolicitudFisica | undefined;
             const solicitudFinal = solicitudLocal
                 ? {
                     ...solicitud,
                     ...solicitudLocal,
                     Estado: solicitud.Estado,
                 }
-                : solicitud;
+                : solicitud;*/
+            const solicitudFinal = solicitud;
 
             return {
                 id: `fisico-${index}`, // ID interno único para la tabla
@@ -243,14 +244,15 @@ export default function SolicitudesTable() {
             // Buscar ID real en la solicitud (backend usa Id_Solicitud)
             const solicitudConId = solicitud as any;
             const idReal = solicitudConId.Id_Solicitud || solicitudConId.id || solicitudConId.Id || solicitudConId.ID;
-            const solicitudLocal = (idReal && solicitudesEditadas[buildSolicitudEditKey('solicitud-juridica', idReal)]) as SolicitudJuridica | undefined;
+            /*const solicitudLocal = (idReal && solicitudesEditadas[buildSolicitudEditKey('solicitud-juridica', idReal)]) as SolicitudJuridica | undefined;
             const solicitudFinal = solicitudLocal
                 ? {
                     ...solicitud,
                     ...solicitudLocal,
                     Estado: solicitud.Estado,
                 }
-                : solicitud;
+                : solicitud;*/
+            const solicitudFinal = solicitud;
 
             return {
                 id: `juridico-${index}`, // ID interno único para la tabla
@@ -274,7 +276,7 @@ export default function SolicitudesTable() {
         ].sort((a, b) => b.Id - a.Id);
 
         return resultado;
-    }, [solicitudesFisicas, solicitudesJuridicas, solicitudesEditadas]);
+    }, [solicitudesFisicas, solicitudesJuridicas/*, solicitudesEditadas*/]);
 
     const filteredData = useMemo(() => {
         let datos = datosUnificados;
@@ -436,7 +438,7 @@ export default function SolicitudesTable() {
                             ? 'bg-blue-100 text-blue-700'
                             : 'bg-purple-100 text-purple-700'
                             }`}>
-                            {tipo === 'Físico' ? <User className="w-2 h-2 sm:w-3.5 sm:h-3.5" /> : <Building className="w-2 h-2 sm:w-3.5 sm:h-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
+                            {tipo === 'Físico' ? <User className="size-2 sm:size-3.5" /> : <Building className="size-2 sm:size-3.5" />} <span className="hidden sm:inline">{tipo}</span><span className="sm:hidden">{tipo}</span>
                         </span>
                     </div>
                 );
@@ -499,7 +501,7 @@ export default function SolicitudesTable() {
                         )}
 
                         {/* Editar */}
-                        {hasEditPermission && (
+                        {/*hasEditPermission && (
                             (() => {
                                 const puedeEditar = isSolicitudEditable(solicitud.Estado.Nombre_Estado);
 
@@ -524,7 +526,7 @@ export default function SolicitudesTable() {
                                     </button>
                                 );
                             })()
-                        )}
+                        )*/}
                     </div>
                 );
             }
@@ -557,7 +559,7 @@ export default function SolicitudesTable() {
         return (
             <div className="w-full flex items-center justify-center py-12">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full size-8 border-b-2 border-sky-600 mx-auto mb-4"></div>
                     <p className="text-slate-600">Cargando solicitudes...</p>
                 </div>
             </div>
@@ -585,7 +587,7 @@ export default function SolicitudesTable() {
         <div className="w-full">
             <div className="flex flex-col sm:flex-row gap-4 mb-4 justify-between items-start sm:items-center p-3">
                 <div className="flex items-start gap-2 flex-col justify-start">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Revisión de Solicitudes</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Revisión de Solicitudes</h2>
                     <p className="text-xs sm:text-sm text-gray-600">Gestiona las solicitudes de los usuarios</p>
                 </div>
 
@@ -598,10 +600,10 @@ export default function SolicitudesTable() {
                             : 'border-gray-300 hover:bg-gray-50'
                             }`}
                     >
-                        <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <LuFilter className="size-3 sm:size-4" />
                         Filtros
                         {activeFiltersCount > 0 && (
-                            <span className="bg-blue-500 text-white text-[10px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                            <span className="bg-blue-500 text-white text-[10px] rounded-full size-4 sm:size-5 flex items-center justify-center">
                                 {activeFiltersCount}
                             </span>
                         )}
@@ -609,11 +611,11 @@ export default function SolicitudesTable() {
 
                     {/* Campo de búsqueda */}
                     <div className="relative flex-1 sm:flex-none min-w-[150px] w-full sm:w-auto sm:max-w-md">
-                        <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <LuSearch className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 size-3.5 sm:size-4" />
                         <input
                             value={globalFilter}
                             onChange={(e) => setGlobalFilter(e.target.value)}
-                            placeholder="Buscar..."
+                            placeholder="Buscar…"
                             className="w-full pl-8 pr-3 py-1.5 sm:pl-10 sm:pr-4 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
@@ -746,7 +748,7 @@ export default function SolicitudesTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Primera página"
                             >
-                                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
                             </button>
                             <button
                                 onClick={() => table.previousPage()}
@@ -754,7 +756,7 @@ export default function SolicitudesTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página anterior"
                             >
-                                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardArrowLeft className="size-3 sm:size-4" />
                             </button>
                             <span className="text-[10px] sm:text-sm text-gray-700 mx-1 sm:mx-2 whitespace-nowrap">
                                 <span className="hidden sm:inline">Página </span>{table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -765,7 +767,7 @@ export default function SolicitudesTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Página siguiente"
                             >
-                                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardArrowRight className="size-3 sm:size-4" />
                             </button>
                             <button
                                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -773,7 +775,7 @@ export default function SolicitudesTable() {
                                 className="p-1 sm:p-2 rounded-md border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Última página"
                             >
-                                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
                             </button>
                         </div>
                     </div>
@@ -782,7 +784,7 @@ export default function SolicitudesTable() {
             </div>
 
             {/* Modal de edición */}
-            {showEditModal && selectedSolicitud && (
+            {/*showEditModal && selectedSolicitud && (
                 <EditSolicitudModal
                     solicitud={selectedSolicitud}
                     isOpen={showEditModal}
@@ -792,7 +794,7 @@ export default function SolicitudesTable() {
                         setSelectedSolicitud(null);
                     }}
                 />
-            )}
+            )*/}
 
             {/* Modal de gestión de estados (aprobar/rechazar) */}
             {showGestionModal && selectedSolicitudForGestion && (

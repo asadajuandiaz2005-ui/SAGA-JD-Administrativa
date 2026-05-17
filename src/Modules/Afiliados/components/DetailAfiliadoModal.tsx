@@ -7,11 +7,13 @@ import {
     getAfiliadoFisicoDetail,
     getMedidoresByAfiliado,
     getMedidoresByAfiliadoJuridico,
+    subirArchivosMedidorAfiliado,
 } from '../Service/ServiceAfiliadoFisico';
 import { getAfiliadoJuridicoDetail } from '../Service/ServiceAfiliadoJuridico';
 import { useAfiliadosFisicos } from '../Hook/HookAfiliadoFisico';
 import { useAfiliadosJuridicos } from '../Hook/HookAfiliadoJuridico';
 import { useAlerts } from '@/Modules/Global/context/AlertContext';
+import SubirArchivosMedidorModal from '@/Modules/Inventario/components/Medidores/SubirArchivosMedidorModal';
 
 
 // Tipo unificado para identificar qué estamos viendo
@@ -31,6 +33,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
     const [medidores, setMedidores] = useState<Medidor[]>([]);
     const [loadingMedidores, setLoadingMedidores] = useState(false);
     const [detallePersona, setDetallePersona] = useState<AfiliadoFisico | AfiliadoJuridico | null>(null);
+    const [medidorParaArchivos, setMedidorParaArchivos] = useState<Medidor | null>(null);
     const [loadingDetalle, setLoadingDetalle] = useState(false);
     const [showCambioTipoModal, setShowCambioTipoModal] = useState(false);
     const [planosTerreno, setPlanosTerreno] = useState<File | null>(null);
@@ -40,6 +43,18 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
     const { showSuccess, showError, showWarning } = useAlerts();
     const { updateTipoAfiliadoFisico } = useAfiliadosFisicos();
     const { updateTipoAfiliadoJuridico } = useAfiliadosJuridicos();
+
+    const recargarMedidores = () => {
+        const idAfiliado = (persona.datos as AfiliadoFisico | AfiliadoJuridico).Id_Afiliado;
+        const fetchFn = persona.tipo === 'afiliado-juridico'
+            ? getMedidoresByAfiliadoJuridico
+            : getMedidoresByAfiliado;
+        setLoadingMedidores(true);
+        fetchFn(idAfiliado)
+            .then(setMedidores)
+            .catch(() => {})
+            .finally(() => setLoadingMedidores(false));
+    };
 
     // Cada vez que se abre el modal, cargar los medidores frescos desde el endpoint
     useEffect(() => {
@@ -294,14 +309,14 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                 {/* Header */}
                 <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-xl font-bold text-gray-900 flex items-center gap-3">
+                        <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
                             {getModalTitle()}
                             {loadingDetalle && (
-                                <span className="ml-1 inline-block w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                <span className="ml-1 inline-block size-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
                             )}
                         </h1>
                         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-                            <LuX className="w-5 h-5" />
+                            <LuX className="size-5" />
                         </button>
                     </div>
                 </div>
@@ -313,10 +328,10 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <LuUser className="w-4 h-4 text-blue-600" />
+                                <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <LuUser className="size-4 text-blue-600" />
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900">Información Personal</h3>
+                                <h3 className="text-base font-semibold text-gray-900">Información Personal</h3>
                             </div>
                         </div>
 
@@ -325,7 +340,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Nombre/Razón Social */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2">
                                     <div className="p-2 rounded-lg">
-                                        <LuUser className="w-5 h-5 text-blue-600" />
+                                        <LuUser className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -340,7 +355,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Documento */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuFileText className="w-5 h-5 text-blue-600" />
+                                        <LuFileText className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -356,7 +371,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.edad && (
                                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                         <div className="p-2 rounded-lg">
-                                            <LuCalendar className="w-5 h-5 text-blue-600" />
+                                            <LuCalendar className="size-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs font-medium text-gray-500 uppercase">
@@ -372,7 +387,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Tipo de Persona */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuBuilding className="w-5 h-5 text-blue-600" />
+                                        <LuBuilding className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -387,7 +402,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Tipo de Afiliado */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuUser className="w-5 h-5 text-blue-600" />
+                                        <LuUser className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -405,7 +420,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.certificacion && (
                                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                         <div className="p-2 rounded-lg">
-                                            <LuFileText className="w-5 h-5 text-blue-600" />
+                                            <LuFileText className="size-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs font-medium text-gray-500 uppercase">
@@ -427,7 +442,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.planos && (
                                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                         <div className="p-2 rounded-lg">
-                                            <LuMap className="w-5 h-5 text-blue-600" />
+                                            <LuMap className="size-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs font-medium text-gray-500 uppercase">
@@ -448,7 +463,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.escrituras && (
                                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                         <div className="p-2 rounded-lg">
-                                            <LuFileText className="w-5 h-5 text-blue-600" />
+                                            <LuFileText className="size-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs font-medium text-gray-500 uppercase">
@@ -473,13 +488,13 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <LuGauge className="w-4 h-4 text-blue-600" />
+                                <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <LuGauge className="size-4 text-blue-600" />
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900">
+                                <h3 className="text-base font-semibold text-gray-900">
                                     Medidores Asignados
                                     {loadingMedidores && (
-                                        <span className="ml-2 inline-block w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin align-middle" />
+                                        <span className="ml-2 inline-block size-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin align-middle" />
                                     )}
                                 </h3>
                             </div>
@@ -495,16 +510,24 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-2">
-                                                    <LuGauge className="w-5 h-5 text-blue-600" />
-                                                    <h4 className="text-base font-bold text-gray-900">
+                                                    <LuGauge className="size-5 text-blue-600" />
+                                                    <h4 className="text-base font-semibold text-gray-900">
                                                         Medidor #{medidor.Id_Medidor}
                                                     </h4>
+                                                    {medidor.Estado_Medidor?.Id_Estado_Medidor === 2 &&
+                                                        !medidor.Certificacion_Literal &&
+                                                        !medidor.Planos_Terreno && (
+                                                        <span
+                                                            className="w-3 h-3 bg-red-500 rounded-full"
+                                                            title="Este medidor no tiene archivos adjuntos"
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="flex items-start gap-3 p-4 bg-white rounded-lg border border-gray-100">
                                                     <div className="p-2 rounded-lg">
-                                                        <LuInfo className="w-5 h-5 text-blue-600" />
+                                                        <LuInfo className="size-5 text-blue-600" />
                                                     </div>
                                                     <div className="flex-1">
                                                         <p className="text-xs font-medium text-gray-500 uppercase">Número de Medidor</p>
@@ -514,7 +537,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                 
                                                 <div className="flex items-start gap-3 p-4 bg-white rounded-lg border border-gray-100">
                                                     <div className="p-2 rounded-lg">
-                                                        <LuGauge className="w-5 h-5 text-blue-600" />
+                                                        <LuGauge className="size-5 text-blue-600" />
                                                     </div>
                                                     <div className="flex-1">
                                                         <p className="text-xs font-medium text-gray-500 uppercase">Estado Actual del medidor</p>
@@ -550,7 +573,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 rel="noopener noreferrer"
                                                                 className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
-                                                                <LuFileText className="w-4 h-4" />
+                                                                <LuFileText className="size-4" />
                                                                 Ver Certificación
                                                             </a>
                                                         )}
@@ -561,7 +584,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 rel="noopener noreferrer"
                                                                 className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
-                                                                <LuMap className="w-4 h-4" />
+                                                                <LuMap className="size-4" />
                                                                 Ver Planos
                                                             </a>
                                                         )}
@@ -572,11 +595,29 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                                                 rel="noopener noreferrer"
                                                                 className="flex justify-center items-center gap-1.5 px-3 py-2 sm:py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-700 hover:bg-blue-100 transition-colors font-medium w-full sm:w-auto"
                                                             >
-                                                                <LuFileText className="w-4 h-4" />
+                                                                <LuFileText className="size-4" />
                                                                 Ver Escrituras
                                                             </a>
                                                         )}
                                                     </div>
+                                                </div>
+                                            )}
+
+                                            {medidor.Estado_Medidor?.Id_Estado_Medidor === 2 &&
+                                                !medidor.Certificacion_Literal &&
+                                                !medidor.Planos_Terreno && (
+                                                <div className="mt-3 pt-3 border-t border-gray-200 flex items-center justify-between gap-3">
+                                                    <p className="text-xs text-amber-600 font-medium">
+                                                        Este medidor no tiene archivos adjuntos.
+                                                    </p>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setMedidorParaArchivos(medidor)}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white text-xs font-medium rounded-lg hover:bg-amber-600 transition-colors whitespace-nowrap"
+                                                    >
+                                                        <LuFileText className="w-3.5 h-3.5" />
+                                                        Subir Archivos
+                                                    </button>
                                                 </div>
                                             )}
                                         </div>
@@ -584,7 +625,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                                    <LuGauge className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                    <LuGauge className="size-5 text-gray-400 flex-shrink-0" />
                                     <p className="text-sm text-gray-500 font-medium">Sin medidores asignados</p>
                                 </div>
                             )}
@@ -593,10 +634,10 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <LuPhone className="w-4 h-4 text-blue-600" />
+                                <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <LuPhone className="size-4 text-blue-600" />
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900">Información de Contacto</h3>
+                                <h3 className="text-base font-semibold text-gray-900">Información de Contacto</h3>
                             </div>
                         </div>
 
@@ -606,7 +647,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.direccion && (
                                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2">
                                         <div className="p-2 rounded-lg">
-                                            <LuMapPin className="w-5 h-5 text-blue-600" />
+                                            <LuMapPin className="size-5 text-blue-600" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs font-medium text-gray-500 uppercase">
@@ -623,7 +664,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.correo && (
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2">
                                     <div className="p-2 rounded-lg">
-                                        <LuMail className="w-5 h-5 text-blue-600" />
+                                        <LuMail className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -640,7 +681,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {personaInfo.telefono && (
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200 md:col-span-2">
                                     <div className="p-2 rounded-lg">
-                                        <LuPhone className="w-5 h-5 text-blue-600" />
+                                        <LuPhone className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -660,10 +701,10 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                         <div className="bg-gray-50 px-5 py-3 border-b border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <LuCalendar className="w-4 h-4 text-blue-600" />
+                                <div className="size-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <LuCalendar className="size-4 text-blue-600" />
                                 </div>
-                                <h3 className="text-base font-bold text-gray-900">Información del Sistema</h3>
+                                <h3 className="text-base font-semibold text-gray-900">Información del Sistema</h3>
                             </div>
                         </div>
 
@@ -672,7 +713,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Estado */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuInfo className="w-5 h-5 text-blue-600" />
+                                        <LuInfo className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -692,7 +733,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Fecha de Creación */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuCalendar className="w-5 h-5 text-blue-600" />
+                                        <LuCalendar className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -707,7 +748,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 {/* Fecha de Actualización */}
                                 <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                     <div className="p-2 rounded-lg">
-                                        <LuCalendar className="w-5 h-5 text-blue-600" />
+                                        <LuCalendar className="size-5 text-blue-600" />
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-xs font-medium text-gray-500 uppercase">
@@ -745,7 +786,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                 <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
                     <div className="bg-white w-full max-w-lg rounded-lg shadow-2xl border border-gray-200">
                         <div className="p-5 border-b border-gray-200">
-                            <h2 className="text-lg font-bold text-gray-900">Cambiar tipo de afiliado</h2>
+                            <h2 className="text-lg font-semibold text-gray-900">Cambiar tipo de afiliado</h2>
                             <p className="text-sm text-gray-600 mt-2">
                                 Está cambiando el tipo del afiliado a <strong>Asociado</strong>. Para continuar debe adjuntar
                                 obligatoriamente <strong>Planos_Terreno</strong> y <strong>Escrituras_Terreno</strong>.
@@ -773,7 +814,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                             aria-label="Quitar archivo de planos"
                                             title="Quitar archivo"
                                         >
-                                            <LuX className="w-4 h-4" />
+                                            <LuX className="size-4" />
                                         </button>
                                     </div>
                                 )}
@@ -799,7 +840,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                             aria-label="Quitar archivo de escrituras"
                                             title="Quitar archivo"
                                         >
-                                            <LuX className="w-4 h-4" />
+                                            <LuX className="size-4" />
                                         </button>
                                     </div>
                                 )}
@@ -814,7 +855,7 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                                 disabled={isActualizandoTipo}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                             >
-                                {isActualizandoTipo ? 'Guardando...' : 'Confirmar cambio'}
+                                {isActualizandoTipo ? 'Guardando…' : 'Confirmar cambio'}
                             </button>
 
 
@@ -834,6 +875,21 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                         </div>
                     </div>
                 </div>
+            )}
+
+            {medidorParaArchivos && (
+                <SubirArchivosMedidorModal
+                    isOpen={true}
+                    numeroMedidor={medidorParaArchivos.Numero_Medidor}
+                    onClose={() => setMedidorParaArchivos(null)}
+                    onSubir={(cert, planos) =>
+                        subirArchivosMedidorAfiliado(medidorParaArchivos.Id_Medidor, cert, planos)
+                    }
+                    onSuccess={() => {
+                        showSuccess('Archivos subidos correctamente al medidor.');
+                        recargarMedidores();
+                    }}
+                />
             )}
         </div>
     );

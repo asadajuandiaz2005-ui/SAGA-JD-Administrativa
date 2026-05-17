@@ -223,7 +223,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                                             onClick={() => togglePasswordVisibility('current')}
                                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                         >
-                                            {showPasswords.current ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
+                                            {showPasswords.current ? <LuEyeOff className="size-4" /> : <LuEye className="size-4" />}
                                         </button>
                                     </div>
 
@@ -263,7 +263,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                                             onClick={() => togglePasswordVisibility('new')}
                                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                         >
-                                            {showPasswords.new ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
+                                            {showPasswords.new ? <LuEyeOff className="size-4" /> : <LuEye className="size-4" />}
                                         </button>
                                     </div>
                                     
@@ -309,7 +309,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                                             onClick={() => togglePasswordVisibility('confirm')}
                                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                         >
-                                            {showPasswords.confirm ? <LuEyeOff className="w-4 h-4" /> : <LuEye className="w-4 h-4" />}
+                                            {showPasswords.confirm ? <LuEyeOff className="size-4" /> : <LuEye className="size-4" />}
                                         </button>
                                     </div>
                                     

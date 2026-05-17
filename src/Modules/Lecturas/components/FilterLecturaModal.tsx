@@ -62,7 +62,7 @@ export default function FilterLecturaModal({
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         <div className="sticky top-0 bg-white flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 z-10">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center gap-2">
-            <LuFilter className="w-5 h-5" />
+            <LuFilter className="size-5" />
             Filtros Avanzados
           </h2>
           <button
@@ -70,7 +70,7 @@ export default function FilterLecturaModal({
             className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
             aria-label="Cerrar"
           >
-            <LuX className="w-5 h-5" />
+            <LuX className="size-5" />
           </button>
         </div>
 

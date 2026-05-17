@@ -29,7 +29,7 @@ const CantidadControl: React.FC<CantidadControlProps> = ({
           disabled={cantidad <= CANTIDAD_MOVIMIENTO_MIN}
           className="p-3 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LuMinus className="w-5 h-5" />
+          <LuMinus className="size-5" />
         </button>
         <div className="flex-1">
           <input
@@ -50,7 +50,7 @@ const CantidadControl: React.FC<CantidadControlProps> = ({
           disabled={cantidad >= CANTIDAD_MOVIMIENTO_MAX}
           className="p-3 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <LuPlus className="w-5 h-5" />
+          <LuPlus className="size-5" />
         </button>
       </div>
     </div>

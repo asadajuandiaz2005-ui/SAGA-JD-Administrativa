@@ -120,7 +120,7 @@ export default function ImagenFormEdit({ onClose, refetch, imagen }: ImagenFormE
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <div className="w-5 h-5 text-gray-500 flex items-center justify-center">✕</div>
+            <div className="size-5 text-gray-500 flex items-center justify-center">✕</div>
           </button>
         </div>
 
@@ -212,7 +212,7 @@ export default function ImagenFormEdit({ onClose, refetch, imagen }: ImagenFormE
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
-                    Guardando...
+                    Guardando…
                   </span>
                 ) : (
                   "Guardar Cambios"
@@ -237,7 +237,7 @@ export default function ImagenFormEdit({ onClose, refetch, imagen }: ImagenFormE
                   }}
                   disabled={isSubmitting}
                 >
-                  <span>{isSubmitting ? 'Guardando...' : 'Guardar'}</span>
+                  <span>{isSubmitting ? 'Guardando…' : 'Guardar'}</span>
                 </AlertDialogAction>
                 <AlertDialogCancel disabled={isSubmitting}>
                   <span>Cancelar</span>

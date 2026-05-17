@@ -271,7 +271,7 @@ const CatálogoAuditorias = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full size-8 border-b-2 border-blue-600"></div>
         <span className="ml-2 text-gray-600">Cargando auditorías...</span>
       </div>
     );
@@ -281,7 +281,7 @@ const CatálogoAuditorias = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 p-4 sm:p-6">
         <div>
-          <h1 className="text-lg sm:text-xlg md:text-2xl font-bold text-gray-900">
+          <h1 className="text-lg sm:text-xlg md:text-2xl font-semibold text-gray-900">
             Auditoría del Sistema
           </h1>
           <p className="text-[10px] sm:text-xs md:text-sm text-gray-600 mt-1">
@@ -303,10 +303,10 @@ const CatálogoAuditorias = () => {
                   : 'border-gray-300 hover:bg-gray-50'
               }`}
             >
-              <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
+              <LuFilter className="size-3 sm:size-4" />
               Filtros
               {Object.values(appliedFilters).filter(Boolean).length > 0 && (
-                <span className="bg-blue-500 text-white text-[9px] sm:text-xs rounded-full w-3.5 h-3.5 sm:w-5 sm:h-5 flex items-center justify-center">
+                <span className="bg-blue-500 text-white text-[9px] sm:text-xs rounded-full size-3.5 sm:size-5 flex items-center justify-center">
                   {Object.values(appliedFilters).filter(Boolean).length}
                 </span>
               )}
@@ -317,15 +317,15 @@ const CatálogoAuditorias = () => {
               className="px-2 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-sm border border-gray-300 rounded-md flex items-center gap-1 sm:gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
               title="Descargar PDF"
             >
-              <LuFileDown className="w-3 h-3 sm:w-4 sm:h-4" />
-              {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+              <LuFileDown className="size-3 sm:size-4" />
+              {isDownloadingPdf ? 'Generando…' : 'Descargar PDF'}
             </button>
         </div>
          <div className="relative flex-1 max-w-md w-full">
-          <LuSearch className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+          <LuSearch className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 size-3 sm:size-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar..."
+            placeholder="Buscar…"
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="w-full pl-6 sm:pl-10 pr-2 sm:pr-4 py-1 sm:py-2 border border-gray-300 rounded-lg text-[10px] sm:text-sm focus:ring-1 focus:ring-sky-500 focus:border-sky-500"
@@ -450,7 +450,7 @@ const CatálogoAuditorias = () => {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Primera página"
               >
-                <MdKeyboardDoubleArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardDoubleArrowLeft className="size-3 sm:size-4" />
               </button>
               <button
                 onClick={() => table.previousPage()}
@@ -458,7 +458,7 @@ const CatálogoAuditorias = () => {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página anterior"
               >
-                <MdKeyboardArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardArrowLeft className="size-3 sm:size-4" />
               </button>
               <span className="text-[9px] sm:text-xs md:text-sm text-gray-700 px-0.5 sm:px-2 whitespace-nowrap">
                 {table.getState().pagination.pageIndex + 1} de {table.getPageCount() || 1}
@@ -469,7 +469,7 @@ const CatálogoAuditorias = () => {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Página siguiente"
               >
-                <MdKeyboardArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardArrowRight className="size-3 sm:size-4" />
               </button>
               <button
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -477,7 +477,7 @@ const CatálogoAuditorias = () => {
                 className="p-0.5 sm:p-2 rounded border text-gray-600 hover:text-gray-900 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Última página"
               >
-                <MdKeyboardDoubleArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                <MdKeyboardDoubleArrowRight className="size-3 sm:size-4" />
               </button>
             </div>
           </div>

@@ -61,11 +61,11 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
         className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
         title={`${totalPendientes} solicitudes pendientes`}
       >
-        <LuBell className="w-6 h-6" />
+        <LuBell className="size-6" />
         
         {/* Badge con número de notificaciones */}
         {totalPendientes > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium animate-pulse">
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full size-5 flex items-center justify-center font-medium animate-pulse">
             {totalPendientes > 99 ? '99+' : totalPendientes}
           </span>
         )}
@@ -94,7 +94,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50">
               <div className="flex items-center gap-3">
-                <LuBell className="w-5 h-5 text-blue-600" />
+                <LuBell className="size-5 text-blue-600" />
                 <h3 className="font-semibold text-gray-900">
                   Solicitudes Pendientes
                 </h3>
@@ -108,7 +108,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                 onClick={() => setIsOpen(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <LuX className="w-4 h-4" />
+                <LuX className="size-4" />
               </button>
             </div>
 
@@ -118,7 +118,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                 if (isLoading) {
                   return (
                     <div className="p-4 text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                      <div className="animate-spin rounded-full size-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
                       <p className="text-sm text-gray-500">Cargando notificaciones...</p>
                     </div>
                   );
@@ -126,7 +126,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                 if (notificaciones.length === 0) {
                   return (
                     <div className="p-8 text-center">
-                      <LuBell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                      <LuBell className="size-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-gray-500 font-medium">No hay solicitudes pendientes</p>
                       <p className="text-sm text-gray-400 mt-1">Todas las solicitudes han sido revisadas</p>
                     </div>
@@ -149,9 +149,9 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                           {/* Icono del tipo de persona */}
                           <div className="flex-shrink-0">
                             {notificacion.tipo === 'fisica' ? (
-                              <LuUser className="w-5 h-5 text-blue-600" />
+                              <LuUser className="size-5 text-blue-600" />
                             ) : (
-                              <LuBuilding className="w-5 h-5 text-purple-600" />
+                              <LuBuilding className="size-5 text-purple-600" />
                             )}
                           </div>
 
@@ -175,7 +175,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                             </p>
                             
                             <div className="flex items-center gap-2 text-xs text-gray-500">
-                              <LuClock className="w-3 h-3" />
+                              <LuClock className="size-3" />
                               <span>{formatearFecha(notificacion.fechaCreacion)}</span>
                             </div>
                           </div>
@@ -186,7 +186,7 @@ export const BuzonNotificaciones: React.FC<BuzonNotificacionesProps> = ({ onVerS
                               className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
                               title="Ver solicitud"
                             >
-                              <LuEye className="w-4 h-4" />
+                              <LuEye className="size-4" />
                             </span>
                           </div>
                         </div>

@@ -348,7 +348,7 @@ export default function ProveedoresTable() {
             <div className="gap-4 mb-4 bg-white rounded-lg p-3 w-full">
                 <div className='p-2 sm:p-4 border-b border-gray-100'>
                     <div className="flex items-start gap-2 sm:gap-4 flex-col justify-start">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de Proveedores</h2>
+                        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Gestión de Proveedores</h2>
                         <p className="text-xs sm:text-sm text-gray-600 pb-2 sm:pb-4">Gestiona los proveedores del sistema</p>
                     </div>
                 </div>
@@ -363,10 +363,10 @@ export default function ProveedoresTable() {
                                 : 'border-gray-300 hover:bg-gray-50'
                             }`}
                         >
-                            <LuFilter className="w-4 h-4" />
+                            <LuFilter className="size-4" />
                             Filtros
                             {activeFiltersCount > 0 && (
-                            <span className="bg-blue-500 text-white text-[10px] sm:text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+                            <span className="bg-blue-500 text-white text-[10px] sm:text-xs rounded-full size-4 sm:size-5 flex items-center justify-center">
                                 {activeFiltersCount}
                             </span>
                             )}
@@ -378,18 +378,18 @@ export default function ProveedoresTable() {
                                 className="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors whitespace-nowrap text-xs sm:text-sm w-full sm:w-auto disabled:opacity-50"
                                 title="Descargar PDF"
                             >
-                                <LuFileDown className="w-4 h-4" />
-                                {isDownloadingPdf ? 'Generando...' : 'Descargar PDF'}
+                                <LuFileDown className="size-4" />
+                                {isDownloadingPdf ? 'Generando…' : 'Descargar PDF'}
                             </button>
                         )}
                    </div>
 
                     <div className="w-full flex gap-2 sm:flex-1 sm:max-w-md">
                         <div className="relative w-full">
-                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+                            <LuSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-4 sm:size-5" />
                             <input
                                 type="text"
-                                placeholder="Buscar..."
+                                placeholder="Buscar…"
                                 value={globalFilter ?? ''}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
                                 className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -541,7 +541,7 @@ export default function ProveedoresTable() {
                             className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Primera página"
                         >
-                            <MdKeyboardDoubleArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                            <MdKeyboardDoubleArrowLeft className="size-3.5 sm:size-5" />
                         </button>
                         <button
                             onClick={() => table.previousPage()}
@@ -549,7 +549,7 @@ export default function ProveedoresTable() {
                             className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Página anterior"
                         >
-                            <MdKeyboardArrowLeft className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                            <MdKeyboardArrowLeft className="size-3.5 sm:size-5" />
                         </button>
                         <span className="px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm whitespace-nowrap">
                             Pág. {table.getState().pagination.pageIndex + 1} de{' '}
@@ -561,7 +561,7 @@ export default function ProveedoresTable() {
                             className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Página siguiente"
                         >
-                            <MdKeyboardArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                            <MdKeyboardArrowRight className="size-3.5 sm:size-5" />
                         </button>
                         <button
                             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -569,7 +569,7 @@ export default function ProveedoresTable() {
                             className="p-1 sm:p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title="Última página"
                         >
-                            <MdKeyboardDoubleArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+                            <MdKeyboardDoubleArrowRight className="size-3.5 sm:size-5" />
                         </button>
                     </div>
                 </div>

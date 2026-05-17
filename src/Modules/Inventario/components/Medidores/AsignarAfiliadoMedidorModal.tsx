@@ -80,7 +80,7 @@ const AsignarAfiliadoMedidorModal = ({
   }, [afiliados, searchTerm]);
 
   const handleConfirmar = async () => {
-    if (!selectedAfiliado || !escrituraFile || !planosFile || !estadoPago) return;
+    if (!selectedAfiliado || !estadoPago) return;
     setGuardando(true);
     setErrorMsg(null);
     try {
@@ -119,11 +119,11 @@ const AsignarAfiliadoMedidorModal = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-blue-50 rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <FaTachometerAlt className="text-blue-600 w-5 h-5" />
+            <div className="size-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <FaTachometerAlt className="text-blue-600 size-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-gray-900">Asignar a Afiliado</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Asignar a Afiliado</h2>
               <p className="text-sm text-gray-500">
                 Medidor <span className="font-semibold text-blue-700">#{medidor.Numero_Medidor}</span>
               </p>
@@ -134,7 +134,7 @@ const AsignarAfiliadoMedidorModal = ({
             className="p-2 rounded-full hover:bg-gray-200 transition-colors"
             disabled={guardando}
           >
-            <LuX className="w-5 h-5 text-gray-500" />
+            <LuX className="size-5 text-gray-500" />
           </button>
         </div>
 
@@ -148,7 +148,7 @@ const AsignarAfiliadoMedidorModal = ({
               Buscar afiliado
             </label>
             <div className="relative">
-              <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size-4" />
               <input
                 type="text"
                 placeholder="Nombre, cédula o correo..."
@@ -166,7 +166,7 @@ const AsignarAfiliadoMedidorModal = ({
           <div className="border border-gray-200 rounded-lg overflow-hidden max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-blue-100">
             {loadingAfiliados ? (
               <div className="flex items-center justify-center py-8 gap-2 text-gray-500 text-sm">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
+                <div className="animate-spin rounded-full size-5 border-b-2 border-blue-600" />
                 Cargando afiliados...
               </div>
             ) : afiliadosFiltrados.length === 0 ? (
@@ -186,8 +186,8 @@ const AsignarAfiliadoMedidorModal = ({
                           : ''
                       }`}
                     >
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <LuUser className="w-4 h-4 text-gray-500" />
+                      <div className="size-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <LuUser className="size-4 text-gray-500" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ const AsignarAfiliadoMedidorModal = ({
                         <p className="text-xs text-gray-500 truncate">{a.identificacion}</p>
                       </div>
                       {selectedAfiliado?.Id_Afiliado === a.Id_Afiliado && (
-                        <LuUserCheck className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                        <LuUserCheck className="size-5 text-blue-600 flex-shrink-0" />
                       )}
                     </button>
                   </li>
@@ -216,7 +216,7 @@ const AsignarAfiliadoMedidorModal = ({
           {selectedAfiliado && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
               <p className="font-semibold text-blue-800 flex items-center gap-1">
-                <LuUserCheck className="w-4 h-4" /> Afiliado seleccionado
+                <LuUserCheck className="size-4" /> Afiliado seleccionado
               </p>
               <p className="text-blue-700 mt-1 flex items-center gap-2">
                 {selectedAfiliado.nombre}{' '}
@@ -235,7 +235,7 @@ const AsignarAfiliadoMedidorModal = ({
           {/* Archivos requeridos — aparecen al seleccionar afiliado */}
           {selectedAfiliado && (
             <div className="space-y-3">
-              <p className="text-sm font-medium text-gray-700">Documentos del Terreno <span className="text-red-500">*</span></p>
+              <p className="text-sm font-medium text-gray-700">Documentos del Terreno <span className="text-gray-400 text-xs font-normal">(opcional)</span></p>
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Estado de Pago <span className="text-red-500">*</span></label>
@@ -264,7 +264,7 @@ const AsignarAfiliadoMedidorModal = ({
                     escrituraFile ? 'border-green-400' : 'border-gray-300'
                   }`}>
                     <span className="text-sm text-gray-700 truncate flex items-center gap-2">
-                      <LuFileText className="w-4 h-4 text-gray-400 shrink-0" />
+                      <LuFileText className="size-4 text-gray-400 shrink-0" />
                       {escrituraFile ? escrituraFile.name : 'Seleccionar archivo...'}
                     </span>
                     <span className="bg-blue-500 text-white px-3 py-1 rounded text-xs shrink-0 ml-2">Subir</span>
@@ -286,7 +286,7 @@ const AsignarAfiliadoMedidorModal = ({
                     planosFile ? 'border-green-400' : 'border-gray-300'
                   }`}>
                     <span className="text-sm text-gray-700 truncate flex items-center gap-2">
-                      <LuMap className="w-4 h-4 text-gray-400 shrink-0" />
+                      <LuMap className="size-4 text-gray-400 shrink-0" />
                       {planosFile ? planosFile.name : 'Seleccionar archivo...'}
                     </span>
                     <span className="bg-blue-500 text-white px-3 py-1 rounded text-xs shrink-0 ml-2">Subir</span>
@@ -314,17 +314,17 @@ const AsignarAfiliadoMedidorModal = ({
          
           <button
             onClick={handleConfirmar}
-            disabled={!selectedAfiliado || !escrituraFile || !planosFile || !estadoPago || guardando}
+            disabled={!selectedAfiliado || guardando}
             className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {guardando ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                Asignando...
+                <div className="animate-spin rounded-full size-4 border-b-2 border-white" />
+                Asignando…
               </>
             ) : (
               <>
-                <LuUserCheck className="w-4 h-4" />
+                <LuUserCheck className="size-4" />
                 Confirmar Asignación
               </>
             )}

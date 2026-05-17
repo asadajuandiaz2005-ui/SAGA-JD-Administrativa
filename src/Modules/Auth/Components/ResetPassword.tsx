@@ -71,7 +71,7 @@ export default function ResetPassword() {
       <div className="w-full md:w-[50vw] flex items-center justify-center bg-whitesmoke">
         <div className="w-full max-w-sm p-8 rounded-xl shadow-lg flex flex-col items-center bg-gray-200">
           {/* Logo arriba */}
-          <div className="w-30 h-30 flex justify-center mb-4">
+          <div className="size-30 flex justify-center mb-4">
             <img
               src="/Logo_ASADA_Juan_Díaz.png"
               alt="Logo"
@@ -79,7 +79,7 @@ export default function ResetPassword() {
             />
           </div>
 
-          <h2 className="text-2xl font-bold text-center text-sky-600 mb-6">
+          <h2 className="text-2xl font-semibold text-center text-sky-600 mb-6">
             Crear nueva contraseña
           </h2>
           <p className="text-sm text-gray-500 mb-4 text-center">
@@ -176,7 +176,7 @@ export default function ResetPassword() {
               disabled={form.state.isSubmitting}
               className="bg-blue-900 hover:bg-sky-700 text-white px-4 py-2 rounded-full text-sm w-full"
             >
-              {form.state.isSubmitting ? "Guardando..." : "Guardar contraseña"}
+              {form.state.isSubmitting ? "Guardando…" : "Guardar contraseña"}
             </button>
           </form>
 
