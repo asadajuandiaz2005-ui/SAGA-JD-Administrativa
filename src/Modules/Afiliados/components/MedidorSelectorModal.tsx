@@ -6,8 +6,8 @@ import type { Medidor } from '@/Modules/Inventario/models/Inventario';
 export type EstadoPago = 'Pagado' | 'Pendiente';
 
 export type MedidorPendiente =
-    | { uid: string; tipo: 'asignar'; idMedidor: number; numeroMedidor: number | string; escrituraFile: File; planosFile: File; estadoPago: EstadoPago }
-    | { uid: string; tipo: 'agregar'; numeroMedidor: number; escrituraFile: File; planosFile: File; estadoPago: EstadoPago };
+    | { uid: string; tipo: 'asignar'; idMedidor: number; numeroMedidor: number | string; escrituraFile: File | null; planosFile: File | null; estadoPago: EstadoPago }
+    | { uid: string; tipo: 'agregar'; numeroMedidor: number; escrituraFile: File | null; planosFile: File | null; estadoPago: EstadoPago };
 
 interface MedidorSelectorModalProps {
     isOpen: boolean;
@@ -67,8 +67,6 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
             }
         }
 
-        if (!escrituraFile) newErrors.escritura = 'La certificación literal del terreno es requerida';
-        if (!planosFile) newErrors.planos = 'Los planos del terreno son requeridos';
         if (!estadoPago) newErrors.estadoPago = 'Debe seleccionar el estado de pago';
 
         if (Object.keys(newErrors).length > 0) {
@@ -82,8 +80,8 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                 tipo: 'asignar',
                 idMedidor: medidorSeleccionado.Id_Medidor,
                 numeroMedidor: medidorSeleccionado.Numero_Medidor,
-                escrituraFile: escrituraFile!,
-                planosFile: planosFile!,
+                escrituraFile,
+                planosFile,
                 estadoPago: estadoPago as EstadoPago,
             });
         } else if (modo === 'agregar') {
@@ -91,8 +89,8 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                 uid: crypto.randomUUID(),
                 tipo: 'agregar',
                 numeroMedidor: parseInt(numeroNuevo),
-                escrituraFile: escrituraFile!,
-                planosFile: planosFile!,
+                escrituraFile,
+                planosFile,
                 estadoPago: estadoPago as EstadoPago,
             });
         }
@@ -106,7 +104,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
     ) => (
         <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-                {label} <span className="text-red-500">*</span>
+                {label}
             </label>
             <div className="relative">
                 <input
@@ -301,7 +299,7 @@ const MedidorSelectorModal: React.FC<MedidorSelectorModalProps> = ({ isOpen, mod
                     <div className="space-y-4">
                         <div className="flex items-center gap-2">
                             <FileText className="w-4 h-4 text-blue-600" />
-                            <h3 className="text-sm font-semibold text-gray-700">Documentos del Terreno</h3>
+                            <h3 className="text-sm font-semibold text-gray-700">Documentos del Terreno <span className="text-gray-400 text-xs font-normal">(opcional)</span></h3>
                         </div>
                         {renderFileInput('Certificación Literal', escrituraFile, setEscrituraFile, 'escritura')}
                         {renderFileInput('Planos del Terreno', planosFile, setPlanosFile, 'planos')}

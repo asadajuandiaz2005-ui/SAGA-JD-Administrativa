@@ -80,7 +80,7 @@ const AsignarAfiliadoMedidorModal = ({
   }, [afiliados, searchTerm]);
 
   const handleConfirmar = async () => {
-    if (!selectedAfiliado || !escrituraFile || !planosFile || !estadoPago) return;
+    if (!selectedAfiliado || !estadoPago) return;
     setGuardando(true);
     setErrorMsg(null);
     try {
@@ -235,7 +235,7 @@ const AsignarAfiliadoMedidorModal = ({
           {/* Archivos requeridos — aparecen al seleccionar afiliado */}
           {selectedAfiliado && (
             <div className="space-y-3">
-              <p className="text-sm font-medium text-gray-700">Documentos del Terreno <span className="text-red-500">*</span></p>
+              <p className="text-sm font-medium text-gray-700">Documentos del Terreno <span className="text-gray-400 text-xs font-normal">(opcional)</span></p>
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Estado de Pago <span className="text-red-500">*</span></label>
