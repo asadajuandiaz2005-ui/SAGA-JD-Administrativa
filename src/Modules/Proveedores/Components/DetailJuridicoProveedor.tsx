@@ -4,6 +4,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { formatCedulaJuridica, formatPhoneNumberDisplay } from '../Schema/SchemaProveedorJuridico';
 import type { ProveedorJuridico } from '../Models/TablaProveedo/tablaJuridicoProveedor';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 interface ProveedorJuridicoDetailModalProps {
   proveedor: ProveedorJuridico | null;
@@ -200,6 +201,12 @@ const ProveedorJuridicoDetailModal: React.FC<ProveedorJuridicoDetailModalProps> 
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+          <DescargarRegistroPdfButton
+            endpoint="/Proveedores/pdf"
+            id={proveedor.Id_Proveedor}
+            filenamePrefix="Proveedor_Juridico"
+            extraPayload={{ tipo: 2 }}
+          />
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

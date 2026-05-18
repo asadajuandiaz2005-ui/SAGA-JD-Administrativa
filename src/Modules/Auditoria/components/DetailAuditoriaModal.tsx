@@ -1,5 +1,6 @@
 import { LuX, LuFileText, LuUser, LuCalendar, LuActivity, LuDatabase } from 'react-icons/lu';
 import type { DetailAuditoriaModalProps } from '../types/AuditoriaTypes';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 const DetailAuditoriaModal = ({
   auditoria,
@@ -195,6 +196,13 @@ const DetailAuditoriaModal = ({
 
         {/* Footer */}
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+          {auditoria?.Id_Auditoria && (
+            <DescargarRegistroPdfButton
+              endpoint="/auditoria/pdf"
+              id={auditoria.Id_Auditoria}
+              filenamePrefix="Auditoria"
+            />
+          )}
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

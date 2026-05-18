@@ -157,7 +157,7 @@ export default function ProveedoresTable() {
         },
     ];
 
-    const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[] }) => {
+    const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[]; fechaInicio?: string; fechaFin?: string }) => {
         const tipoSel = f.grupos.tipo?.[0];
         const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
 
@@ -169,6 +169,8 @@ export default function ProveedoresTable() {
                     estados: estadosSel.length ? estadosSel : undefined,
                     columnas: f.columnas.length ? f.columnas : undefined,
                     tipo: typeof tipoSel === 'number' ? tipoSel : undefined,
+                    fechaInicio: f.fechaInicio,
+                    fechaFin: f.fechaFin,
                 },
             },
             {
@@ -424,8 +426,9 @@ export default function ProveedoresTable() {
                 isOpen={isDownloadOpen}
                 onClose={() => setIsDownloadOpen(false)}
                 titulo="Descargar Proveedores"
-                descripcion="Filtra por tipo, estado y columnas. Genera reporte PDF descargable."
+                descripcion="Filtra por tipo, estado, fechas y columnas. Genera reporte PDF descargable."
                 grupos={gruposFiltrosPdf}
+                rangoFecha={{ ayuda: 'Filtra por fecha de creación del proveedor.' }}
                 columnas={columnasOpcionesPdf}
                 isLoading={isDownloadingPdf}
                 onConfirm={handleConfirmDownload}

@@ -52,6 +52,7 @@ const Usuarios = () => {
 
   const hasViewPermission = canView('usuarios');
   const hasEditPermission = canEdit('usuarios');
+  const isAdmin = currentUser?.Rol?.Nombre_Rol === 'Administrador';
 
   const pageSizeOptions = [5, 10, 20, 50];
   const [pagination, setPagination] = useState({
@@ -213,7 +214,7 @@ const Usuarios = () => {
                   Editar
                 </button>
               )}
-              {hasEditPermission && (
+              {hasEditPermission && isAdmin && (
                 <>
                   {userIsActive ? (
                     <AlertDialog>
@@ -292,7 +293,7 @@ const Usuarios = () => {
         },
       }),
     ],
-    [deactivateUserMutation.isPending, activateUserMutation.isPending, hasEditPermission, currentUser?.Id_Usuario]
+    [deactivateUserMutation.isPending, activateUserMutation.isPending, hasEditPermission, isAdmin, currentUser?.Id_Usuario]
   );
 
   const table = useReactTable({

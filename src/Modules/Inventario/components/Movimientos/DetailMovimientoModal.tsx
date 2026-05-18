@@ -2,6 +2,7 @@ import React from 'react';
 import type { MovimientoMaterial } from '../../models/MovimientoMaterial';
 import { LuX, LuArrowUpDown, LuPackage, LuUser } from 'react-icons/lu';
 import { formatDate } from '../../helper/DateFormater';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 interface DetailMovimientoModalProps {
   movimiento: MovimientoMaterial;
@@ -173,6 +174,11 @@ const DetailMovimientoModal: React.FC<DetailMovimientoModalProps> = ({
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+          <DescargarRegistroPdfButton
+            endpoint="/Inventario/movimientos/pdf"
+            id={movimiento.Id_Ingreso_Egreso}
+            filenamePrefix="Movimiento"
+          />
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

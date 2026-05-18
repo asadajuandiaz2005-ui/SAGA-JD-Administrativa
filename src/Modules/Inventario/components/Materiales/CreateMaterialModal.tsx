@@ -15,11 +15,14 @@ import {
   PRECIO_MIN 
 } from '../../types/MaterialTypes';
 import { useProveedoresFisicos } from '@/Modules/Proveedores/Hook/hookFisicoProveedor';
+import { useUserPermissions } from '@/Modules/Auth/Hooks/PermissionHook';
 import { useState } from 'react';
 
 const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClose }) => {
 
   const createMaterialMutation = useCreateMaterial();
+  const { canEdit } = useUserPermissions();
+  const canCreateProveedor = canEdit('proveedores');
   const { data: categories = [] } = useGetCategoriasActivas();
   const { data: unidadesMedicion = [] } = useUnidadesMedicionActivas();
   const { proveedoresFisicos = [] } = useProveedoresFisicos();
@@ -322,14 +325,16 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
               <div>
                 <label htmlFor="proveedor" className="block text-sm flex justify-between font-medium text-gray-700 mb-1">
                   <span>Proveedor <span className="text-red-500">*</span></span>
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateProveedorModalOpen(true)}
-                    className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
-                  >
-                    <LuPlus className="size-3" />
-                    Nuevo
-                  </button>
+                  {canCreateProveedor && (
+                    <button
+                      type="button"
+                      onClick={() => setIsCreateProveedorModalOpen(true)}
+                      className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                    >
+                      <LuPlus className="size-3" />
+                      Nuevo
+                    </button>
+                  )}
                 </label>
                 <select
                   id="proveedor"
@@ -421,7 +426,7 @@ const CreateMaterialModal: React.FC<CreateMaterialModalProps> = ({ isOpen, onClo
         isOpen={isCreateUnidadMedicionModalOpen}
         onClose={() => setIsCreateUnidadMedicionModalOpen(false)}
       />
-      {isCreateProveedorModalOpen && (
+      {isCreateProveedorModalOpen && canCreateProveedor && (
         <CreateModalProveedor
           onClose={() => setIsCreateProveedorModalOpen(false)}
           setShowCreateModal={setIsCreateProveedorModalOpen}

@@ -157,32 +157,32 @@ export default function DetailFacturaModal({ factura, onClose }: DetailFacturaMo
                   <h3 className="text-base font-semibold text-gray-900">Desglose</h3>
                 </div>
               </div>
-              <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                <div className="flex justify-between border-b border-gray-100 py-2">
+              <div className="p-5 flex flex-col gap-1 text-sm">
+                <div className="flex justify-between border-b border-gray-100 py-2.5">
                   <span className="text-gray-600">Cargo fijo</span>
                   <span className="font-medium text-gray-900">{factura.Cargo_Fijo}</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 py-2">
+                <div className="flex justify-between border-b border-gray-100 py-2.5">
                   <span className="text-gray-600">Cargo consumo</span>
                   <span className="font-medium text-gray-900">{factura.Cargo_Consumo}</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 py-2">
+                <div className="flex justify-between border-b border-gray-100 py-2.5">
                   <span className="text-gray-600">Recurso hídrico</span>
                   <span className="font-medium text-gray-900">{factura.Cargo_Recurso_Hidrico}</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 py-2">
+                <div className="flex justify-between border-b border-gray-100 py-2.5">
                   <span className="text-gray-600">Hidrantes</span>
                   <span className="font-medium text-gray-900">{factura.Otros_Cargos}</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 py-2">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium text-gray-900">{factura.Subtotal}</span>
+                <div className="flex justify-between border-b-2 border-gray-200 py-2.5">
+                  <span className="text-gray-700 font-medium">Subtotal</span>
+                  <span className="font-semibold text-gray-900">{factura.Subtotal}</span>
                 </div>
-                <div className="flex justify-between border-b border-gray-100 py-2">
+                <div className="flex justify-between border-b border-gray-100 py-2.5">
                   <span className="text-gray-600">IVA (13%)</span>
                   <span className="font-medium text-gray-900">{factura.Impuestos}</span>
                 </div>
-                <div className="md:col-span-2 flex justify-between bg-blue-600 text-white p-3 rounded-lg mt-2">
+                <div className="flex justify-between bg-blue-600 text-white px-4 py-3 rounded-lg mt-3">
                   <span className="font-semibold">Total a pagar</span>
                   <span className="text-lg font-bold">{factura.Total}</span>
                 </div>

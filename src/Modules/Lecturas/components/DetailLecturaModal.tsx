@@ -1,5 +1,6 @@
 import { Info, RefreshCcw, User, X, Gauge } from "lucide-react";
 import type { Lectura } from "../model/Lectura";
+import DescargarRegistroPdfButton from "@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton";
 
 interface DetailLecturaModalProps {
   lectura: Lectura;
@@ -192,6 +193,11 @@ export default function DetailLecturaModal({ lectura, onClose }: DetailLecturaMo
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-3 p-4 sm:p-6 border-t bg-gray-50 z-10">
+          <DescargarRegistroPdfButton
+            endpoint="/lecturas/pdf"
+            id={lectura.Id_Lectura}
+            filenamePrefix="Lectura"
+          />
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

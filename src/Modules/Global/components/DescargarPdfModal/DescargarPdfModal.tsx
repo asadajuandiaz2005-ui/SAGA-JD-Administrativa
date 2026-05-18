@@ -26,6 +26,15 @@ export interface OpcionColumna {
     obligatoria?: boolean;
 }
 
+export interface RangoFechaConfig {
+    /** Label opcional del campo "Desde". */
+    labelInicio?: string;
+    /** Label opcional del campo "Hasta". */
+    labelFin?: string;
+    /** Texto auxiliar bajo el título de la sección. */
+    ayuda?: string;
+}
+
 export interface DescargarPdfModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -35,16 +44,20 @@ export interface DescargarPdfModalProps {
     descripcion?: string;
     /** Grupos de filtros multi/single. Si undefined/empty: solo columnas + descargar. */
     grupos?: GrupoFiltro[];
+    /** Si presente, agrega sección rango de fechas (fechaInicio + fechaFin). */
+    rangoFecha?: RangoFechaConfig;
     /** Opciones de columnas seleccionables. Si undefined: sección columnas oculta. */
     columnas?: OpcionColumna[];
     isLoading?: boolean;
     /**
-     * Callback al confirmar. `grupos[key]` siempre es array (vacío si single sin selección).
-     * `columnas` keys seleccionadas.
+     * Callback al confirmar. `grupos[key]` siempre es array.
+     * `columnas` keys seleccionadas. `fechaInicio`/`fechaFin` formato `YYYY-MM-DD` o undefined.
      */
     onConfirm: (filtros: {
         grupos: Record<string, OpcionId[]>;
         columnas: string[];
+        fechaInicio?: string;
+        fechaFin?: string;
     }) => void;
 }
 
@@ -54,12 +67,16 @@ export default function DescargarPdfModal({
     titulo,
     descripcion,
     grupos,
+    rangoFecha,
     columnas,
     isLoading = false,
     onConfirm,
 }: DescargarPdfModalProps) {
     const [valores, setValores] = useState<Record<string, OpcionId[]>>({});
     const [columnasSeleccionadas, setColumnasSeleccionadas] = useState<string[]>([]);
+    const [fechaInicio, setFechaInicio] = useState<string>("");
+    const [fechaFin, setFechaFin] = useState<string>("");
+    const [errorFecha, setErrorFecha] = useState<string>("");
 
     // Reset al abrir + preseleccionar columnas (todas por default)
     useEffect(() => {
@@ -68,6 +85,9 @@ export default function DescargarPdfModal({
             (grupos ?? []).forEach(g => { initial[g.key] = []; });
             setValores(initial);
             setColumnasSeleccionadas(columnas?.map(c => c.key) ?? []);
+            setFechaInicio("");
+            setFechaFin("");
+            setErrorFecha("");
         }
     }, [isOpen, grupos, columnas]);
 
@@ -96,10 +116,21 @@ export default function DescargarPdfModal({
     };
 
     const handleConfirm = () => {
-        onConfirm({ grupos: valores, columnas: columnasSeleccionadas });
+        if (rangoFecha && fechaInicio && fechaFin && fechaInicio > fechaFin) {
+            setErrorFecha("La fecha de inicio no puede ser mayor que la fecha fin");
+            return;
+        }
+        setErrorFecha("");
+        onConfirm({
+            grupos: valores,
+            columnas: columnasSeleccionadas,
+            fechaInicio: fechaInicio || undefined,
+            fechaFin: fechaFin || undefined,
+        });
     };
 
     const hayColumnas = (columnas?.length ?? 0) > 0;
+    const hayRangoFecha = !!rangoFecha;
 
     return (
         <div className="fixed inset-0 bg-opacity-10 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -197,6 +228,50 @@ export default function DescargarPdfModal({
                             </div>
                         );
                     })}
+
+                    {hayRangoFecha && (
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Rango de fechas
+                            </label>
+                            <p className="text-xs text-gray-500 mb-2">
+                                {rangoFecha?.ayuda ?? "Filtra los registros entre las fechas seleccionadas. Deja vacío para incluir todos."}
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label htmlFor="rango-desde" className="block text-xs text-gray-600 mb-1">
+                                        {rangoFecha?.labelInicio ?? "Desde"}
+                                    </label>
+                                    <input
+                                        id="rango-desde"
+                                        type="date"
+                                        value={fechaInicio}
+                                        onChange={(e) => { setFechaInicio(e.target.value); setErrorFecha(""); }}
+                                        disabled={isLoading}
+                                        max={fechaFin || undefined}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="rango-hasta" className="block text-xs text-gray-600 mb-1">
+                                        {rangoFecha?.labelFin ?? "Hasta"}
+                                    </label>
+                                    <input
+                                        id="rango-hasta"
+                                        type="date"
+                                        value={fechaFin}
+                                        onChange={(e) => { setFechaFin(e.target.value); setErrorFecha(""); }}
+                                        disabled={isLoading}
+                                        min={fechaInicio || undefined}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                            </div>
+                            {errorFecha && (
+                                <p className="mt-2 text-xs text-red-600">{errorFecha}</p>
+                            )}
+                        </div>
+                    )}
 
                     {hayColumnas && (
                         <div>

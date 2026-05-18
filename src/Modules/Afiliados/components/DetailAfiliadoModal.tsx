@@ -14,6 +14,7 @@ import { useAfiliadosFisicos } from '../Hook/HookAfiliadoFisico';
 import { useAfiliadosJuridicos } from '../Hook/HookAfiliadoJuridico';
 import { useAlerts } from '@/Modules/Global/context/AlertContext';
 import SubirArchivosMedidorModal from '@/Modules/Inventario/components/Medidores/SubirArchivosMedidorModal';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 
 // Tipo unificado para identificar qué estamos viendo
@@ -772,6 +773,13 @@ const DetailAbonados: React.FC<DetailAbonadosProps> = ({ persona, isOpen, onClos
                         >
                             Cambiar tipo a Asociado
                         </button>
+                    )}
+                    {persona.datos?.Id_Afiliado && (
+                        <DescargarRegistroPdfButton
+                            endpoint="/afiliados/pdf"
+                            id={persona.datos.Id_Afiliado}
+                            filenamePrefix="Afiliado"
+                        />
                     )}
                     <button
                         onClick={onClose}

@@ -614,6 +614,7 @@ export default function AbonadosTable() {
                     { key: 'creacion',       label: 'Fecha creación' },
                 ] as OpcionColumna[]}
                 isLoading={isDownloadingPdf}
+                rangoFecha={{ ayuda: 'Filtra por fecha de creación del afiliado.' }}
                 onConfirm={(f) => {
                     const tipoSel = f.grupos.tipo?.[0];
                     const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
@@ -624,6 +625,8 @@ export default function AbonadosTable() {
                             tipo: typeof tipoSel === 'number' ? tipoSel : undefined,
                             estados: estadosSel.length ? estadosSel : undefined,
                             columnas: f.columnas.length ? f.columnas : undefined,
+                            fechaInicio: f.fechaInicio,
+                            fechaFin: f.fechaFin,
                         },
                     }, { onSuccess: () => setIsDownloadOpen(false) });
                 }}
