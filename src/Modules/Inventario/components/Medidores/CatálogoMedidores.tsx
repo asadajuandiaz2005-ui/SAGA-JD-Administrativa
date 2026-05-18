@@ -851,6 +851,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
           { key: 'pago',     label: 'Estado Pago' },
           { key: 'creacion', label: 'Fecha creación' },
         ] as OpcionColumna[]}
+        rangoFecha={{ ayuda: 'Filtra por fecha de creación del medidor.' }}
         isLoading={isDownloadingPdf}
         onConfirm={(f) => {
           const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
@@ -860,6 +861,8 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
             payload: {
               estados: estadosSel.length ? estadosSel : undefined,
               columnas: f.columnas.length ? f.columnas : undefined,
+              fechaInicio: f.fechaInicio,
+              fechaFin: f.fechaFin,
             },
           }, { onSuccess: () => setIsDownloadOpen(false) });
         }}

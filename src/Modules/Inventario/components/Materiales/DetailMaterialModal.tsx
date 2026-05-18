@@ -1,6 +1,7 @@
 import React from 'react';
 import { LuX, LuPackage, LuShoppingCart, LuUser } from 'react-icons/lu';
 import type { Material } from '../../models/Inventario';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 import { 
   getEstadoMaterialColorClass, 
   getProveedorNombre, 
@@ -215,6 +216,11 @@ const DetailMaterialModal: React.FC<DetailMaterialModalProps> = ({
         </div>
 
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+          <DescargarRegistroPdfButton
+            endpoint="/Inventario/materiales/pdf"
+            id={material.Id_Material}
+            filenamePrefix="Material"
+          />
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

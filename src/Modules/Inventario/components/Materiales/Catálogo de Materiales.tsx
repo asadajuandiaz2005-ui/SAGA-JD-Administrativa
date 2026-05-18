@@ -893,6 +893,7 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
           { key: 'entrada',   label: 'Fecha entrada' },
         ] as OpcionColumna[]}
         isLoading={isDownloadingPdf}
+        rangoFecha={{ ayuda: 'Filtra por fecha de entrada del material.' }}
         onConfirm={(f) => {
           const estadosSel = (f.grupos.estados ?? []).filter((v): v is number => typeof v === 'number');
           downloadPdf({
@@ -901,6 +902,8 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
             payload: {
               estados: estadosSel.length ? estadosSel : undefined,
               columnas: f.columnas.length ? f.columnas : undefined,
+              fechaInicio: f.fechaInicio,
+              fechaFin: f.fechaFin,
             },
           }, { onSuccess: () => setIsDownloadOpen(false) });
         }}

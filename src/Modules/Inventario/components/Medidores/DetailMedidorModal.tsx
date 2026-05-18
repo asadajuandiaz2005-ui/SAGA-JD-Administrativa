@@ -2,6 +2,7 @@ import { LuX, LuUser, LuFileText, LuMap } from 'react-icons/lu';
 import type { DetailMedidorModalProps } from '../../types/MedidorTypes';
 import { FaTachometerAlt, FaUsers } from 'react-icons/fa';
 import { formatCedulaJuridica } from '@/Modules/Afiliados/Helper/formatUtils';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProps) => {
   if (!isOpen) return null;
@@ -338,7 +339,12 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
         </div>
 
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-4 sm:p-6 z-10">
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
+            <DescargarRegistroPdfButton
+              endpoint="/Inventario/medidores/pdf"
+              id={medidor.Id_Medidor}
+              filenamePrefix="Medidor"
+            />
             <button
               onClick={onClose}
               className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

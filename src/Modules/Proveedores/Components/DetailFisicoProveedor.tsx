@@ -4,6 +4,7 @@ import * as Accordion from "@radix-ui/react-accordion";
 import { FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { formatPhoneNumberDisplay } from '../Schema/SchemaFisicoProveedor';
 import type { ProveedorFisico } from '../Models/TablaProveedo/tablaFisicoProveedor';
+import DescargarRegistroPdfButton from '@/Modules/Global/components/DescargarPdfModal/DescargarRegistroPdfButton';
 
 interface ProveedorDetailModalProps {
   proveedor: ProveedorFisico | null;
@@ -192,6 +193,12 @@ const ProveedorDetailModal: React.FC<ProveedorDetailModalProps> = ({ proveedor, 
 
         </div>
         <div className="sticky bottom-0 flex justify-end gap-3 p-6 border-t bg-gray-50 z-10">
+            <DescargarRegistroPdfButton
+              endpoint="/Proveedores/pdf"
+              id={proveedor.Id_Proveedor}
+              filenamePrefix="Proveedor_Fisico"
+              extraPayload={{ tipo: 1 }}
+            />
             <button
               onClick={onClose}
               className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"

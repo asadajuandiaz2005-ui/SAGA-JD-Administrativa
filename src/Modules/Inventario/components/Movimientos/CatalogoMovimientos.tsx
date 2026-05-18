@@ -651,6 +651,7 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
           { key: 'usuario',       label: 'Usuario' },
           { key: 'observaciones', label: 'Observaciones' },
         ] as OpcionColumna[]}
+        rangoFecha={{ ayuda: 'Filtra por fecha del movimiento.' }}
         isLoading={isDownloadingPdf}
         onConfirm={(f) => {
           const tiposSel = (f.grupos.tipos ?? []).filter((v): v is string => typeof v === 'string');
@@ -660,6 +661,8 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
             payload: {
               tipos: tiposSel.length ? tiposSel : undefined,
               columnas: f.columnas.length ? f.columnas : undefined,
+              fechaInicio: f.fechaInicio,
+              fechaFin: f.fechaFin,
             },
           }, { onSuccess: () => setIsDownloadOpen(false) });
         }}

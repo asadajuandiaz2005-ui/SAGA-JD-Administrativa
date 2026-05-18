@@ -76,7 +76,7 @@ const CatálogoAuditorias = () => {
     { key: 'acciones', titulo: 'Acciones', opciones: accionesOpcionesPdf },
   ];
 
-  const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[] }) => {
+  const handleConfirmDownload = (f: { grupos: Record<string, (number | string)[]>; columnas: string[]; fechaInicio?: string; fechaFin?: string }) => {
     const modulosSel = (f.grupos.modulos ?? []).filter((v): v is string => typeof v === 'string');
     const accionesSel = (f.grupos.acciones ?? []).filter((v): v is string => typeof v === 'string');
     downloadPdf({
@@ -86,6 +86,8 @@ const CatálogoAuditorias = () => {
         modulos: modulosSel.length ? modulosSel : undefined,
         acciones: accionesSel.length ? accionesSel : undefined,
         columnas: f.columnas.length ? f.columnas : undefined,
+        fechaInicio: f.fechaInicio,
+        fechaFin: f.fechaFin,
       },
     }, {
       onSuccess: () => setIsDownloadOpen(false),
@@ -505,8 +507,9 @@ const CatálogoAuditorias = () => {
         isOpen={isDownloadOpen}
         onClose={() => setIsDownloadOpen(false)}
         titulo="Descargar Auditoría"
-        descripcion="Filtra por módulo, acción y columnas. Genera reporte PDF descargable."
+        descripcion="Filtra por módulo, acción, fechas y columnas. Genera reporte PDF descargable."
         grupos={gruposFiltrosPdf}
+        rangoFecha={{ ayuda: 'Filtra por fecha de la acción auditada.' }}
         columnas={columnasOpcionesPdf}
         isLoading={isDownloadingPdf}
         onConfirm={handleConfirmDownload}
