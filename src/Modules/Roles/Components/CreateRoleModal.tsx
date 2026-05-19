@@ -225,11 +225,11 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose }) => {
                             </label>
                           </div>
 
-
+                        {hasEditPermission(mp.Modulo)&&(
                           <div className="flex flex-col items-center gap-2">
                             <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Editar</span>
                             <label
-                              className={`cursor-pointer ${!hasEditPermission(mp.Modulo) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              className={`${!hasEditPermission(mp.Modulo) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                               aria-label={`Permiso de editar para el módulo ${mp.Modulo}`}
                             >
                               <input
@@ -258,6 +258,8 @@ const CreateRoleModal: React.FC<CreateRoleModalProps> = ({ onClose }) => {
                               </div>
                             </label>
                           </div>
+                        )}
+                         
                         </div>
                       </div>
                     </div>

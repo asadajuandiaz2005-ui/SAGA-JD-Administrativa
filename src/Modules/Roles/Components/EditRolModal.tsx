@@ -244,10 +244,10 @@ export const EditRoleModal: React.FC<EditRoleModalProps> = ({ roleId, isOpen, on
                             </label>
                           </div>
 
-
+                        {hasEditPermission(mp.Modulo)&&(
                           <div className="flex flex-col items-center gap-2">
                             <span className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Editar</span>
-                            <label htmlFor={`edit-permission-${mp.Modulo}`} className={`cursor-pointer ${!hasEditPermission(mp.Modulo) ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                            <label htmlFor={`edit-permission-${mp.Modulo}`} className={`${!hasEditPermission(mp.Modulo) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
                               <span className="sr-only">Permiso de editar para {mp.Modulo}</span>
                               <input
                                 id={`edit-permission-${mp.Modulo}`}
@@ -275,6 +275,8 @@ export const EditRoleModal: React.FC<EditRoleModalProps> = ({ roleId, isOpen, on
                               </div>
                             </label>
                           </div>
+                          )}
+
                         </div>
                       </div>
                     

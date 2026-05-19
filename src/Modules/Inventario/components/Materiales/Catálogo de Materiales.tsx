@@ -884,13 +884,16 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
           } as GrupoFiltro,
         ]}
         columnas={[
-          { key: 'nombre',    label: 'Nombre',        obligatoria: true },
-          { key: 'cantidad',  label: 'Cantidad' },
-          { key: 'unidad',    label: 'Unidad' },
-          { key: 'precio',    label: 'Precio Unit.' },
-          { key: 'estado',    label: 'Estado' },
-          { key: 'proveedor', label: 'Proveedor' },
-          { key: 'entrada',   label: 'Fecha entrada' },
+          { key: 'nombre',      label: 'Material',          obligatoria: true },
+          { key: 'descripcion', label: 'Descripción' },
+          { key: 'cantidad',    label: 'Cantidad' },
+          { key: 'unidad',      label: 'U. Medida' },
+          { key: 'precio',      label: 'Precio Unit.' },
+          { key: 'estado',      label: 'Estado' },
+          { key: 'categorias',  label: 'Categorías' },
+          { key: 'numero',      label: 'Número estantería' },
+          { key: 'proveedor',   label: 'Proveedor' },
+          { key: 'entrada',     label: 'Fecha entrada' },
         ] as OpcionColumna[]}
         isLoading={isDownloadingPdf}
         rangoFecha={{ ayuda: 'Filtra por fecha de entrada del material.' }}

@@ -606,11 +606,12 @@ export default function AbonadosTable() {
                 ] as GrupoFiltro[]}
                 columnas={[
                     { key: 'nombre',         label: 'Nombre / Razón Social', obligatoria: true },
-                    { key: 'tipo',           label: 'Tipo' },
-                    { key: 'identificacion', label: 'Identificación' },
+                    { key: 'tipo',           label: 'Tipo Persona' },
+                    { key: 'identificacion', label: 'Cédula / Documento' },
+                    { key: 'estado',         label: 'Estado' },
+                    { key: 'tipoAfiliado',   label: 'Tipo Afiliado' },
                     { key: 'correo',         label: 'Correo' },
                     { key: 'telefono',       label: 'Teléfono' },
-                    { key: 'estado',         label: 'Estado' },
                     { key: 'creacion',       label: 'Fecha creación' },
                 ] as OpcionColumna[]}
                 isLoading={isDownloadingPdf}

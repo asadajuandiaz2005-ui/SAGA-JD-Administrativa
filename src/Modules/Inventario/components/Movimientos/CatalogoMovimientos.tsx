@@ -649,7 +649,6 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
           { key: 'anterior',      label: 'Cant. Anterior' },
           { key: 'nueva',         label: 'Cant. Nueva' },
           { key: 'usuario',       label: 'Usuario' },
-          { key: 'observaciones', label: 'Observaciones' },
         ] as OpcionColumna[]}
         rangoFecha={{ ayuda: 'Filtra por fecha del movimiento.' }}
         isLoading={isDownloadingPdf}

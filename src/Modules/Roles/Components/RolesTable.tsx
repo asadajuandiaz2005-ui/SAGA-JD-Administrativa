@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/Modules/Global/components/Sidebar/ui/alert-dialog';
+import { useAuth } from '@/Modules/Auth/Context/AuthContext';
 
 
 const Roles = () => {
@@ -42,6 +43,10 @@ const Roles = () => {
   const selectedRoleRef = useRef<Role | null>(null);
   const deactivateRoleMutation = useDeactivateRole();
   const activateRoleMutation = useActivateRole();
+  const { user: currentUser } = useAuth();
+  const hasEditPermission = canEdit('usuarios');
+  const isAdmin = currentUser?.Rol?.Nombre_Rol === 'Administrador';
+
   const pageSizeOptions = [5, 10, 20, 50];
   const [pagination, setPagination] = useState({
     pageSize: 5,
@@ -149,16 +154,17 @@ const Roles = () => {
               >
                 Ver
               </button>
-              {canEdit('usuarios') && (
+              {hasEditPermission &&  (
                 <button
-                  className="px-2 py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap"
+                  className="px-2 py-1 bg-blue-600 text-white text-[9px] sm:text-xs rounded hover:bg-blue-700 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed|"
                   onClick={() => handleEdit(info.row.original)}
-                  title="Editar"
+                  disabled={info.row.original.Nombre_Rol.toLowerCase() === 'administrador'}
+                  title={info.row.original.Nombre_Rol.toLowerCase() === 'administrador' ? 'No se puede editar el rol Administrador' : 'Editar rol'}
                 >
                   Editar
                 </button>
               )}
-              {canEdit('usuarios') && (
+              {hasEditPermission && isAdmin && (
                 <>
                   {roleIsActive ? (
                     <AlertDialog>
