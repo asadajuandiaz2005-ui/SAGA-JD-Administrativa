@@ -5,8 +5,10 @@ import {
   createImagen,
   updateImagen,
   deleteImagen,
+  toggleVisibilidadImagen,
 } from "../Services/ServiceEdiImagen";
 import type { Imagen } from "../Models/ModelsEdiImagen";
+import { useAlerts } from "@/Modules/Global/context/AlertContext";
 
 
 
@@ -71,6 +73,26 @@ export function useUpdateImagen() {
     },
     onError: (error) => {
       console.error("Error al actualizar la imagen:", error);
+    },
+  });
+}
+
+//
+// Alternar visibilidad de una imagen
+//
+export function useToggleVisibilidadImagen() {
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useAlerts();
+
+  return useMutation({
+    mutationFn: (id: number) => toggleVisibilidadImagen(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["imagenes"] });
+      showSuccess("Visibilidad actualizada", "La visibilidad de la imagen se ha actualizado exitosamente");
+    },
+    onError: (error) => {
+      console.error("Error al actualizar la visibilidad de la imagen:", error);
+      showError("Error", "No se pudo actualizar la visibilidad de la imagen");
     },
   });
 }

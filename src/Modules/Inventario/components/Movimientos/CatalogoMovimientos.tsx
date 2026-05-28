@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import DescargarPdfModal, { type OpcionColumna, type GrupoFiltro } from '@/Modules/Global/components/DescargarPdfModal/DescargarPdfModal';
 import { useDownloadModulePdf } from '@/Modules/Global/hooks/useDownloadModulePdf';
 import { LuFileDown } from 'react-icons/lu';
@@ -351,8 +351,10 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
     }),
   ];
 
+  const movimientosOrdenados = useMemo(() => [...(filteredMovimientos ?? [])].sort((a, b) => b.Id_Ingreso_Egreso - a.Id_Ingreso_Egreso), [filteredMovimientos]);
+
   const table = useReactTable({
-    data: [...(filteredMovimientos ?? [])].sort((a, b) => b.Id_Ingreso_Egreso - a.Id_Ingreso_Egreso),
+    data: movimientosOrdenados,
     columns,
     state: {
       sorting,

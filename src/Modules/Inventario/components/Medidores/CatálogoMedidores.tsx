@@ -506,8 +506,10 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
     [updateEstadoMutation.isPending, updateEstadoPagoMutation.isPending]
   );
 
+  const medidoresOrdenados = useMemo(() => [...(medidoresConBusqueda ?? [])].sort((a, b) => b.Id_Medidor - a.Id_Medidor), [medidoresConBusqueda]);
+
   const table = useReactTable({
-    data: [...(medidoresConBusqueda ?? [])].sort((a, b) => b.Id_Medidor - a.Id_Medidor),
+    data: medidoresOrdenados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

@@ -322,8 +322,10 @@ export default function ProyectoTable() {
         }),
     ], [updateEstadoMutation.isPending]);
 
+    const proyectosOrdenados = useMemo(() => [...(proyectosFiltrados ?? [])].sort((a, b) => b.Id_Proyecto - a.Id_Proyecto), [proyectosFiltrados]);
+
     const table = useReactTable({
-        data: [...(proyectosFiltrados ?? [])].sort((a, b) => b.Id_Proyecto - a.Id_Proyecto),
+        data: proyectosOrdenados,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

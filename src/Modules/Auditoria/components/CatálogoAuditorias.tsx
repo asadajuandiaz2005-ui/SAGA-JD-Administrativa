@@ -248,8 +248,10 @@ const CatálogoAuditorias = () => {
     }),
   ];
 
+  const auditoriasOrdenadas = useMemo(() => [...(filteredData ?? [])].sort((a, b) => b.Id_Auditoria - a.Id_Auditoria), [filteredData]);
+
   const table = useReactTable({
-    data: [...(filteredData ?? [])].sort((a, b) => b.Id_Auditoria - a.Id_Auditoria),
+    data: auditoriasOrdenadas,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

@@ -197,8 +197,10 @@ export default function ActasTable() {
     };
 
     // Crear la tabla con TanStack Table
+    const actasOrdenadas = useMemo(() => [...(actas ?? [])].sort((a, b) => b.Id_Acta - a.Id_Acta), [actas]);
+
     const table = useReactTable({
-        data: [...(actas ?? [])].sort((a, b) => b.Id_Acta - a.Id_Acta),
+        data: actasOrdenadas,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

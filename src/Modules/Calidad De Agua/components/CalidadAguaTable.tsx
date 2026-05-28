@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGetCalidadAgua, useToggleVisibilidadCalidadAgua } from "../Hook/HookCalidadAgua";
 import CalidadAguaModal from "./CalidadAguaModal";
 import CalidadAguaEdit from "./CalidadAguaEdit";
@@ -207,8 +207,10 @@ export default function CalidadAguaTable() {
     }),
   ];
 
+  const archivosOrdenados = useMemo(() => [...(archivos ?? [])].sort((a, b) => b.Id_Calidad_Agua - a.Id_Calidad_Agua), [archivos]);
+
   const table = useReactTable({
-    data: [...(archivos ?? [])].sort((a, b) => b.Id_Calidad_Agua - a.Id_Calidad_Agua),
+    data: archivosOrdenados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

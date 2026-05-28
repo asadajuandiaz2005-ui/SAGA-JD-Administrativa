@@ -33,6 +33,12 @@ export const updateImagen = async (id: number, formData: FormData): Promise<Imag
   return res.data;
 };
 
+// Alternar visibilidad de una imagen
+export const toggleVisibilidadImagen = async (id: number): Promise<Imagen> => {
+  const res = await apiAuth.patch(`/imagenes/${id}/visibilidad`);
+  return res.data;
+};
+
 // Eliminar una imagen
 export const deleteImagen = async (id: number): Promise<void> => {
   try {

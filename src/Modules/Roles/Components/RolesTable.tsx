@@ -249,8 +249,10 @@ const Roles = () => {
     [deactivateRoleMutation.isPending, activateRoleMutation.isPending, canEdit]
   );
 
+  const rolesOrdenados = useMemo(() => [...(roles ?? [])].sort((a, b) => b.Id_Rol - a.Id_Rol), [roles]);
+
   const table = useReactTable({
-    data: [...(roles ?? [])].sort((a, b) => b.Id_Rol - a.Id_Rol),
+    data: rolesOrdenados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

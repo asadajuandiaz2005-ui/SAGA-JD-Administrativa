@@ -222,8 +222,10 @@ const UnidadesMedicionManagement: React.FC<UnidadesMedicionManagementProps> = ()
     }),
   ], [updateEstadoMutation.isPending]);
 
+  const unidadesOrdenadas = useMemo(() => [...(unidades ?? [])].sort((a, b) => b.Id_Unidad_Medicion - a.Id_Unidad_Medicion), [unidades]);
+
   const table = useReactTable({
-    data: [...(unidades ?? [])].sort((a, b) => b.Id_Unidad_Medicion - a.Id_Unidad_Medicion),
+    data: unidadesOrdenadas,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

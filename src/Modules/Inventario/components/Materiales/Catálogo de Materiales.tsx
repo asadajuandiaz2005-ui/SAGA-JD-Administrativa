@@ -538,8 +538,10 @@ const CatalogoMateriales: React.FC<CatalogoMaterialesProps> = () => {
       }),
     ], [updateEstadoMutation.isPending]);
 
+  const materialesOrdenados = useMemo(() => [...(filteredMaterials ?? [])].sort((a, b) => b.Id_Material - a.Id_Material), [filteredMaterials]);
+
   const table = useReactTable({
-    data: [...(filteredMaterials ?? [])].sort((a, b) => b.Id_Material - a.Id_Material),
+    data: materialesOrdenados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

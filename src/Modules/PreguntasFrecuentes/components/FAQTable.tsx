@@ -250,8 +250,10 @@ export default function FAQTable() {
     };
 
     // Crear la tabla con TanStack Table
+    const faqsOrdenadas = useMemo(() => [...(faqs ?? [])].sort((a, b) => b.Id_FAQ - a.Id_FAQ), [faqs]);
+
     const table = useReactTable({
-        data: [...(faqs ?? [])].sort((a, b) => b.Id_FAQ - a.Id_FAQ),
+        data: faqsOrdenadas,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

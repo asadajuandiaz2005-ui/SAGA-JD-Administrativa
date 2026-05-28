@@ -26,8 +26,9 @@ import {
     AlertDialogHeader,
     AlertDialogFooter
 } from "@/Modules/Global/components/Sidebar/ui/alert-dialog";
+import { Eye, EyeOff } from "lucide-react";
 import { useAlerts } from "@/Modules/Global/context/AlertContext";
-import { useDeleteImagen, useGetImagenes } from "../Hook/hookEdiImagen";
+import { useDeleteImagen, useGetImagenes, useToggleVisibilidadImagen } from "../Hook/hookEdiImagen";
 import type { Imagen } from "../Models/ModelsEdiImagen";
 import ImagenForm from "./CreateImagenModal";
 import ImagenModal from "./DetailImagenModal";
@@ -38,6 +39,7 @@ import { useUserPermissions } from '@/Modules/Auth/Hooks/PermissionHook';
 export default function ImagenesTable() {
     const { data: imagenes, isLoading, isError, refetch } = useGetImagenes();
     const deleteImagenMutation = useDeleteImagen();
+    const { mutate: toggleVisibilidad } = useToggleVisibilidadImagen();
     const { showSuccess, showError } = useAlerts();
     const { canCreate, canEdit, canView } = useUserPermissions();
 
@@ -106,6 +108,60 @@ export default function ImagenesTable() {
                 </div>
             ),
         }),
+        columnHelper.accessor('Visible', {
+            header: () => (
+                <>
+                    <span className="hidden sm:inline">Visibilidad</span>
+                    <span className="sm:hidden text-[8px]">Visibilidad</span>
+                </>
+            ),
+            cell: info => {
+                const visible = info.getValue();
+                return hasEditPermission ? (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <button className="flex justify-center w-full">
+                                <span className={`inline-flex items-center gap-1 px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium ${visible
+                                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                        : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                    } transition-colors`}>
+                                    {visible ? <Eye className="size-2.5 sm:size-3" /> : <EyeOff className="size-2.5 sm:size-3" />}
+                                    <span className=" sm:inline">{visible ? 'Visible' : 'Oculto'}</span>
+                                </span>
+                            </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    <span>¿Cambiar visibilidad?</span>
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    <span>¿Estás seguro de que deseas {visible ? 'ocultar' : 'mostrar'} la imagen "{info.row.original.Nombre_Imagen.length > 25 ? info.row.original.Nombre_Imagen.substring(0, 25) + '...' : info.row.original.Nombre_Imagen}"?</span>
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogAction
+                                    onClick={() => toggleVisibilidad(info.row.original.Id_Imagen)}
+                                >
+                                    <span>Confirmar</span>
+                                </AlertDialogAction>
+                                <AlertDialogCancel>
+                                    <span>Cancelar</span>
+                                </AlertDialogCancel>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                ) : (
+                    <span className={`inline-flex items-center gap-1 px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-medium ${visible
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}>
+                        {visible ? <Eye className="size-2.5 sm:size-3" /> : <EyeOff className="size-2.5 sm:size-3" />}
+                        <span className=" sm:inline">{visible ? 'Visible' : 'Oculto'}</span>
+                    </span>
+                );
+            },
+        }),
         columnHelper.display({
             id: 'acciones',
             header: 'Acciones',
@@ -166,7 +222,7 @@ export default function ImagenesTable() {
                 </div>
             ),
         }),
-    ], [deleteImagenMutation.isPending]);
+    ], [deleteImagenMutation.isPending, hasEditPermission, hasViewPermission, hasDeletePermission, toggleVisibilidad]);
 
     // Funciones para manejar las acciones
     const handleViewDetail = (imagen: Imagen) => {
@@ -191,9 +247,15 @@ export default function ImagenesTable() {
         });
     };
 
+    // Datos ordenados (nuevos primero) con referencia estable para evitar remmontar filas
+    const imagenesOrdenadas = useMemo(
+        () => [...(imagenes ?? [])].sort((a, b) => b.Id_Imagen - a.Id_Imagen),
+        [imagenes]
+    );
+
     // Crear la tabla con TanStack Table
     const table = useReactTable({
-        data: [...(imagenes ?? [])].sort((a, b) => b.Id_Imagen - a.Id_Imagen),
+        data: imagenesOrdenadas,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -299,7 +361,7 @@ export default function ImagenesTable() {
                         <tbody className="bg-white divide-y divide-sky-50">
                             {table.getRowModel().rows.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-2 sm:px-4 py-8 text-center text-slate-500">
+                                    <td colSpan={5} className="px-2 sm:px-4 py-8 text-center text-slate-500">
                                         {globalFilter ? 'No se encontraron imágenes que coincidan con la búsqueda' : 'No hay imágenes registradas'}
                                     </td>
                                 </tr>

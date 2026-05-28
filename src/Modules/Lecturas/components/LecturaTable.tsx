@@ -418,8 +418,10 @@ export default function LecturaTable() {
   ];
 
   // Configurar la tabla
+  const lecturasOrdenadas = useMemo(() => [...(lecturas ?? [])].sort((a, b) => b.Id_Lectura - a.Id_Lectura), [lecturas]);
+
   const table = useReactTable({
-    data: [...(lecturas ?? [])].sort((a, b) => b.Id_Lectura - a.Id_Lectura),
+    data: lecturasOrdenadas,
     columns,
     state: {
       globalFilter,

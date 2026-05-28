@@ -218,8 +218,10 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
   ], [updateEstadoMutation.isPending]);
 
  
+  const categoriasOrdenadas = useMemo(() => [...(categorias ?? [])].sort((a, b) => b.Id_Categoria - a.Id_Categoria), [categorias]);
+
   const table = useReactTable({
-    data: [...(categorias ?? [])].sort((a, b) => b.Id_Categoria - a.Id_Categoria),
+    data: categoriasOrdenadas,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

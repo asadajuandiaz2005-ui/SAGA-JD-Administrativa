@@ -297,8 +297,10 @@ const Usuarios = () => {
     [deactivateUserMutation.isPending, activateUserMutation.isPending, hasEditPermission, isAdmin, currentUser?.Id_Usuario]
   );
 
+  const usuariosOrdenados = useMemo(() => [...(filteredUsers ?? [])].sort((a, b) => b.Id_Usuario - a.Id_Usuario), [filteredUsers]);
+
   const table = useReactTable({
-    data: [...(filteredUsers ?? [])].sort((a, b) => b.Id_Usuario - a.Id_Usuario),
+    data: usuariosOrdenados,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

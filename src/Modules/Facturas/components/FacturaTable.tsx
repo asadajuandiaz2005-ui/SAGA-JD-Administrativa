@@ -269,8 +269,10 @@ export default function FacturaTable() {
     }),
   ];
 
+  const facturasOrdenadas = useMemo(() => [...(facturasFiltradas ?? [])].sort((a, b) => b.Id_Factura - a.Id_Factura), [facturasFiltradas]);
+
   const table = useReactTable({
-    data: [...(facturasFiltradas ?? [])].sort((a, b) => b.Id_Factura - a.Id_Factura),
+    data: facturasOrdenadas,
     columns,
     state: { globalFilter, pagination },
     onGlobalFilterChange: setGlobalFilter,
