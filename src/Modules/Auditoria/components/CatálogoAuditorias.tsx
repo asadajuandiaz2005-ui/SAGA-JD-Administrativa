@@ -249,7 +249,7 @@ const CatálogoAuditorias = () => {
   ];
 
   const table = useReactTable({
-    data: filteredData,
+    data: [...(filteredData ?? [])].sort((a, b) => b.Id_Auditoria - a.Id_Auditoria),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

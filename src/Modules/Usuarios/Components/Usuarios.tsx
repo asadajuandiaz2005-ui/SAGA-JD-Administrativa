@@ -298,7 +298,7 @@ const Usuarios = () => {
   );
 
   const table = useReactTable({
-    data: filteredUsers, 
+    data: [...(filteredUsers ?? [])].sort((a, b) => b.Id_Usuario - a.Id_Usuario),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

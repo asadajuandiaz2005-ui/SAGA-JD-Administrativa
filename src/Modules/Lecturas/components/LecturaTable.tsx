@@ -419,7 +419,7 @@ export default function LecturaTable() {
 
   // Configurar la tabla
   const table = useReactTable({
-    data: lecturas,
+    data: [...(lecturas ?? [])].sort((a, b) => b.Id_Lectura - a.Id_Lectura),
     columns,
     state: {
       globalFilter,

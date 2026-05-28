@@ -507,7 +507,7 @@ const CatalogoMedidores: React.FC<CatalogoMedidoresProps> = () => {
   );
 
   const table = useReactTable({
-    data: medidoresConBusqueda,
+    data: [...(medidoresConBusqueda ?? [])].sort((a, b) => b.Id_Medidor - a.Id_Medidor),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

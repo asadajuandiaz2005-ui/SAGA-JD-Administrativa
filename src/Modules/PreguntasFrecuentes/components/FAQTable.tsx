@@ -251,7 +251,7 @@ export default function FAQTable() {
 
     // Crear la tabla con TanStack Table
     const table = useReactTable({
-        data: faqs || [],
+        data: [...(faqs ?? [])].sort((a, b) => b.Id_FAQ - a.Id_FAQ),
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

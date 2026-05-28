@@ -193,7 +193,7 @@ export default function ImagenesTable() {
 
     // Crear la tabla con TanStack Table
     const table = useReactTable({
-        data: imagenes || [],
+        data: [...(imagenes ?? [])].sort((a, b) => b.Id_Imagen - a.Id_Imagen),
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

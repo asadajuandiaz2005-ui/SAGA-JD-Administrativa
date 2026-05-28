@@ -323,7 +323,7 @@ export default function ProyectoTable() {
     ], [updateEstadoMutation.isPending]);
 
     const table = useReactTable({
-        data: proyectosFiltrados,
+        data: [...(proyectosFiltrados ?? [])].sort((a, b) => b.Id_Proyecto - a.Id_Proyecto),
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

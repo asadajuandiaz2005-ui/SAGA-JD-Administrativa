@@ -273,7 +273,11 @@ export default function SolicitudesTable() {
         const resultado = [
             ...solicitudesFisicasUnificadas,
             ...solicitudesJuridicasUnificadas
-        ].sort((a, b) => b.Id - a.Id);
+        ].sort((a, b) => {
+            const fechaA = a.Fecha_Creacion ? new Date(a.Fecha_Creacion).getTime() : 0;
+            const fechaB = b.Fecha_Creacion ? new Date(b.Fecha_Creacion).getTime() : 0;
+            return (fechaB - fechaA) || (b.Id - a.Id);
+        });
 
         return resultado;
     }, [solicitudesFisicas, solicitudesJuridicas/*, solicitudesEditadas*/]);

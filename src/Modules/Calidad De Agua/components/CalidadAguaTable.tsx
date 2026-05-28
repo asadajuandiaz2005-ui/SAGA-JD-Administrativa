@@ -208,7 +208,7 @@ export default function CalidadAguaTable() {
   ];
 
   const table = useReactTable({
-    data: archivos || [],
+    data: [...(archivos ?? [])].sort((a, b) => b.Id_Calidad_Agua - a.Id_Calidad_Agua),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

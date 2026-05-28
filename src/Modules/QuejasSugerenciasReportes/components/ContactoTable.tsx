@@ -176,7 +176,7 @@ const ContactoTable = () => {
       reportesArchivados?.forEach((reporte: Reporte) => data.push(mapReporte(reporte)));
     }
 
-    return data.sort((a, b) => (b._timestamp || 0) - (a._timestamp || 0));
+    return data.sort((a, b) => ((b._timestamp || 0) - (a._timestamp || 0)) || (b.id - a.id));
   }, [quejas, sugerencias, reportes, quejasArchivadas, sugerenciasArchivadas, reportesArchivados, shouldIncludeArchived]);
 
   const handleApplyFilters = (filters: ContactoFilterOptions) => {

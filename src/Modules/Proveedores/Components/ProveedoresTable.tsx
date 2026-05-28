@@ -105,7 +105,7 @@ export default function ProveedoresTable() {
         }));
 
         return [...fisicosMapeados, ...juridicosMapeados]
-            .sort((a, b) => a.Id_Proveedor - b.Id_Proveedor);
+            .sort((a, b) => b.Id_Proveedor - a.Id_Proveedor);
     }, [proveedoresFisicos, proveedoresJuridicos]);
 
     // Lista de estados únicos para poblar el select de estados

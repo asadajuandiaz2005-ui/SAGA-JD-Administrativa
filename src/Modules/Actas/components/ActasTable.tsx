@@ -198,7 +198,7 @@ export default function ActasTable() {
 
     // Crear la tabla con TanStack Table
     const table = useReactTable({
-        data: actas || [],
+        data: [...(actas ?? [])].sort((a, b) => b.Id_Acta - a.Id_Acta),
         columns,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

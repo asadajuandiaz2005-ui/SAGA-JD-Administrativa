@@ -219,7 +219,7 @@ const CategoriasManagement: React.FC<CategoriasManagementProps> = () => {
 
  
   const table = useReactTable({
-    data: categorias,
+    data: [...(categorias ?? [])].sort((a, b) => b.Id_Categoria - a.Id_Categoria),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

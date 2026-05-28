@@ -250,7 +250,7 @@ const Roles = () => {
   );
 
   const table = useReactTable({
-    data: roles,
+    data: [...(roles ?? [])].sort((a, b) => b.Id_Rol - a.Id_Rol),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

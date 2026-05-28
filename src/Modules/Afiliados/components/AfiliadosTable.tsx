@@ -123,7 +123,7 @@ export default function AbonadosTable() {
         return [
             ...afiliadosFisicosUnificados,
             ...afiliadosJuridicosUnificados
-        ].sort((a, b) => a.Id - b.Id);
+        ].sort((a, b) => b.Id - a.Id);
     }, [afiliadosFisicos, afiliadosJuridicos]);
 
     // Conteo de filtros activos para el badge

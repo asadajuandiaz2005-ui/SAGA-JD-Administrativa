@@ -223,7 +223,7 @@ const UnidadesMedicionManagement: React.FC<UnidadesMedicionManagementProps> = ()
   ], [updateEstadoMutation.isPending]);
 
   const table = useReactTable({
-    data: unidades,
+    data: [...(unidades ?? [])].sort((a, b) => b.Id_Unidad_Medicion - a.Id_Unidad_Medicion),
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

@@ -270,7 +270,7 @@ export default function FacturaTable() {
   ];
 
   const table = useReactTable({
-    data: facturasFiltradas,
+    data: [...(facturasFiltradas ?? [])].sort((a, b) => b.Id_Factura - a.Id_Factura),
     columns,
     state: { globalFilter, pagination },
     onGlobalFilterChange: setGlobalFilter,

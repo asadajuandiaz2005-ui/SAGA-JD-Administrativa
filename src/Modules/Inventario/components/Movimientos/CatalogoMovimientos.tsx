@@ -352,7 +352,7 @@ const CatalogoMovimientos: React.FC<CatalogoMovimientosProps> = () => {
   ];
 
   const table = useReactTable({
-    data: filteredMovimientos,
+    data: [...(filteredMovimientos ?? [])].sort((a, b) => b.Id_Ingreso_Egreso - a.Id_Ingreso_Egreso),
     columns,
     state: {
       sorting,
