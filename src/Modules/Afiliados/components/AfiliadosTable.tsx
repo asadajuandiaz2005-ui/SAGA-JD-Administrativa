@@ -34,6 +34,7 @@ type AfiliadoUnificado = {
     Nombre_Completo: string;
     Cedula_Documento?: string;
     Identificacion: string;
+    Fecha_Creacion?: string;
     Estado: {
         Id_Estado: number;
         Nombre_Estado: string;
@@ -88,6 +89,7 @@ export default function AbonadosTable() {
             Id: afiliado.Id_Afiliado,
             Nombre_Completo: `${afiliado.Nombre || ''} ${afiliado.Apellido1 || ''} ${afiliado.Apellido2 || ''}`.trim() || 'Sin nombre',
             Identificacion: afiliado.Identificacion || 'Sin cédula',
+            Fecha_Creacion: afiliado.Fecha_Creacion,
             Estado: {
                 Id_Estado: afiliado.Estado?.Id_Estado_Afiliado || 0,
                 Nombre_Estado: afiliado.Estado?.Nombre_Estado || 'Sin estado'
@@ -103,6 +105,7 @@ export default function AbonadosTable() {
             Nombre_Completo: afiliado.Razon_Social || 'Sin razón social',
             Cedula_Documento: formatCedulaJuridica(afiliado.Cedula_Juridica || '') || 'Sin cédula jurídica',
             Identificacion: formatCedulaJuridica(afiliado.Cedula_Juridica || '') || 'Sin cédula jurídica',
+            Fecha_Creacion: afiliado.Fecha_Creacion,
             Estado: {
                 Id_Estado: afiliado.Estado?.Id_Estado_Afiliado || 0,
                 Nombre_Estado: afiliado.Estado?.Nombre_Estado || 'Sin estado'
@@ -116,7 +119,16 @@ export default function AbonadosTable() {
         return [
             ...afiliadosFisicosUnificados,
             ...afiliadosJuridicosUnificados
-        ].sort((a, b) => a.Id - b.Id);
+        ].sort((a, b) => {
+            const fechaA = a.Fecha_Creacion ? new Date(a.Fecha_Creacion).getTime() : 0;
+            const fechaB = b.Fecha_Creacion ? new Date(b.Fecha_Creacion).getTime() : 0;
+
+            if (fechaA !== fechaB) {
+                return fechaB - fechaA;
+            }
+
+            return b.Id - a.Id;
+        });
     }, [afiliadosFisicos, afiliadosJuridicos]);
 
     // Conteo de filtros activos para el badge
@@ -258,9 +270,9 @@ export default function AbonadosTable() {
                 const estadoNormalizado = estadoNombre.trim().toLowerCase();
                 const estadoVisual =
                     estadoNormalizado === 'en espera' ||
-                    estadoNormalizado === 'pendiente' ||
-                    estadoNormalizado.includes('espera') 
-                       ? 'En espera'
+                        estadoNormalizado === 'pendiente' ||
+                        estadoNormalizado.includes('espera')
+                        ? 'En espera'
                         : estadoNombre;
 
                 const base = 'px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[7px] sm:text-xs font-semibold whitespace-nowrap';
@@ -485,11 +497,10 @@ export default function AbonadosTable() {
                     <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-4 w-full sm:w-auto">
                         <button
                             onClick={() => setIsFilterOpen(true)}
-                            className={`px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors ${
-                                activeFiltersCount > 0
+                            className={`px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-sm border rounded-md sm:rounded-lg flex items-center justify-center gap-1 sm:gap-2 transition-colors ${activeFiltersCount > 0
                                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                                     : 'border-gray-300 hover:bg-gray-50'
-                            }`}
+                                }`}
                         >
                             <LuFilter className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span className="hidden sm:inline">Filtros</span>
@@ -553,9 +564,8 @@ export default function AbonadosTable() {
                                     {headerGroup.headers.map((header, index) => {
                                         const isActionsColumn = header.column.id === 'acciones';
                                         return (
-                                            <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${
-                                                isActionsColumn ? 'text-center' : 'text-left'
-                                            } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
+                                            <th key={header.id} className={`px-0.5 sm:px-2 md:px-4 py-1 md:py-3 font-medium border-b border-sky-100 ${isActionsColumn ? 'text-center' : 'text-left'
+                                                } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === headerGroup.headers.length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                 {(() => {
                                                     const headerText = header.column.columnDef.header as string;
                                                     const mobileHeaderText = headerText === 'Nombre / Razón Social' ? 'Nombre/Razón' : headerText === 'Cédula / Documento' ? 'Cédula' : headerText === 'Tipo Persona' ? 'T. Pesona' : headerText === 'Tipo Afiliado' ? 'T. Afiliado' : headerText;
@@ -624,9 +634,8 @@ export default function AbonadosTable() {
                                             }
 
                                             return (
-                                                <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[7px] sm:text-xs md:text-sm text-slate-700 align-middle ${
-                                                    cell.column.id === 'acciones' ? 'text-center' : 'text-left'
-                                                } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
+                                                <td key={cell.id} className={`px-0.5 sm:px-2 md:px-4 py-1.5 md:py-3 text-[7px] sm:text-xs md:text-sm text-slate-700 align-middle ${cell.column.id === 'acciones' ? 'text-center' : 'text-left'
+                                                    } ${index === 0 ? 'pl-3 sm:pl-4' : ''} ${index === row.getVisibleCells().length - 1 ? 'pr-3 sm:pr-4' : ''}`}>
                                                     {cellContent}
                                                 </td>
                                             );
