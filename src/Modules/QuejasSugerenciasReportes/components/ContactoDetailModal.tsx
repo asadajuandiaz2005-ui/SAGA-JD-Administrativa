@@ -1,8 +1,9 @@
-import { 
-  LuX, 
-  LuCalendar, 
-  LuMapPin, 
+import {
+  LuX,
+  LuCalendar,
+  LuMapPin,
   LuMessageSquare,
+  LuReply,
 } from 'react-icons/lu';
 import { MdReportProblem } from 'react-icons/md';
 import { FaLightbulb, FaUserFriends } from 'react-icons/fa';
@@ -203,6 +204,26 @@ const ContactoDetailModal = ({ item, isOpen, onClose }: ContactoDetailModalProps
                 </div>
               </div>
             </div>
+
+            {/* Respuesta Enviada (si existe) */}
+            {item.respuesta && item.respuesta.trim() && (
+              <div className="bg-white rounded-lg border border-green-200 overflow-hidden shadow-sm">
+                <div className="bg-green-50 px-5 py-3 border-b border-green-200">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <LuReply className="size-4 text-green-600" />
+                    </div>
+                    <h3 className="text-base font-semibold text-gray-900">Respuesta Enviada</h3>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed break-words">{item.respuesta}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Información del Tipo y Usuario */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">

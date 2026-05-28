@@ -26,6 +26,7 @@ export interface ContactoItem {
   segundoApellido?: string;
   ubicacion?: string;
   mensaje: string;
+  respuesta?: string | null;
   correo?: string;
   fechaCreacion: Date | string | null;
   estado?: string

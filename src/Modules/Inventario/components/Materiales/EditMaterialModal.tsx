@@ -353,7 +353,6 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({
                     : 'border-gray-300'
                   }`}
                 placeholder="Descripción del material..."
-                required
               />
               {formErrors.Descripcion && (
                 <p className="mt-1 text-sm text-red-600">{formErrors.Descripcion}</p>
