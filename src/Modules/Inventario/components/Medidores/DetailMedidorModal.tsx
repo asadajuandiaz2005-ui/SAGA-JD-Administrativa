@@ -145,7 +145,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                     Número del Medidor
                   </label>
-                  <p className="text-md font-bold text-gray-900 font-mono">
+                  <p className="text-md font-bold text-gray-900 font-mono break-all">
                     {medidor.Numero_Medidor}
                   </p>
                 </div>
@@ -238,7 +238,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                       {medidor.Afiliado.Tipo_Entidad === 2 ? 'Razón Social' : 'Nombre Completo'}
                     </label>
-                    <p className="text-sm text-gray-900 font-medium">
+                    <p className="text-sm text-gray-900 font-medium break-words">
                       {getNombreAfiliado()}
                     </p>
                   </div>
@@ -247,7 +247,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                       {medidor.Afiliado.Tipo_Entidad === 2 ? 'Cédula Jurídica' : 'Identificación'}
                     </label>
-                    <p className="text-sm text-gray-900 font-mono">
+                    <p className="text-sm text-gray-900 font-mono break-all">
                       {getIdentificacion()}
                     </p>
                   </div>
@@ -256,7 +256,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                       Correo Electrónico
                     </label>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm text-gray-900 break-all">
                       {medidor.Afiliado.Correo || 'No especificado'}
                     </p>
                   </div>
@@ -265,7 +265,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                       Número de Teléfono
                     </label>
-                    <p className="text-sm text-gray-900 font-mono">
+                    <p className="text-sm text-gray-900 font-mono break-all">
                       {medidor.Afiliado.Numero || 'No especificado'}
                     </p>
                   </div>
@@ -327,7 +327,7 @@ const DetailMedidorModal = ({ isOpen, onClose, medidor }: DetailMedidorModalProp
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">
                     Usuario Creador
                   </label>
-                  <p className="text-sm text-gray-900 font-medium">
+                  <p className="text-sm text-gray-900 font-medium break-words">
                     {medidor.Usuario.Nombre_Usuario}
                   </p>
                 </div>
